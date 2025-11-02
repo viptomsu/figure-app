@@ -1,15 +1,12 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/reducers"; // Import RootState từ Redux
+import { useUserStore } from "../../../stores";
 
 const LangAndMonetaryUnit: React.FC = () => {
   const history = useHistory();
 
-  // Lấy trạng thái người dùng từ Redux
-  const isUserLoggedIn = useSelector(
-    (state: RootState) => state.user.isAuthenticated
-  );
+  // Lấy trạng thái người dùng từ Zustand
+  const { isAuthenticated: isUserLoggedIn } = useUserStore();
 
   const handleClick = () => {
     if (isUserLoggedIn) {

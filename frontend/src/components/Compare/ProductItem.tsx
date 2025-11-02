@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { AddToCart, MakeIsInCartTrue } from "../../redux/actions/cartActions";
-import { RootState } from "../../redux/reducers";
-import { RemoveFromCompare } from "../../redux/actions/compareActions";
-import { MakeIsInCompareFalse } from "../../redux/actions/productActions";
+import { useCartStore, useCompareStore, useProductsStore } from "../../stores";
 import { toast } from "react-toastify";
 import Rating from "../Other/Rating";
 import { formatCurrency } from "../../utils/currencyFormatter"; // Import hàm format tiền tệ
@@ -13,9 +9,10 @@ import ImgSlider from "../ProductDetails/PrimaryInfo/ImgSlider";
 import ProductInfo from "../ProductDetails/PrimaryInfo/ProductInfo";
 
 const ProductItem: React.FC<any> = ({ product }) => {
-  const cartState = useSelector((state: RootState) => state.cart);
-  const cart = cartState.cart;
-  const dispatch = useDispatch();
+  const { cart, addToCart, makeIsInCartTrue } = useCartStore();
+  const { removeFromCompare } = useCompareStore();
+  const { makeIsInCompareFalse } = useProductsStore();
+  
   const [showModal, setShowModal] = useState(false); // State để điều khiển modal
   const [selectedProduct, setSelectedProduct] = useState<any>(null); // State để lưu sản phẩm được chọn
 
@@ -37,8 +34,8 @@ const ProductItem: React.FC<any> = ({ product }) => {
       setShowModal(true); // Hiển thị modal
     } else {
       // Nếu không có variation, thêm thẳng vào giỏ hàng
-      dispatch(AddToCart(product));
-      dispatch(MakeIsInCartTrue(product._id));
+      addToCart(product);
+      makeIsInCartTrue(product._id);
       toast.success('"' + product.productName + '" đã thêm vào giỏ hàng.');
     }
   };
@@ -52,8 +49,8 @@ const ProductItem: React.FC<any> = ({ product }) => {
           <button
             type="button"
             onClick={() => {
-              dispatch(RemoveFromCompare(product._id));
-              dispatch(MakeIsInCompareFalse(product._id));
+              removeFromCompare(product._id);
+              makeIsInCompareFalse(product._id);
               toast.error(
                 '"' + product.productName + '" đã được xóa khỏi phần quan tâm.'
               );

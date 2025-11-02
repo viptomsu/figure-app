@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { FiBarChart2 } from "react-icons/fi";
 import { BsHeart, BsBag } from "react-icons/bs";
 import { ImEye } from "react-icons/im";
@@ -10,17 +9,8 @@ import ImgSlider from "../ProductDetails/PrimaryInfo/ImgSlider";
 import { AiOutlineSearch } from "react-icons/ai";
 import Rating from "../Other/Rating";
 import { IProducts } from "../../types/types";
-import { AddToCart, MakeIsInCartTrue } from "../../redux/actions/cartActions";
-import {
-  AddToWishlist,
-  MakeIsInWishlistTrueInWishlist,
-} from "../../redux/actions/wishlistActions";
-import {
-  AddToCompare,
-  MakeIsInCompareTrueInCompare,
-} from "../../redux/actions/compareActions";
+import { useCartStore, useWishlistStore, useCompareStore } from "../../stores";
 import { toast } from "react-toastify";
-import { RootState } from "../../redux/reducers/index";
 import { formatCurrency } from "../../utils/currencyFormatter"; // Import hàm formatCurrency
 
 interface IImage {
@@ -30,19 +20,15 @@ interface IImage {
 }
 
 const ProductCard: React.FC<any> = ({ product }) => {
-  const cartState = useSelector((state: RootState) => state.cart);
-  const wishlistState = useSelector((state: RootState) => state.wishlist);
-  const compareState = useSelector((state: RootState) => state.compare);
-  const cart = cartState.cart;
-  const wishlist = wishlistState.wishlist;
-  const compare = compareState.compare;
+  const { cart, addToCart, makeIsInCartTrue } = useCartStore();
+  const { wishlist, addToWishlist } = useWishlistStore();
+  const { compare, addToCompare } = useCompareStore();
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const handleShow = (e: React.MouseEvent<HTMLButtonElement>): void =>
     setShowModal(true);
   const handleClose = (e?: React.MouseEvent<HTMLButtonElement>): void =>
     setShowModal(false);
-  const dispatch = useDispatch();
 
   // Cập nhật trạng thái isInCart, isInWishlist, isInCompare
   cart.map(
@@ -131,8 +117,8 @@ const ProductCard: React.FC<any> = ({ product }) => {
                     type="button"
                     title="Thêm vào giỏ hàng"
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                      dispatch(AddToCart(product));
-                      dispatch(MakeIsInCartTrue(product._id));
+                      addToCart(product);
+                      makeIsInCartTrue(product._id);
                       toast.success(
                         '"' +
                           product.productName +
@@ -175,8 +161,7 @@ const ProductCard: React.FC<any> = ({ product }) => {
                     type="button"
                     title="Thêm vào danh sách yêu thích"
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                      dispatch(AddToWishlist(product));
-                      dispatch(MakeIsInWishlistTrueInWishlist(product._id));
+                      addToWishlist(product);
                       toast.success(
                         '"' +
                           product.productName +
@@ -210,8 +195,7 @@ const ProductCard: React.FC<any> = ({ product }) => {
                     type="button"
                     title="Thêm vào phần quan tâm"
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                      dispatch(AddToCompare(product));
-                      dispatch(MakeIsInCompareTrueInCompare(product._id));
+                      addToCompare(product);
                       toast.success(
                         '"' +
                           product.productName +

@@ -3,16 +3,13 @@ import { IProducts, ICartProps } from "../../types/types";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify"; // Import toast để hiển thị thông báo
 import { formatCurrency } from "../../utils/currencyFormatter";
-import { useSelector } from "react-redux"; // Import useSelector từ Redux
-import { RootState } from "../../redux/reducers"; // Import RootState để lấy kiểu của Redux store
+import { useUserStore } from "../../stores";
 
 const CartTotals: React.FC<ICartProps> = (props) => {
   const { cart } = props;
 
-  // Lấy trạng thái người dùng từ Redux
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.user.isAuthenticated
-  );
+  // Lấy trạng thái người dùng từ Zustand
+  const { isAuthenticated } = useUserStore();
 
   // Tính tổng giá ban đầu và tổng số tiền giảm giá
   const { totalPrice, totalDiscount } = cart.reduce(

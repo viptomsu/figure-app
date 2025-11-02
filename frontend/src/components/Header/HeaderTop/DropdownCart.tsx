@@ -1,22 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../../redux/reducers/index";
-import { DeleteFromCart } from "../../../redux/actions/cartActions";
-import { MakeIsInCartFalse } from "../../../redux/actions/productActions";
-import { WishlistProductIsInCartFalse } from "../../../redux/actions/wishlistActions";
-import { CompareProductIsInCartFalse } from "../../../redux/actions/compareActions";
-import { ShowOrHideDropdownCart } from "../../../redux/actions/primaryActions";
+import { useCartStore, useUIStore, useUserStore, useProductsStore, useWishlistStore, useCompareStore } from "../../../stores";
 import { toast } from "react-toastify";
 import { formatCurrency } from "../../../utils/currencyFormatter"; // Hàm format tiền tệ
 
 const DropdownCart: React.FC = () => {
-  const cartState = useSelector((state: RootState) => state.cart);
-  const primaryState = useSelector((state: RootState) => state.primary);
-  const userState = useSelector((state: RootState) => state.user); // Lấy trạng thái user từ Redux
-  const cart = cartState.cart;
-  const showOrHideDropdCart = primaryState.showOrHideDropdownCart;
-  const dispatch = useDispatch();
+  const { cart, removeFromCart } = useCartStore();
+  const { showOrHideDropdownCart, toggleDropdownCart } = useUIStore();
+  const { isAuthenticated } = useUserStore();
+  const { makeIsInCartFalse } = useProductsStore();
+  const { makeWishlistProductIsInCartFalse } = useWishlistStore();
+  const { makeCompareProductIsInCartFalse } = useCompareStore();
+  const showOrHideDropdCart = showOrHideDropdownCart;
 
   // Tính giá sau khi áp dụng discount cho từng sản phẩm
   const calculateDiscountedPrice = (product: any) => {
@@ -35,13 +30,13 @@ const DropdownCart: React.FC = () => {
   );
 
   const closeDropdownCart = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    dispatch(ShowOrHideDropdownCart());
+    toggleDropdownCart();
   };
 
   // Hàm xử lý khi nhấn nút "Thanh toán"
   const handleCheckout = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!userState.isAuthenticated) {
-      // Kiểm tra trạng thái đăng nhập từ Redux
+    if (!isAuthenticated) {
+      // Kiểm tra trạng thái đăng nhập từ Zustand
       e.preventDefault(); // Ngăn điều hướng nếu chưa đăng nhập
       toast.warning("Bạn cần đăng nhập tài khoản để mua hàng"); // Hiển thị cảnh báo nếu chưa đăng nhập
     }
@@ -69,10 +64,10 @@ const DropdownCart: React.FC = () => {
                         <button
                           type="button"
                           onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                            dispatch(DeleteFromCart(product._id));
-                            dispatch(MakeIsInCartFalse(product._id));
-                            dispatch(WishlistProductIsInCartFalse(product._id));
-                            dispatch(CompareProductIsInCartFalse(product._id));
+                            removeFromCart(product._id);
+                            makeIsInCartFalse(product._id);
+                            makeWishlistProductIsInCartFalse(product._id);
+                            makeCompareProductIsInCartFalse(product._id);
                             toast.error(
                               '"' +
                                 product.productName +

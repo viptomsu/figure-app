@@ -2,8 +2,7 @@ import React from "react";
 import ProductCard from "../../ProductCard/ProductCard";
 import Pagination from "./Pagination";
 import { RiEqualizerLine } from "react-icons/ri";
-import { useDispatch } from "react-redux";
-import { ShowSidebarFilter } from "../../../redux/actions/primaryActions";
+import { useUIStore } from "../../../stores";
 
 const ProductsSide: React.FC<any> = ({
   products,
@@ -16,10 +15,10 @@ const ProductsSide: React.FC<any> = ({
   setSortDirection,
 }) => {
   const productsPerPage = 12;
-  const dispatch = useDispatch();
+  const { setShowSidebarFilter } = useUIStore();
 
   const handleFilterBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    dispatch(ShowSidebarFilter(true));
+    setShowSidebarFilter(true);
   };
 
   return (

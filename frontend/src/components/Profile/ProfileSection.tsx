@@ -8,9 +8,7 @@ import { updateProfile } from "../../services/userService";
 import { Tabs } from "antd";
 import PasswordChange from "./PasswordChange";
 import AddressBook from "./AddressBook";
-import { useSelector, useDispatch } from "react-redux"; // Import useSelector và useDispatch
-import { RootState } from "../../redux/reducers"; // Import RootState
-import { updateUserProfile } from "../../redux/actions/userActions"; // Import action updateUserProfile
+import { useUserStore } from "../../stores";
 
 toast.configure();
 
@@ -18,10 +16,7 @@ const ProfileSection: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const dispatch = useDispatch(); // Dispatch action
-
-  // Lấy thông tin người dùng từ Redux
-  const userData = useSelector((state: RootState) => state.user.user);
+  const { user: userData, updateUserProfile } = useUserStore();
 
   // Validation schema
   const validationSchema = Yup.object().shape({
@@ -69,8 +64,8 @@ const ProfileSection: React.FC = () => {
         "Cập nhật thông tin thành công! Vui lòng đăng nhập lại để làm mới thông tin"
       );
 
-      // Cập nhật thông tin người dùng trong Redux
-      dispatch(updateUserProfile({ ...userData, ...data }));
+      // Cập nhật thông tin người dùng trong Zustand
+      updateUserProfile({ ...userData, ...data });
     } catch (error) {
       // Hiển thị thông báo lỗi nếu có lỗi xảy ra
       toast.error("Cập nhật thông tin không thành công. Vui lòng thử lại.");

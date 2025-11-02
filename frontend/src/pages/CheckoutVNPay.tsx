@@ -3,17 +3,13 @@ import { useLocation, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { handleVNPayPaymentReturn } from "../services/vnpayService"; // Import hàm xử lý VNPay
 import { createOrder } from "../services/orderService";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../redux/reducers/index";
-import { ActionType } from "../redux/actions/actionTypes";
+import { useCartStore } from "../stores";
 import { markVoucherAsUsed } from "../services/voucherService";
 
 const CheckoutVNPay: React.FC = () => {
   const location = useLocation();
   const history = useHistory();
-  const cartState = useSelector((state: RootState) => state.cart);
-  const cart = cartState.cart;
-  const dispatch = useDispatch();
+  const { cart, clearCart } = useCartStore();
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search); // Lấy các tham số trả về từ URL
@@ -92,8 +88,8 @@ const CheckoutVNPay: React.FC = () => {
         localStorage.removeItem("voucher");
       }
 
-      // Dispatch action để xóa giỏ hàng
-      dispatch({ type: ActionType.CLEAR_CART });
+      // Clear cart after successful order
+      clearCart();
 
       // Xóa selectedAddressBookId khỏi localStorage sau khi đặt hàng thành công
       localStorage.removeItem("selectedAddressBookId");

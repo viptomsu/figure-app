@@ -5,46 +5,40 @@ import { BsHeart, BsBag } from "react-icons/bs";
 import { IoIosSearch } from "react-icons/io";
 import UserIcon from "../../../assets/img/other/user-icon.png";
 import { Link, useHistory } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../../redux/reducers/index";
-import {
-  ShowSearchArea,
-  ShowOrHideDropdownCart,
-} from "../../../redux/actions/primaryActions";
+import { useCartStore, useWishlistStore, useCompareStore, useUIStore, useUserStore } from "../../../stores";
 import { IActionDataTypes } from "../../../types/types";
-import { ActionType } from "../../../redux/actions/actionTypes";
 
 const Actions: React.FC = () => {
-  const cart = useSelector((state: RootState) => state.cart);
-  const wishlist = useSelector((state: RootState) => state.wishlist);
-  const compare = useSelector((state: RootState) => state.compare);
-  const user = useSelector((state: RootState) => state.user.user); // Lấy thông tin user từ Redux
-  const dispatch = useDispatch();
+  const { cart } = useCartStore();
+  const { wishlist } = useWishlistStore();
+  const { compare } = useCompareStore();
+  const { showSearchArea, toggleDropdownCart, setShowSearchArea } = useUIStore();
+  const { isAuthenticated, user, logout } = useUserStore();
   const history = useHistory();
 
   const showOrHideDropCart = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    dispatch(ShowOrHideDropdownCart());
+    toggleDropdownCart();
   };
 
   const ActionsData: IActionDataTypes[] = [
     {
       id: 1,
       href: "/compare",
-      sup: compare.compare.length,
+      sup: compare.length,
       icon: <FiBarChart2 color="#ffffff" />,
       class: "second-link",
     },
     {
       id: 2,
       href: "/wishlist",
-      sup: wishlist.wishlist.length,
+      sup: wishlist.length,
       icon: <BsHeart />,
       class: "second-link",
     },
     {
       id: 3,
       href: "#/",
-      sup: cart.cart.length,
+      sup: cart.length,
       icon: <BsBag />,
       class: "third-link",
       dropdownContent: <DropdownCart />,
@@ -54,7 +48,7 @@ const Actions: React.FC = () => {
 
   // Hàm xử lý đăng xuất
   const handleLogout = () => {
-    dispatch({ type: ActionType.LOGOUT }); // Dispatch action LOGOUT để xóa thông tin user khỏi Redux
+    logout();
     localStorage.removeItem("auth_token");
     localStorage.removeItem("user");
     history.push("/login"); // Chuyển hướng về trang login sau khi đăng xuất
@@ -69,7 +63,7 @@ const Actions: React.FC = () => {
               type="button"
               className="search-btnn"
               onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                dispatch(ShowSearchArea(true));
+                setShowSearchArea(true);
               }}
             >
               <IoIosSearch />

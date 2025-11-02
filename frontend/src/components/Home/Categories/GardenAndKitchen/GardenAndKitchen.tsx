@@ -3,11 +3,10 @@ import ProductCard from "../../../ProductCard/ProductCard";
 import SectionHeader from "../../Other/SectionHeader";
 import OwlCarousel from "react-owl-carousel";
 import { Options } from "../../../Other/OwlCarouselOptions";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/reducers/index";
+import { useProductsStore } from "../../../../stores";
 
 const GardenAndKitchen: React.FC = () => {
-  const products = useSelector((state: RootState) => state.products);
+  const { products } = useProductsStore();
 
   return (
     <div className="garden-and-kitchen">
@@ -18,7 +17,7 @@ const GardenAndKitchen: React.FC = () => {
       {/* ======= Owl-carousel ======= */}
       <div className="owl-carousel-wrapper">
         <OwlCarousel className="owl-theme" {...Options}>
-          {products.products.map(
+          {products.map(
             (product: any, index: number) =>
               product.category === "Home, Garden & Kitchen" && (
                 <div key={index} className="item">

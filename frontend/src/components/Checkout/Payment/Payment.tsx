@@ -10,8 +10,7 @@ import {
   checkVoucher,
   markVoucherAsUsed,
 } from "../../../services/voucherService"; // Import checkVoucher API
-import { useDispatch } from "react-redux"; // Thêm import này
-import { ActionType } from "../../../redux/actions/actionTypes";
+import { useCartStore } from "../../../stores";
 import { createVNPayPayment } from "../../../services/vnpayService"; // Import service của VNPay
 
 interface IProps {
@@ -23,7 +22,7 @@ interface IProps {
 }
 
 const Payment: React.FC<IProps> = (props) => {
-  const dispatch = useDispatch();
+  const { clearCart } = useCartStore();
   const history = useHistory(); // Sử dụng useHistory cho react-router-dom v5
   const [showCodContent, setShowCodContent] = useState<boolean>(true);
   const [showPaypalContent, setShowPaypalContent] = useState<boolean>(false);
@@ -98,7 +97,7 @@ const Payment: React.FC<IProps> = (props) => {
         pathname: "/checkoutsuccess",
         state: { orderCode }, // Gửi orderCode qua location.state
       });
-      dispatch({ type: ActionType.CLEAR_CART });
+      clearCart();
     } catch (error: any) {
       console.error("Error creating order:", error);
       const errorMessage =

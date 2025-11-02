@@ -7,8 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SocialMediaData } from "../Other/SocialMediaData";
 import { login } from "../../services/authService";
-import { useDispatch } from "react-redux"; // Import useDispatch từ redux
-import { loginSuccess } from "../../redux/actions/userActions"; // Import loginSuccess
+import { useUserStore } from "../../stores";
 
 // Khởi tạo toast cho toàn bộ ứng dụng
 toast.configure();
@@ -16,7 +15,7 @@ toast.configure();
 const LoginSection: React.FC = () => {
   const [loginLoading, setLoginLoading] = useState(false);
   const history = useHistory();
-  const dispatch = useDispatch(); // Khởi tạo useDispatch
+  const { loginSuccess } = useUserStore(); // Use Zustand store
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().required("Tên đăng nhập là bắt buộc"),
@@ -41,8 +40,8 @@ const LoginSection: React.FC = () => {
       const { jwtToken } = result.payload[0];
       const user = result.payload[1];
 
-      // Dispatch thông tin user và token vào Redux
-      dispatch(loginSuccess(user, jwtToken));
+      // Store user info and token in Zustand
+      loginSuccess({ user, token: jwtToken });
 
       // Lưu jwtToken vào localStorage (tuỳ chọn nếu bạn muốn lưu trên localStorage)
       localStorage.setItem("auth_token", jwtToken);

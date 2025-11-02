@@ -4,14 +4,12 @@ import { Link } from "react-router-dom";
 import { HiArrowNarrowLeft } from "react-icons/hi";
 import SwiperCore, { Navigation, A11y } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/reducers/index";
+import { useCompareStore } from "../../stores";
 
 SwiperCore.use([Navigation, A11y]);
 
 const CompareSection: React.FC = () => {
-  const compareState = useSelector((state: RootState) => state.compare);
-  const compare = compareState.compare;
+  const { compare } = useCompareStore();
 
   return (
     <section id="compare">

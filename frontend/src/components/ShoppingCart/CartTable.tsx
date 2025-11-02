@@ -3,20 +3,20 @@ import { ICartProps } from "../../types/types";
 import { Link } from "react-router-dom";
 import { formatCurrency } from "../../utils/currencyFormatter"; // Hàm format tiền tệ
 import { toast } from "react-toastify";
-import {
-  DeleteFromCart,
-  IncreaseProductCount,
-  DecreaseProductCount,
-} from "../../redux/actions/cartActions";
-import { MakeIsInCartFalse } from "../../redux/actions/productActions";
-import { WishlistProductIsInCartFalse } from "../../redux/actions/wishlistActions";
-import { CompareProductIsInCartFalse } from "../../redux/actions/compareActions";
-import { useDispatch } from "react-redux";
+import { useCartStore, useProductsStore, useWishlistStore, useCompareStore } from "../../stores";
 
 const CartTable: React.FC<ICartProps> = (props) => {
   const { cart } = props;
   const [size] = useState<number>(1);
-  const dispatch = useDispatch();
+  
+  const { 
+    removeFromCart, 
+    increaseProductCount, 
+    decreaseProductCount 
+  } = useCartStore();
+  const { makeIsInCartFalse } = useProductsStore();
+  const { makeWishlistProductIsInCartFalse } = useWishlistStore();
+  const { makeCompareProductIsInCartFalse } = useCompareStore();
 
   return (
     <div className="cart-table">
@@ -120,7 +120,7 @@ const CartTable: React.FC<ICartProps> = (props) => {
                       type="button"
                       onClick={() => {
                         if (product.count > 1) {
-                          dispatch(DecreaseProductCount(product._id));
+                          decreaseProductCount(product._id);
                         }
                       }}
                       disabled={product.count === 1} // Vô hiệu hóa nếu số lượng là 1
@@ -156,7 +156,7 @@ const CartTable: React.FC<ICartProps> = (props) => {
                       type="button"
                       onClick={() => {
                         if (product.count < product.stock) {
-                          dispatch(IncreaseProductCount(product._id));
+                          increaseProductCount(product._id);
                         } else {
                           toast.warning(
                             `Bạn chỉ có thể mua tối đa ${product.stock} sản phẩm.`
@@ -197,10 +197,10 @@ const CartTable: React.FC<ICartProps> = (props) => {
                   <button
                     type="button"
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                      dispatch(DeleteFromCart(product._id));
-                      dispatch(MakeIsInCartFalse(product._id));
-                      dispatch(WishlistProductIsInCartFalse(product._id));
-                      dispatch(CompareProductIsInCartFalse(product._id));
+                      removeFromCart(product._id);
+                      makeIsInCartFalse(product._id);
+                      makeWishlistProductIsInCartFalse(product._id);
+                      makeCompareProductIsInCartFalse(product._id);
                       toast.error(
                         '"' +
                           product.productName +

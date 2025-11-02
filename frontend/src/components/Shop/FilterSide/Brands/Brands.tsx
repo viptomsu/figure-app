@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { SortByBrand } from "../../../../redux/actions/productActions";
-import { GetTitle, IsLoading } from "../../../../redux/actions/primaryActions";
+import { useUIStore, useProductsStore } from "../../../../stores";
 import { getAllBrands } from "../../../../services/brandService";
 
 interface BrandsProps {
@@ -10,7 +8,8 @@ interface BrandsProps {
 }
 
 const Brands: React.FC<BrandsProps> = ({ setSelectedBrand, selectedBrand }) => {
-  const dispatch = useDispatch();
+  const { setTitle, setIsLoading } = useUIStore();
+  const { sortByBrand } = useProductsStore();
   const [brands, setBrands] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -34,11 +33,11 @@ const Brands: React.FC<BrandsProps> = ({ setSelectedBrand, selectedBrand }) => {
     if (selectedBrand) {
       const brand = brands.find((b) => b._id === selectedBrand);
       if (brand) {
-        dispatch(SortByBrand(brand.brandName));
+        sortByBrand(brand.brandName);
         // Không cần dispatch GetTitle ở đây vì đã có logic ở Categories
       }
     }
-  }, [selectedBrand, brands, dispatch]);
+  }, [selectedBrand, brands, sortByBrand]);
 
   const handleBrandClick = (brandId: string | null, brandName?: string) => {
     // Nếu đã chọn brand này rồi thì không làm gì
@@ -47,10 +46,10 @@ const Brands: React.FC<BrandsProps> = ({ setSelectedBrand, selectedBrand }) => {
     setSelectedBrand(brandId);
 
     if (brandId !== null && brandName) {
-      dispatch(SortByBrand(brandName));
+      sortByBrand(brandName);
     }
 
-    dispatch(IsLoading(true));
+    setIsLoading(true);
   };
 
   return (

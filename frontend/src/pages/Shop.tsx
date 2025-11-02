@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { IsLoading, ShowSidebarFilter } from "../redux/actions/primaryActions";
 import { Link, useLocation } from "react-router-dom";
 import BrandsSection from "../components/Shop/Brands/Brands";
 import Categories from "../components/Shop/FilterSide/Categories/Categories";
 import Brands from "../components/Shop/FilterSide/Brands/Brands";
 import ProductsSide from "../components/Shop/ProductsSide/ProductsSide";
-import { RootState } from "../redux/reducers/index";
+import { useUIStore, useProductsStore } from "../stores";
 import { getAllProducts } from "../services/productService";
 import { CircleLoader } from "react-spinners";
 
 const Shop: React.FC = () => {
-  const primaryState = useSelector((state: RootState) => state.primary);
-  const loading = primaryState.isLoading;
-  const showSideFilter = primaryState.showSidebarFilter;
-  const dispatch = useDispatch();
+  const { isLoading: loading, showSidebarFilter: showSideFilter, setIsLoading, setShowSidebarFilter } = useUIStore();
+  const { setProducts: setProductsInStore } = useProductsStore();
 
   const location = useLocation();
 
@@ -45,7 +41,7 @@ const Shop: React.FC = () => {
   }, [location.search]);
   const fetchProducts = async () => {
     try {
-      dispatch(IsLoading(true));
+      setIsLoading(true);
 
       console.log("Fetching products với params:", {
         selectedCategory,
@@ -73,7 +69,7 @@ const Shop: React.FC = () => {
       console.error("Error fetching products", error);
       setProducts([]);
     } finally {
-      dispatch(IsLoading(false));
+      setIsLoading(false);
     }
   };
   // Fetch products ngay sau khi khởi tạo hoặc khi filter thay đổi
@@ -184,7 +180,7 @@ const Shop: React.FC = () => {
         <div
           className={showSideFilter ? "dark-bg-color" : "d-none"}
           onClick={() => {
-            dispatch(ShowSidebarFilter(false));
+            setShowSidebarFilter(false);
           }}
         ></div>
       </div>

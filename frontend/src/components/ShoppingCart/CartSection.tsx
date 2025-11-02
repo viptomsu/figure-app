@@ -3,12 +3,10 @@ import CartTable from "./CartTable";
 import CartTotals from "./CartTotals";
 import { HiArrowNarrowLeft } from "react-icons/hi";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/reducers/index";
+import { useCartStore } from "../../stores";
 
 const CartSection: React.FC = () => {
-  const cartState = useSelector((state: RootState) => state.cart);
-  const cart = cartState.cart;
+  const { cart } = useCartStore();
 
   return (
     <section id="cart-section">

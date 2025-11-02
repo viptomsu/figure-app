@@ -6,8 +6,7 @@ import {
 } from "../../../services/reviewService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useSelector } from "react-redux"; // Import useSelector từ Redux
-import { RootState } from "../../../redux/reducers"; // Import RootState để lấy kiểu của Redux store
+import { useUserStore } from "../../../stores";
 import { checkProfanityWithHuggingFace } from "../../../services/profanityCheckService";
 
 toast.configure(); // Cấu hình toast cho toàn bộ ứng dụng
@@ -24,8 +23,8 @@ const Reviews: React.FC<any> = ({ product }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
-  // Lấy thông tin người dùng từ Redux store
-  const user = useSelector((state: RootState) => state.user.user);
+  // Lấy thông tin người dùng từ Zustand store
+  const { user } = useUserStore();
   const fetchReviews = async (page: number = 1, size: number = 5) => {
     try {
       const response = await getReviewsByProduct(product._id, page, size);

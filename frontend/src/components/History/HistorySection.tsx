@@ -5,8 +5,7 @@ import {
   updateOrderStatus,
 } from "../../services/orderService";
 import { formatCurrency } from "../../utils/currencyFormatter";
-import { useSelector } from "react-redux"; // Import useSelector từ Redux
-import { RootState } from "../../redux/reducers"; // Import RootState để lấy kiểu của Redux store
+import { useUserStore } from "../../stores";
 
 const HistorySection: React.FC = () => {
   const [orders, setOrders] = useState<any[]>([]);
@@ -20,8 +19,8 @@ const HistorySection: React.FC = () => {
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Lấy thông tin người dùng từ Redux store
-  const user = useSelector((state: RootState) => state.user.user);
+  // Lấy thông tin người dùng từ Zustand store
+  const { user } = useUserStore();
   const fetchUserOrders = async (currentPage = 1, limit = 5) => {
     if (user && user.userId) {
       const userId = user.userId;

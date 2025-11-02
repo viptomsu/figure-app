@@ -2,8 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { Input, Button } from "antd";
 import { SendOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/reducers";
+import { useUserStore } from "../../../stores";
 
 interface ChatBoxProps {
   onClose: () => void;
@@ -12,7 +11,7 @@ interface ChatBoxProps {
 const ChatBox: React.FC<ChatBoxProps> = ({ onClose }) => {
   const [inputMessage, setInputMessage] = useState<string>("");
   const [msgList, setMsgList] = useState<any[]>([]);
-  const user = useSelector((state: RootState) => state.user.user);
+  const { user } = useUserStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -1,13 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import ProductItem from "./ProductItem";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/reducers/index";
+import { useProductsStore } from "../../../stores";
 import { IButtonsAndLink } from "../../../types/types";
 
 const NewArrivals: React.FC = () => {
-  const productsState = useSelector((state: RootState) => state.products);
-  const products = productsState.products;
+  const { products } = useProductsStore();
 
   const ButtonsAndLinkData: IButtonsAndLink[] = [
     { id: 1, href: "#/", title: "Technologies" },

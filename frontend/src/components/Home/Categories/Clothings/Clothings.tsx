@@ -3,12 +3,10 @@ import ProductCard from "../../../ProductCard/ProductCard";
 import SectionHeader from "../../Other/SectionHeader";
 import OwlCarousel from "react-owl-carousel";
 import { Options } from "../../../Other/OwlCarouselOptions";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/reducers/index";
+import { useProductsStore } from "../../../../stores";
 
 const Clothings: React.FC = () => {
-  const productsState = useSelector((state: RootState) => state.products);
-  const products = productsState.products;
+  const { products } = useProductsStore();
 
   return (
     <div className="clothings">

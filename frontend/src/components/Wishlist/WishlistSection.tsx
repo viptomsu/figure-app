@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { HiArrowNarrowLeft } from "react-icons/hi";
-import { RootState } from "../../redux/reducers";
-import { useSelector, useDispatch } from "react-redux";
-import { AddToCart, MakeIsInCartTrue } from "../../redux/actions/cartActions";
-import { RemoveFromWishlist } from "../../redux/actions/wishlistActions";
-import { MakeIsInWishlistFalse } from "../../redux/actions/productActions";
+import { useCartStore, useWishlistStore, useProductsStore } from "../../stores";
 import { toast } from "react-toastify";
 import { formatCurrency } from "../../utils/currencyFormatter"; // Hàm format tiền tệ
 import { Modal } from "react-bootstrap"; // Import Modal
@@ -15,11 +11,10 @@ import ProductInfo from "../ProductDetails/PrimaryInfo/ProductInfo"; // Componen
 const WishlistSection: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const cartState = useSelector((state: RootState) => state.cart);
-  const wishlistState = useSelector((state: RootState) => state.wishlist);
-  const cart = cartState.cart;
-  const wishlist = wishlistState.wishlist;
-  const dispatch = useDispatch();
+  
+  const { cart, addToCart, makeIsInCartTrue } = useCartStore();
+  const { wishlist, removeFromWishlist } = useWishlistStore();
+  const { makeIsInWishlistFalse } = useProductsStore();
 
   const handleClose = () => setShowModal(false);
   const handleShow = (product: any) => {
@@ -86,10 +81,8 @@ const WishlistSection: React.FC = () => {
                                   onClick={(
                                     e: React.MouseEvent<HTMLButtonElement>
                                   ) => {
-                                    dispatch(RemoveFromWishlist(product._id));
-                                    dispatch(
-                                      MakeIsInWishlistFalse(product._id)
-                                    );
+                                    removeFromWishlist(product._id);
+                                    makeIsInWishlistFalse(product._id);
                                     toast.error(
                                       '"' +
                                         product.productName +
@@ -189,8 +182,8 @@ const WishlistSection: React.FC = () => {
                                       if (product.variations.length > 0) {
                                         handleShow(product); // Hiển thị modal nếu có variations
                                       } else {
-                                        dispatch(AddToCart(product));
-                                        dispatch(MakeIsInCartTrue(product._id));
+                                        addToCart(product);
+                                        makeIsInCartTrue(product._id);
                                         toast.success(
                                           '"' +
                                             product.productName +

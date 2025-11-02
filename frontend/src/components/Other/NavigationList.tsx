@@ -4,21 +4,17 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { CgMenuGridO } from "react-icons/cg";
 import { FiBarChart2 } from "react-icons/fi";
 import { BsHeart } from "react-icons/bs";
-import {
-  ShowSidebarCategories,
-  ShowSidebarMenu,
-} from "../../redux/actions/primaryActions";
-import { useDispatch } from "react-redux";
+import { useUIStore } from "../../stores";
 
 const NavigationList: React.FC = () => {
-  const dispatch = useDispatch();
+  const { setShowSidebarCategories, setShowSidebarMenu } = useUIStore();
 
   const handleShowMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
-    dispatch(ShowSidebarMenu(true));
+    setShowSidebarMenu(true);
   };
 
   const handleShowCategories = (e: React.MouseEvent<HTMLButtonElement>) => {
-    dispatch(ShowSidebarCategories(true));
+    setShowSidebarCategories(true);
   };
 
   return (

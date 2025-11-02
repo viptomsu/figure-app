@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { VscChevronRight } from "react-icons/vsc";
-import { ShowSidebarCategories } from "../../../redux/actions/primaryActions";
-import { useDispatch } from "react-redux";
+import { useUIStore } from "../../../stores";
 import { getAllCategories } from "../../../services/categoryService"; // Import hàm gọi API
 
 const Department: React.FC = () => {
-  const dispatch = useDispatch();
+  const { setShowSidebarCategories } = useUIStore();
   const [categories, setCategories] = useState<any[]>([]); // State để lưu dữ liệu danh mục
   const [loading, setLoading] = useState<boolean>(true); // State để kiểm tra trạng thái loading
 
@@ -29,7 +28,7 @@ const Department: React.FC = () => {
   const handleCloseCategories = (
     e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLAnchorElement>
   ) => {
-    dispatch(ShowSidebarCategories(false));
+    setShowSidebarCategories(false);
   };
 
   if (loading) {

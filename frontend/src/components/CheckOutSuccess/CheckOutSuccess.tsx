@@ -4,18 +4,14 @@ import Checkout from "../../assets/img/checkout.png";
 import { getAllOrders } from "../../services/orderService"; // Giả định API này đã có sẵn
 import { formatCurrency } from "../../utils/currencyFormatter";
 import { sendOrderConfirmationEmail } from "../../services/emailService";
-import { useSelector } from "react-redux"; // Import useSelector từ Redux
-import { RootState } from "../../redux/reducers"; // Import RootState để lấy kiểu của Redux store
+import { useUserStore } from "../../stores";
 
 const CheckOutSuccess: React.FC = () => {
   const location = useLocation();
   const history = useHistory();
 
-  // Lấy trạng thái người dùng từ Redux
-  const user = useSelector((state: RootState) => state.user.user);
-  const isUserLoggedIn = useSelector(
-    (state: RootState) => state.user.isAuthenticated
-  );
+  // Lấy trạng thái người dùng từ Zustand
+  const { user, isAuthenticated: isUserLoggedIn } = useUserStore();
 
   // Lấy orderCode từ state được truyền qua khi điều hướng
   const orderCode: string | undefined = location.state

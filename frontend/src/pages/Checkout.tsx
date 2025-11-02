@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import ShippingInfo from "../components/Checkout/ShippingInfo/ShippingInfo";
 import Payment from "../components/Checkout/Payment/Payment";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../redux/reducers/index";
+import { useUserStore, useCartStore } from "../stores";
 import { getAddressBooksByUserId } from "../services/addressBookService";
 import {
   Typography,
@@ -30,10 +29,9 @@ const Checkout: React.FC = () => {
   const [couponCode, setCouponCode] = useState<string>(""); // State lưu mã giảm giá
   const [discountAmount, setDiscountAmount] = useState<number>(0); // State lưu số tiền giảm giá
   const history = useHistory();
-  const cartState = useSelector((state: RootState) => state.cart);
-  const cart = cartState.cart;
-  const user = useSelector((state: RootState) => state.user.user); // Lấy user từ Redux store
-  const dispatch = useDispatch();
+  
+  const { cart } = useCartStore();
+  const { user } = useUserStore();
 
   // Fetch địa chỉ giao hàng từ API
   useEffect(() => {

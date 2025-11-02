@@ -3,21 +3,8 @@ import { SocialMediaData } from "../../Other/SocialMediaData";
 import { FiBarChart2 } from "react-icons/fi";
 import { BsHeart } from "react-icons/bs";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  AddToCart,
-  MakeIsInCartTrue,
-} from "../../../redux/actions/cartActions";
-import {
-  AddToWishlist,
-  MakeIsInWishlistTrueInWishlist,
-} from "../../../redux/actions/wishlistActions";
-import {
-  AddToCompare,
-  MakeIsInCompareTrueInCompare,
-} from "../../../redux/actions/compareActions";
+import { useCartStore, useWishlistStore, useCompareStore } from "../../../stores";
 import { toast } from "react-toastify";
-import { RootState } from "../../../redux/reducers/index";
 import Rating from "../../Other/Rating";
 import { formatCurrency } from "../../../utils/currencyFormatter";
 
@@ -34,13 +21,10 @@ const ProductInfo: React.FC<any> = ({ product }) => {
   const [selectedVariation, setSelectedVariation] = useState<Variation | null>(
     product?.variations ? product?.variations[0] : null
   ); // Biến thể được chọn mặc định là cái đầu tiên
-  const cartState = useSelector((state: RootState) => state.cart);
-  const wishlistState = useSelector((state: RootState) => state.wishlist);
-  const compareState = useSelector((state: RootState) => state.compare);
-  const cart = cartState.cart;
-  const wishlist = wishlistState.wishlist;
-  const compare = compareState.compare;
-  const dispatch = useDispatch();
+  
+  const { cart, addToCart, makeIsInCartTrue } = useCartStore();
+  const { wishlist, addToWishlist } = useWishlistStore();
+  const { compare, addToCompare } = useCompareStore();
 
   cart.map(
     (cartProduct: any) =>
@@ -177,14 +161,12 @@ const ProductInfo: React.FC<any> = ({ product }) => {
               }}
               title="Thêm vào giỏ hàng"
               onClick={() => {
-                dispatch(
-                  AddToCart({
-                    ...product,
-                    selectedAttribute: selectedVariation?.attributeValue, // Lưu giá trị biến thể được chọn
-                    selectedPrice: selectedVariation?.price, // Lưu giá của biến thể được chọn
-                  })
-                );
-                dispatch(MakeIsInCartTrue(product._id));
+                addToCart({
+                  ...product,
+                  selectedAttribute: selectedVariation?.attributeValue, // Lưu giá trị biến thể được chọn
+                  selectedPrice: selectedVariation?.price, // Lưu giá của biến thể được chọn
+                });
+                makeIsInCartTrue(product._id);
                 toast.success(
                   '"' +
                     product.productName +
@@ -214,8 +196,7 @@ const ProductInfo: React.FC<any> = ({ product }) => {
                   type="button"
                   title="Thêm vào Wishlist"
                   onClick={() => {
-                    dispatch(AddToWishlist(product));
-                    dispatch(MakeIsInWishlistTrueInWishlist(product._id));
+                    addToWishlist(product);
                     toast.success(
                       '"' + product.productName + '" đã được thêm vào Wishlist.'
                     );
@@ -240,8 +221,7 @@ const ProductInfo: React.FC<any> = ({ product }) => {
                   type="button"
                   title="Thêm vào so sánh"
                   onClick={() => {
-                    dispatch(AddToCompare(product));
-                    dispatch(MakeIsInCompareTrueInCompare(product._id));
+                    addToCompare(product);
                     toast.success(
                       '"' + product.productName + '" đã được thêm vào so sánh.'
                     );

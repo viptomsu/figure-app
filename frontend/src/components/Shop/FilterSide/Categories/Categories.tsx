@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { SortByCategory } from "../../../../redux/actions/productActions";
-import { GetTitle, IsLoading } from "../../../../redux/actions/primaryActions";
+import { useUIStore, useProductsStore } from "../../../../stores";
 import { getAllCategories } from "../../../../services/categoryService";
 
 interface CategoriesProps {
@@ -13,9 +11,10 @@ const Categories: React.FC<CategoriesProps> = ({
   setSelectedCategory,
   selectedCategory,
 }) => {
-  const dispatch = useDispatch();
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { setTitle, setIsLoading } = useUIStore();
+  const { sortByCategory } = useProductsStore();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -37,13 +36,13 @@ const Categories: React.FC<CategoriesProps> = ({
     if (selectedCategory) {
       const category = categories.find((cat) => cat._id === selectedCategory);
       if (category) {
-        dispatch(GetTitle(category.categoryName));
-        dispatch(SortByCategory(category.categoryName));
+        setTitle(category.categoryName);
+        sortByCategory(category.categoryName);
       }
     } else {
-      dispatch(GetTitle("Tất cả sản phẩm"));
+      setTitle("Tất cả sản phẩm");
     }
-  }, [selectedCategory, categories, dispatch]);
+  }, [selectedCategory, categories, setTitle, sortByCategory]);
 
   const handleCategoryClick = (
     categoryId: string | null,
@@ -55,13 +54,13 @@ const Categories: React.FC<CategoriesProps> = ({
     setSelectedCategory(categoryId);
 
     if (categoryId === null) {
-      dispatch(GetTitle("Tất cả sản phẩm"));
+      setTitle("Tất cả sản phẩm");
     } else if (categoryName) {
-      dispatch(GetTitle(categoryName));
-      dispatch(SortByCategory(categoryName));
+      setTitle(categoryName);
+      sortByCategory(categoryName);
     }
 
-    dispatch(IsLoading(true));
+    setIsLoading(true);
   };
 
   return (

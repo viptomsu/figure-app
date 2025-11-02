@@ -5,13 +5,7 @@ import Actions from "./HeaderTop/Actions";
 import Department from "./HeaderBottom/Department";
 import LangAndMonetaryUnit from "./HeaderBottom/LangAndMonetaryUnit";
 import { NavLinksData } from "./HeaderBottom/HeaderBottomData";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  ShowSidebarMenu,
-  ShowSidebarCategories,
-  ShowSearchArea,
-} from "../../redux/actions/primaryActions";
-import { RootState } from "../../redux/reducers";
+import { useUIStore } from "../../stores";
 
 const Header: React.FC = () => {
   const [showDepartments, setShowDepartments] = useState<boolean>(false);
@@ -19,16 +13,19 @@ const Header: React.FC = () => {
     window.innerWidth > 992
   );
 
-  const primaryState = useSelector((state: RootState) => state.primary);
-  const showCategories = primaryState.showSidebarCategories;
-  const showMenu = primaryState.showSidebarMenu;
-  const showSearch = primaryState.showSearchArea;
-  const dispatch = useDispatch();
+  const {
+    showSidebarCategories: showCategories,
+    showSidebarMenu: showMenu,
+    showSearchArea: showSearch,
+    setShowSidebarMenu,
+    setShowSidebarCategories,
+    setShowSearchArea,
+  } = useUIStore();
 
   const handleCloseMenu = (
     e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLAnchorElement>
   ) => {
-    dispatch(ShowSidebarMenu(false));
+    setShowSidebarMenu(false);
   };
 
   // Theo dõi kích thước màn hình
@@ -36,7 +33,7 @@ const Header: React.FC = () => {
     const handleResize = () => {
       const isLarge = window.innerWidth > 992;
       setIsLargeScreen(isLarge);
-      dispatch(ShowSearchArea(isLarge));
+      setShowSearchArea(isLarge);
     };
 
     window.addEventListener("resize", handleResize);
@@ -45,14 +42,14 @@ const Header: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [dispatch]);
+  }, [setShowSearchArea]);
 
   // Ẩn Search nếu là mobile khi mount
   useEffect(() => {
     if (window.innerWidth < 992) {
-      dispatch(ShowSearchArea(false));
+      setShowSearchArea(false);
     }
-  }, [dispatch]);
+  }, [setShowSearchArea]);
 
   // Lắng nghe scroll khi màn hình lớn
   useEffect(() => {
@@ -137,7 +134,7 @@ const Header: React.FC = () => {
                       className={link.class}
                       onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                         window.location.href = "/";
-                        dispatch(ShowSidebarMenu(false));
+                        setShowSidebarMenu(false);
                       }}
                     >
                       {link.icon}
@@ -169,8 +166,8 @@ const Header: React.FC = () => {
       <div
         className={showMenu || showCategories ? "dark-bg-color" : "d-none"}
         onClick={() => {
-          dispatch(ShowSidebarMenu(false));
-          dispatch(ShowSidebarCategories(false));
+          setShowSidebarMenu(false);
+          setShowSidebarCategories(false);
         }}
       ></div>
     </div>
