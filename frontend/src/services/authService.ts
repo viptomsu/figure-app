@@ -2,7 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 // Lấy URL của Backend từ file .env
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Hàm đăng nhập người dùng
 export const login = async (username: any, password: any): Promise<any> => {

@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import Search from "./HeaderTop/Search";
 import Actions from "./HeaderTop/Actions";
 import Department from "./HeaderBottom/Department";
 import LangAndMonetaryUnit from "./HeaderBottom/LangAndMonetaryUnit";
 import { NavLinksData } from "./HeaderBottom/HeaderBottomData";
 import { useUIStore } from "../../stores";
+import { useIsClient } from "../../hooks/useIsClient";
 
 const Header: React.FC = () => {
   const [showDepartments, setShowDepartments] = useState<boolean>(false);
-  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(
-    window.innerWidth > 992
-  );
+  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false);
+  const isClient = useIsClient();
 
   const {
     showSidebarCategories: showCategories,
@@ -30,6 +30,8 @@ const Header: React.FC = () => {
 
   // Theo dõi kích thước màn hình
   useEffect(() => {
+    if (!isClient) return;
+    
     const handleResize = () => {
       const isLarge = window.innerWidth > 992;
       setIsLargeScreen(isLarge);
@@ -42,18 +44,18 @@ const Header: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [setShowSearchArea]);
+  }, [setShowSearchArea, isClient]);
 
   // Ẩn Search nếu là mobile khi mount
   useEffect(() => {
-    if (window.innerWidth < 992) {
+    if (!isClient || window.innerWidth < 992) {
       setShowSearchArea(false);
     }
-  }, [setShowSearchArea]);
+  }, [setShowSearchArea, isClient]);
 
   // Lắng nghe scroll khi màn hình lớn
   useEffect(() => {
-    if (window.innerWidth <= 992) return;
+    if (!isClient || window.innerWidth <= 992) return;
 
     const handleScroll = () => {
       if (window.scrollY > 150) {
@@ -69,7 +71,7 @@ const Header: React.FC = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [isClient]);
 
   return (
     <div className="header">
@@ -133,7 +135,6 @@ const Header: React.FC = () => {
                       to={link.href}
                       className={link.class}
                       onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                        window.location.href = "/";
                         setShowSidebarMenu(false);
                       }}
                     >

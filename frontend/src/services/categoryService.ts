@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Lấy URL của Backend từ file .env
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Hàm lấy token từ localStorage
 const getToken = (): string | null => {

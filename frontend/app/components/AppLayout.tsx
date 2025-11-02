@@ -1,0 +1,36 @@
+'use client'
+
+import React from 'react'
+import Header from '../../src/components/Header/Header'
+import Footer from '../../src/components/Footer/Footer'
+import BackToTopBtn from '../../src/components/Other/BackToTopBtn'
+import NavigationList from '../../src/components/Other/NavigationList'
+import { ToastContainer } from 'react-toastify'
+
+interface AppLayoutProps {
+  children: React.ReactNode
+}
+
+const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
+  return (
+    <div className="App">
+      <header>
+        <Header />
+      </header>
+
+      <main>
+        {children}
+      </main>
+
+      <footer>
+        <Footer />
+      </footer>
+
+      <BackToTopBtn />
+      <NavigationList />
+      <ToastContainer position="top-right" autoClose={4000} closeOnClick />
+    </div>
+  )
+}
+
+export default AppLayout

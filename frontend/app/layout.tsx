@@ -1,0 +1,55 @@
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import 'react-toastify/dist/ReactToastify.css'
+import 'owl.carousel/dist/assets/owl.carousel.css'
+import 'owl.carousel/dist/assets/owl.theme.default.css'
+import 'swiper/swiper.scss'
+import 'swiper/components/pagination/pagination.scss'
+import 'swiper/components/navigation/navigation.scss'
+import 'swiper/components/scrollbar/scrollbar.scss'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import '../src/scss/style.scss'
+import './globals.css'
+import AppLayout from './components/AppLayout'
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: 'VieFigure Store',
+  description: 'VieFigure E-Commerce Platform',
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <head>
+        {/* Google Fonts */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+          rel="stylesheet"
+        />
+        
+        {/* jQuery for legacy components */}
+        <script
+          src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+          crossOrigin="anonymous"
+        />
+        
+        {/* Font Awesome */}
+        <script
+          src="https://kit.fontawesome.com/b7e00c266a.js"
+          crossOrigin="anonymous"
+        />
+      </head>
+      <body className={inter.className}>
+        <AppLayout>
+          {children}
+        </AppLayout>
+      </body>
+    </html>
+  )
+}
