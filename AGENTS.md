@@ -1,115 +1,90 @@
 # Figure E-Commerce Platform
 
-## Project Overview
-Figure is a full-stack e-commerce platform with three main applications:
-- **Backend** (`/backend`): Node.js/Express API server with MongoDB database
-- **Frontend** (`/frontend`): Next.js 16 TypeScript customer-facing store
-- **Admin** (`/admin`): React JavaScript admin dashboard
+Full-stack e-commerce platform with three applications:
+
+- **Backend** (Port 8080): Node.js/Express API with MongoDB
+- **Frontend** (Port 3000): Next.js 16 TypeScript store
+- **Admin** (Port 3001): React 16 JavaScript dashboard
 
 ## Quick Start
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd figure-app
-
-# Install dependencies for all applications
 npm run install:all
-
-# Set up environment variables
-# Backend: Copy backend/.env.sample to backend/.env
-# Frontend: Copy frontend/.env.sample to frontend/.env
-# Admin: Copy admin/.env.sample to admin/.env
-
-# Start all development servers
+# Set up environment variables for each app
 npm run dev:all
 ```
 
-## Application Structure
-
-### Backend (Port 5001)
-- **Technology**: Node.js, Express, MongoDB, Mongoose
-- **Authentication**: JWT with refresh tokens
-- **File Processing**: Multer with Sharp
-- **Payment**: VNPay integration
-- **Documentation**: See [backend/README.md](./backend/README.md)
-
-### Frontend (Port 3000)
-- **Technology**: Next.js 16, TypeScript, Tailwind CSS
-- **UI Libraries**: Ant Design 5, ShadCN UI
-- **State Management**: Zustand
-- **Payment**: PayPal integration
-- **Documentation**: See [frontend/README.md](./frontend/README.md)
-
-### Admin (Port 3001)
-- **Technology**: React 16, JavaScript, Ant Design 4
-- **State Management**: Redux with Redux Saga
-- **Charts**: Chart.js, ApexCharts
-- **Rich Text**: TinyMCE, React Quill
-- **Documentation**: See [admin/README.md](./admin/README.md)
-
-## Common Development Commands
+## Common Commands
 
 ```bash
 # Backend
-cd backend
-npm run dev          # Start with nodemon
-npm start            # Production start
+cd backend && npm run dev
 
-# Frontend
-cd frontend
-npm run dev          # Development server
-npm run build        # Production build
-npm run start        # Start production server
-npm run lint         # Run linter
+# Frontend  
+cd frontend && npm run dev
 
 # Admin
-cd admin
-npm start            # Development server
-npm run build        # Production build
-npm test             # Run tests
+cd admin && npm start
 ```
 
 ## Code Conventions
 
+### Comment Guidelines
+
+**AVOID these comments:**
+```javascript
+// state for loading
+const [loading, setLoading] = useState(false);
+
+// increment counter
+setCount(count + 1);
+```
+
+**USE comments for:**
+- Complex business logic
+- Non-obvious implementation details
+- Workarounds or temporary solutions
+- API integration notes
+
+**Good example:**
+```javascript
+// Cache user session to reduce API calls during checkout
+// Expire after 30 minutes to ensure fresh data
+const sessionData = cache.get(`session_${userId}`);
+```
+
 ### General
+
 - Use meaningful variable and function names
-- Follow consistent indentation (2 spaces for JavaScript/TypeScript)
-- Add comments for complex logic
+- 2 spaces indentation for JavaScript/TypeScript
 - Keep functions small and focused
 
 ### Backend
+
 - ES6 modules (`import/export`)
 - Async/await for async operations
 - Express route handlers with try-catch error handling
-- Mongoose schemas with validation
 
 ### Frontend
+
 - TypeScript for type safety
 - Functional components with hooks
 - Tailwind CSS for styling
 - Zustand for state management
 
 ### Admin
+
 - JavaScript ES6+
-- Class and functional components mixed
 - Redux Saga for side effects
 - Ant Design components for UI
 
-## Security Considerations
+## Security
+
 - JWT tokens with refresh mechanism
-- CORS configuration for allowed origins
-- Input validation with Mongoose schemas
-- File upload restrictions
+- Input validation with schemas
 - Environment variable management
 
 ## Deployment
-- **Backend**: Vercel serverless functions
-- **Frontend**: Vercel static hosting
-- **Admin**: Vercel static hosting
-- **Database**: MongoDB Atlas
 
-## Repository Links
-- [Backend Documentation](./backend/README.md)
-- [Frontend Documentation](./frontend/README.md)
-- [Admin Documentation](./admin/README.md)
+- All apps deploy to Vercel
+- Database: MongoDB Atlas
