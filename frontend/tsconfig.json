@@ -30,24 +30,6 @@
       "@/*": [
         "./src/*"
       ],
-      "@/components/*": [
-        "./src/components/*"
-      ],
-      "@/pages/*": [
-        "./src/pages/*"
-      ],
-      "@/services/*": [
-        "./src/services/*"
-      ],
-      "@/utils/*": [
-        "./src/utils/*"
-      ],
-      "@/stores/*": [
-        "./src/stores/*"
-      ],
-      "@/types/*": [
-        "./src/types/*"
-      ]
     }
   },
   "include": [

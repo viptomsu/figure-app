@@ -1,13 +1,11 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import Link from "next/link"
 import RegisterSection from '@/components/Account/RegisterSection'
 
 export default function RegisterPage() {
-    useEffect(() => {
-        window.scrollTo(0, 0)
-    }, [])
+    
 
     return (
         <div className="register-content">

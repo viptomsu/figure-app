@@ -1,13 +1,11 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import Link from "next/link"
 import LoginSection from '@/components/Account/LoginSection'
 
 export default function LoginPage() {
-    useEffect(() => {
-        window.scrollTo(0, 0)
-    }, [])
+    
 
     return (
         <div className="login-content">

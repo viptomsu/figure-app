@@ -25,7 +25,6 @@ export default function ProductDetailsPage() {
       }
     }
 
-    window.scrollTo(0, 0)
     fetchProduct()
   }, [propsId])
 

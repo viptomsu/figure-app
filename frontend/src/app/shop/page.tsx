@@ -1,13 +1,11 @@
 'use client'
 
-import React, { useEffect } from "react"
+import React from "react"
 import Link from "next/link"
 import Shop from "@/components/Shop"
 
 export default function ShopPage() {
-    useEffect(() => {
-        window.scrollTo(0, 0)
-    }, [])
+    
 
     return (
         <div className="shop-content">

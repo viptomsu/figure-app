@@ -1,34 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    formats: ['image/webp', 'image/avif'],
-    remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '8080',
-        pathname: '/**',
-      },
-    ],
-  },
-  experimental: {
-    optimizePackageImports: ['antd', '@ant-design/icons'],
-  },
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
-  },
-  webpack: (config: any) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': './src',
-    };
-    return config;
-  },
-}
+	images: {
+		formats: ["image/webp", "image/avif"],
+		remotePatterns: [
+			{
+				protocol: "http",
+				hostname: "localhost",
+				port: "8080",
+				pathname: "/**",
+			},
+		],
+	},
+	experimental: {
+		optimizePackageImports: ["antd", "@ant-design/icons"],
+	},
+};
 
-export default nextConfig
+export default nextConfig;

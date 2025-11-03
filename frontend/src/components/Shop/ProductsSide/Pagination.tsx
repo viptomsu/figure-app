@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { VscChevronRight, VscChevronLeft } from "react-icons/vsc";
 
 const Pagination: React.FC<any> = ({
@@ -13,10 +13,7 @@ const Pagination: React.FC<any> = ({
     numOfPages.push(i);
   }
 
-  // updating current page when the button is clicked
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [currentPage]);
+  
 
   return (
     <nav
