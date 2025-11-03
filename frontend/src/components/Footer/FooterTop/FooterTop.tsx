@@ -1,7 +1,7 @@
 import React from "react";
 import ContactUs from "./ContactUs";
 import { LinksData } from "./FooterTopData";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 const FooterTop: React.FC = () => {
   return (
@@ -24,7 +24,7 @@ const FooterTop: React.FC = () => {
                     <ul className="links m-0">
                       {item.links.map((linkItem) => (
                         <li key={linkItem.id}>
-                          <Link to={linkItem.href}>{linkItem.title}</Link>
+                          <Link href={linkItem.href}>{linkItem.title}</Link>
                         </li>
                       ))}
                     </ul>

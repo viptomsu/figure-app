@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllBrands } from "../../../services/brandService"; // Import API call function
+import { getAllBrands } from "@/services/brandService"; // Import API call function
 
 const Brands: React.FC = () => {
   const [brands, setBrands] = useState<any[]>([]); // State to store brand data

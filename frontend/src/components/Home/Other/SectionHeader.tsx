@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ISectionHeaderProps } from '../../../types/types';
+import Link from 'next/link';
+import { ISectionHeaderProps } from '@/types/types';
 
 const SectionHeader: React.FC<ISectionHeaderProps> = ({ title }) => {
     return (
@@ -11,7 +11,7 @@ const SectionHeader: React.FC<ISectionHeaderProps> = ({ title }) => {
                 </div>
             </div>
             <div className="right-side">
-                <Link to="/shop">Xem tất cả</Link>
+                <Link href="/shop">Xem tất cả</Link>
             </div>
         </div>
     )

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { VscChevronRight } from "react-icons/vsc";
-import { useUIStore } from "../../../stores";
-import { getAllCategories } from "../../../services/categoryService"; // Import hàm gọi API
+import { useUIStore } from "@/stores";
+import { getAllCategories } from "@/services/categoryService"; // Import hàm gọi API
 
 const Department: React.FC = () => {
   const { setShowSidebarCategories } = useUIStore();

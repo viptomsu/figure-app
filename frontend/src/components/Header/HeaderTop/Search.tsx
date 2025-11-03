@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { getAllProducts } from "../../../services/productService"; // Import hàm gọi API
-import { formatCurrency } from "../../../utils/currencyFormatter"; // Import hàm formatCurrency
-import Rating from "../../Other/Rating";
+import Link from "next/link";
+import { getAllProducts } from "@/services/productService"; // Import hàm gọi API
+import { formatCurrency } from "@/utils/currencyFormatter"; // Import hàm formatCurrency
+import Rating from "@/components/Other/Rating";
 
 const Search: React.FC = () => {
   const [searchValue, setSearchValue] = useState<string>("");

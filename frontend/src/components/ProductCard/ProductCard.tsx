@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FiBarChart2 } from "react-icons/fi";
 import { BsHeart, BsBag } from "react-icons/bs";
 import { ImEye } from "react-icons/im";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Modal } from "react-bootstrap";
 import ProductInfo from "../ProductDetails/PrimaryInfo/ProductInfo";
 import ImgSlider from "../ProductDetails/PrimaryInfo/ImgSlider";
@@ -74,7 +74,7 @@ const ProductCard: React.FC<any> = ({ product }) => {
 
           {/* ======= Ảnh ======= */}
           <div className="product-img">
-            <Link to={`/product-details/${product._id}`}>
+            <Link href={`/products/${product._id}`}>
               {defaultImage ? (
                 <img src={defaultImage} alt={product.productName} />
               ) : (
@@ -88,7 +88,7 @@ const ProductCard: React.FC<any> = ({ product }) => {
               <li>
                 {product.variations && product.variations.length > 0 ? (
                   // Nếu sản phẩm có variations, nút sẽ là "Xem chi tiết"
-                  <Link to={`/product-details/${product._id}`}>
+                  <Link href={`/products/${product._id}`}>
                     <button
                       type="button"
                       title="Xem chi tiết"
@@ -233,7 +233,7 @@ const ProductCard: React.FC<any> = ({ product }) => {
           }}
         >
           <h6>
-            <Link to={`/product-details/${product._id}`}>
+            <Link href={`/products/${product._id}`}>
               {product.productName}
             </Link>
           </h6>

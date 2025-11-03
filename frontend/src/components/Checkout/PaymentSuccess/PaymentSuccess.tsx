@@ -1,6 +1,6 @@
 import React from "react";
 import { HiArrowNarrowLeft } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 interface IProps {
   orderCode: string;
@@ -30,7 +30,7 @@ const PaymentSuccess: React.FC<IProps> = (props) => {
             </p>
           </div>
           <div className="back-to-shop-btn">
-            <Link to="/shop" className="d-flex align-items-center">
+            <Link href="/shop" className="d-flex align-items-center">
               <span>
                 <HiArrowNarrowLeft />
               </span>

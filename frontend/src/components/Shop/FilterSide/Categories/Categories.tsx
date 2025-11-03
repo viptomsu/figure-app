@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useUIStore, useProductsStore } from "../../../../stores";
-import { getAllCategories } from "../../../../services/categoryService";
+import { useUIStore, useProductsStore } from "@/stores";
+import { getAllCategories } from "@/services/categoryService";
 
 interface CategoriesProps {
   setSelectedCategory: (categoryId: string | null) => void;

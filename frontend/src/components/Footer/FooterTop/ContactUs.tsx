@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { SocialMediaData } from "../../Other/SocialMediaData";
+import Link from "next/link";
+import { SocialMediaData } from "@/components/Other/SocialMediaData";
 
 const ContactUs: React.FC = () => {
   return (
@@ -17,7 +17,7 @@ const ContactUs: React.FC = () => {
           <p>
             Ba Vì, Hà Nội
             <br />
-            <Link to="#/">vietducforindiv@gmail.com</Link>
+            <Link href="#/">vietducforindiv@gmail.com</Link>
           </p>
         </div>
         {/* ======= Content - social media ======= */}
@@ -25,7 +25,7 @@ const ContactUs: React.FC = () => {
           <ul>
             {SocialMediaData.map((item) => (
               <li key={item.id}>
-                <Link to={item.href} className={item.class}>
+                <Link href={item.href} className={item.class}>
                   {item.icon}
                 </Link>
               </li>

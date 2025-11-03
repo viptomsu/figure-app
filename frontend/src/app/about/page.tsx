@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react"
 import Link from "next/link"
-import NewSection from "../../../src/components/About/OurTeam/OurTeam"
+import NewSection from "@/components/About/OurTeam/OurTeam"
 
 export default function AboutPage() {
   useEffect(() => {

@@ -2,7 +2,7 @@ import React from "react";
 import ProductCard from "../../ProductCard/ProductCard";
 import Pagination from "./Pagination";
 import { RiEqualizerLine } from "react-icons/ri";
-import { useUIStore } from "../../../stores";
+import { useUIStore } from "@/stores";
 
 const ProductsSide: React.FC<any> = ({
   products,

@@ -1,7 +1,7 @@
 import React from "react";
 import Slider from "./Slider";
-import { Link } from "react-router-dom";
-import { IBannerRightDataTypes } from "../../../types/types";
+import Link from "next/link";
+import { IBannerRightDataTypes } from "@/types/types";
 
 const Banner: React.FC = () => {
   const BannerRightData: IBannerRightDataTypes[] = [
@@ -25,7 +25,7 @@ const Banner: React.FC = () => {
           <div className="banner-right-imgs">
             {BannerRightData.map((item) => (
               <div key={item.id} className="banner-img-wrapper">
-                <Link to="/shop">
+                <Link href="/shop">
                   <img
                     src={item.img}
                     alt="banner-img"

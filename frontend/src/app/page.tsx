@@ -3,14 +3,14 @@
 import React, { useState, useEffect } from "react"
 import { Button, message } from "antd"
 import { MessageOutlined } from "@ant-design/icons"
-import Banner from "../../src/components/Home/Banner/Banner"
-import Advantages from "../../src/components/Home/Advantages/Advantages"
-import DealOfTheDay from "../../src/components/Home/DealOfTheDay/DealOfTheDay"
-import HomeAds1 from "../../src/components/Home/Ads/HomeAds1"
-import Categories from "../../src/components/Home/Categories/Categories"
-import HomeAds2 from "../../src/components/Home/Ads/HomeAds2"
-import ChatBox from "../../src/components/Home/Chat/ChatBox"
-import { createChatRoom } from "../../src/services/chatRoomService"
+import Banner from "@/components/Home/Banner/Banner"
+import Advantages from "@/components/Home/Advantages/Advantages"
+import DealOfTheDay from "@/components/Home/DealOfTheDay/DealOfTheDay"
+import HomeAds1 from "@/components/Home/Ads/HomeAds1"
+import Categories from "@/components/Home/Categories/Categories"
+import HomeAds2 from "@/components/Home/Ads/HomeAds2"
+import ChatBox from "@/components/Home/Chat/ChatBox"
+import { createChatRoom } from "@/services/chatRoomService"
 
 export default function HomePage() {
   const [showChatBox, setShowChatBox] = useState(false)

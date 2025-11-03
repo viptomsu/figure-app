@@ -1,10 +1,10 @@
 'use client'
 
 import React from 'react'
-import Header from '../../src/components/Header/Header'
-import Footer from '../../src/components/Footer/Footer'
-import BackToTopBtn from '../../src/components/Other/BackToTopBtn'
-import NavigationList from '../../src/components/Other/NavigationList'
+import Header from '@/components/Header/Header'
+import Footer from '@/components/Footer/Footer'
+import BackToTopBtn from '@/components/Other/BackToTopBtn'
+import NavigationList from '@/components/Other/NavigationList'
 import { ToastContainer } from 'react-toastify'
 
 interface AppLayoutProps {

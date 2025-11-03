@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+// @ts-ignore
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
@@ -14,7 +16,7 @@ toast.configure();
 
 const LoginSection: React.FC = () => {
   const [loginLoading, setLoginLoading] = useState(false);
-  const history = useHistory();
+  const router = useRouter();
   const { loginSuccess } = useUserStore(); // Use Zustand store
 
   const validationSchema = Yup.object().shape({
@@ -53,7 +55,7 @@ const LoginSection: React.FC = () => {
       }
 
       toast.success("Đăng nhập thành công");
-      history.push("/");
+      router.push("/");
     } catch (error) {
       toast.error(
         "Đăng nhập không thành công. Vui lòng kiểm tra lại thông tin."
@@ -69,10 +71,10 @@ const LoginSection: React.FC = () => {
         <div className="row">
           <div className="col-xl-6 col-lg-6 col-md-8 offset-xl-3 offset-lg-3 offset-md-2">
             <div className="links d-flex justify-content-center">
-              <Link to="/login" className="text-dark">
+              <Link href="/login" className="text-dark">
                 Đăng nhập
               </Link>
-              <Link to="/register" className="text-muted">
+              <Link href="/register" className="text-muted">
                 Đăng ký
               </Link>
             </div>
@@ -86,7 +88,7 @@ const LoginSection: React.FC = () => {
                     placeholder="Tên đăng nhập"
                     {...register("username")}
                   />
-                  {errors.username && <p>{errors.username.message}</p>}
+                  {errors.username && <p>{errors.username.message as string}</p>}
                 </div>
                 <div className="inputs-wrapper w-100">
                   <input
@@ -95,14 +97,14 @@ const LoginSection: React.FC = () => {
                     placeholder="Mật khẩu"
                     {...register("password")}
                   />
-                  {errors.password && <p>{errors.password.message}</p>}
+                  {errors.password && <p>{errors.password.message as string}</p>}
                 </div>
                 <div className="checkbox-input-wrapper d-flex justify-content-between">
                   <div className="d-flex">
                     <input type="checkbox" name="remember" id="remember" />
                     <label htmlFor="remember">Ghi nhớ tài khoản</label>
                   </div>
-                  <Link to="/forgot-password" className="text-muted">
+                  <Link href="/forgot-password" className="text-muted">
                     Quên mật khẩu?
                   </Link>
                 </div>

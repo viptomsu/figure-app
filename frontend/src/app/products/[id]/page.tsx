@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
 import { useParams } from 'next/navigation'
-import ProductDetailsContent from "../../../../src/components/ProductDetails/ProductDetailsContent"
-import RelatedProducts from "../../../../src/components/ProductDetails/RelatedProducts/RelatedProducts"
-import { getProductById } from "../../../../src/services/productService"
+import ProductDetailsContent from "@/components/ProductDetails/ProductDetailsContent"
+import RelatedProducts from "@/components/ProductDetails/RelatedProducts/RelatedProducts"
+import { getProductById } from "@/services/productService"
 
 export default function ProductDetailsPage() {
   const params = useParams()
@@ -16,7 +16,7 @@ export default function ProductDetailsPage() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const product = await getProductById(propsId)
+        const product = await getProductById(parseInt(propsId))
         setTheProduct(product)
       } catch (error) {
         console.error("Error fetching product:", error)

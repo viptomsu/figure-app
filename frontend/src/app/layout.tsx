@@ -8,7 +8,7 @@ import 'swiper/components/pagination/pagination.scss'
 import 'swiper/components/navigation/navigation.scss'
 import 'swiper/components/scrollbar/scrollbar.scss'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import '../src/scss/style.scss'
+import '../scss/style.scss'
 import './globals.css'
 import AppLayout from './components/AppLayout'
 

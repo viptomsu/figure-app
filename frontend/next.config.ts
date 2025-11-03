@@ -14,6 +14,21 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['antd', '@ant-design/icons'],
   },
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
+  },
+  webpack: (config: any) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': './src',
+    };
+    return config;
+  },
 }
 
 export default nextConfig

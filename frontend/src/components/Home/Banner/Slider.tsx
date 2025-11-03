@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { ISliderDataTypes } from "../../../types/types";
+import Link from "next/link";
+import { ISliderDataTypes } from "@/types/types";
 
 const Slider: React.FC = () => {
   const SliderData: ISliderDataTypes[] = [
@@ -39,7 +39,7 @@ const Slider: React.FC = () => {
           key={item.id}
           className={item.id === tabIndex ? "slide-item" : "d-none"}
         >
-          <Link to="/shop">
+          <Link href="/shop">
             <img
               src={item.img}
               alt="slide-img"

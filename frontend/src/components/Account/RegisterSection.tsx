@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+// @ts-ignore
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
@@ -9,7 +11,7 @@ import { signup } from "../../services/authService";
 
 const RegisterSection: React.FC = () => {
   const [signupLoading, setSignupLoading] = useState(false); // Trạng thái loading cho nút đăng ký
-  const history = useHistory();
+  const router = useRouter();
   // Schema xác thực đầu vào
   const validationSchema = Yup.object().shape({
     fullName: Yup.string().required("Tên đầy đủ là bắt buộc"),
@@ -48,7 +50,7 @@ const RegisterSection: React.FC = () => {
     try {
       const response = await signup(userInfo);
       toast.success("Đăng ký thành công. Vui lòng đăng nhập để tiếp tục.");
-      history.push("/login");
+      router.push("/login");
     } catch (error: any) {
       console.log(error);
       
@@ -63,10 +65,10 @@ const RegisterSection: React.FC = () => {
         <div className="row">
           <div className="col-xl-6 col-lg-6 col-md-8 offset-xl-3 offset-lg-3 offset-md-2">
             <div className="links d-flex justify-content-center">
-              <Link to="/login" className="text-muted">
+              <Link href="/login" className="text-muted">
                 Đăng nhập
               </Link>
-              <Link to="/register" className="text-dark">
+              <Link href="/register" className="text-dark">
                 Đăng ký
               </Link>
             </div>
@@ -80,7 +82,7 @@ const RegisterSection: React.FC = () => {
                     placeholder="Tên đầy đủ"
                     {...register("fullName")}
                   />
-                  {errors.fullName && <p>{errors.fullName.message}</p>}
+                  {errors.fullName && <p>{errors.fullName.message as string}</p>}
                 </div>
                 <div className="inputs-wrapper w-100">
                   <input
@@ -89,7 +91,7 @@ const RegisterSection: React.FC = () => {
                     placeholder="Tên đăng nhập"
                     {...register("username")}
                   />
-                  {errors.username && <p>{errors.username.message}</p>}
+                  {errors.username && <p>{errors.username.message as string}</p>}
                 </div>
                 <div className="inputs-wrapper w-100">
                   <input
@@ -98,7 +100,7 @@ const RegisterSection: React.FC = () => {
                     placeholder="Mật khẩu"
                     {...register("password")}
                   />
-                  {errors.password && <p>{errors.password.message}</p>}
+                  {errors.password && <p>{errors.password.message as string}</p>}
                 </div>
                 <div className="inputs-wrapper w-100">
                   <input
@@ -107,7 +109,7 @@ const RegisterSection: React.FC = () => {
                     placeholder="Email"
                     {...register("email")}
                   />
-                  {errors.password && <p>{errors.password.message}</p>}
+                  {errors.email && <p>{errors.email.message as string}</p>}
                 </div>
                 <div className="inputs-wrapper w-100">
                   <input
@@ -118,7 +120,7 @@ const RegisterSection: React.FC = () => {
                     }`}
                     {...register("phoneNumber")}
                   />
-                  {errors.phoneNumber && <p>{errors.phoneNumber.message}</p>}
+                  {errors.phoneNumber && <p>{errors.phoneNumber.message as string}</p>}
                 </div>
                 <div className="submit-btn login">
                   <input

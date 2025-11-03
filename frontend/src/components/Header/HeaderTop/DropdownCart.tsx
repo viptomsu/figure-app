@@ -1,8 +1,8 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { useCartStore, useUIStore, useUserStore, useProductsStore, useWishlistStore, useCompareStore } from "../../../stores";
+import Link from "next/link";
+import { useCartStore, useUIStore, useUserStore, useProductsStore, useWishlistStore, useCompareStore } from "@/stores";
 import { toast } from "react-toastify";
-import { formatCurrency } from "../../../utils/currencyFormatter"; // Hàm format tiền tệ
+import { formatCurrency } from "@/utils/currencyFormatter"; // Hàm format tiền tệ
 
 const DropdownCart: React.FC = () => {
   const { cart, removeFromCart } = useCartStore();
@@ -153,7 +153,7 @@ const DropdownCart: React.FC = () => {
               </div>
               <div className="links d-flex align-items-center justify-content-between">
                 <div className="view-cart-btn text-center">
-                  <Link to="/cart" onClick={closeDropdownCart}>
+                  <Link href="/cart" onClick={closeDropdownCart}>
                     Xem giỏ hàng
                   </Link>
                 </div>

@@ -1,16 +1,16 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect } from "react"
 import Link from "next/link"
-import RegisterSection from '../../../src/components/Account/RegisterSection'
+import Shop from "@/components/Shop"
 
-export default function RegisterPage() {
+export default function ShopPage() {
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
 
     return (
-        <div className="register-content">
+        <div className="shop-content">
             <div className="main">
                 {/* ===== breadcrumb ===== */}
                 <section id="breadcrumb">
@@ -20,13 +20,13 @@ export default function RegisterPage() {
                                 <Link href="/">Trang chủ</Link>
                             </li>
                             <li>
-                                <span>Đăng ký</span>
+                                <span>Cửa hàng</span>
                             </li>
                         </ul>
                     </div>
                 </section>
                 {/* ===== content ===== */}
-                <RegisterSection />
+                <Shop />
             </div>
         </div>
     )

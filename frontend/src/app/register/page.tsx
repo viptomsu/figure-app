@@ -2,15 +2,15 @@
 
 import React, { useEffect } from 'react'
 import Link from "next/link"
-import LoginSection from '../../../src/components/Account/LoginSection'
+import RegisterSection from '@/components/Account/RegisterSection'
 
-export default function LoginPage() {
+export default function RegisterPage() {
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
 
     return (
-        <div className="login-content">
+        <div className="register-content">
             <div className="main">
                 {/* ===== breadcrumb ===== */}
                 <section id="breadcrumb">
@@ -20,13 +20,13 @@ export default function LoginPage() {
                                 <Link href="/">Trang chủ</Link>
                             </li>
                             <li>
-                                <span>Đăng nhập</span>
+                                <span>Đăng ký</span>
                             </li>
                         </ul>
                     </div>
                 </section>
                 {/* ===== content ===== */}
-                <LoginSection />
+                <RegisterSection />
             </div>
         </div>
     )

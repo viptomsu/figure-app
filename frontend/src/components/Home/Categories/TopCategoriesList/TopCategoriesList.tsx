@@ -1,7 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Row, Col } from "react-bootstrap";
-import { ITopCategoriesData } from "../../../../types/types";
+import { ITopCategoriesData } from "@/types/types";
 
 interface TopCategoriesListProps {
   categories: ITopCategoriesData[];
@@ -23,7 +23,7 @@ const TopCategoriesList: React.FC<TopCategoriesListProps> = ({
         <Row>
           {categories.map((item) => (
             <Col key={item.id} xl={2} lg={4} md={4} sm={4} xs={6}>
-              <Link to={`/shop?categoryId=${item.id}`}>
+              <Link href={`/shop?categoryId=${item.id}`}>
                 <div className="category-item">
                   <div className="category-img">
                     <img

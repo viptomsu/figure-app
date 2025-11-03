@@ -1,16 +1,16 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
-import { useUserStore } from "../../../stores";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/stores";
 
 const LangAndMonetaryUnit: React.FC = () => {
-  const history = useHistory();
+  const router = useRouter();
 
   // Lấy trạng thái người dùng từ Zustand
   const { isAuthenticated: isUserLoggedIn } = useUserStore();
 
   const handleClick = () => {
     if (isUserLoggedIn) {
-      history.push("/history"); // Điều hướng tới trang lịch sử đặt hàng
+      router.push("/history"); // Điều hướng tới trang lịch sử đặt hàng
     }
   };
 

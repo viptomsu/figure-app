@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom"; // Thay useNavigate bằng useHistory
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { HiArrowNarrowLeft } from "react-icons/hi";
-import { formatCurrency } from "../../../utils/currencyFormatter";
+import { formatCurrency } from "@/utils/currencyFormatter";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,7 +24,7 @@ interface IProps {
 
 const Payment: React.FC<IProps> = (props) => {
   const { clearCart } = useCartStore();
-  const history = useHistory(); // Sử dụng useHistory cho react-router-dom v5
+  const router = useRouter(); // Sử dụng useRouter cho Next.js
   const [showCodContent, setShowCodContent] = useState<boolean>(true);
   const [showPaypalContent, setShowPaypalContent] = useState<boolean>(false);
   const [showVNPayContent, setShowVNPayContent] = useState<boolean>(false); // Thêm state cho VNPay
@@ -93,10 +94,7 @@ const Payment: React.FC<IProps> = (props) => {
         localStorage.removeItem("voucher");
       }
 
-      history.push({
-        pathname: "/checkoutsuccess",
-        state: { orderCode }, // Gửi orderCode qua location.state
-      });
+      router.push("/checkoutsuccess?orderCode=" + orderCode);
       clearCart();
     } catch (error: any) {
       console.error("Error creating order:", error);
@@ -446,7 +444,7 @@ const Payment: React.FC<IProps> = (props) => {
                     className="d-flex justify-content-between"
                   >
                     <div className="left">
-                      <Link to={`/product-details/${product._id}`}>
+                      <Link href={`/products/${product._id}`}>
                         <p className="title">{product.productName}</p>
                         <p className="count text-muted">
                           Số lượng:

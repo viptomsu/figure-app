@@ -5,15 +5,15 @@ import Award3 from '../../../assets/img/about/awards/award3.png';
 import Award4 from '../../../assets/img/about/awards/award4.png';
 import Award5 from '../../../assets/img/about/awards/award5.png';
 import OwlCarousel from 'react-owl-carousel';
-import { IAwards, IOwlCarouselOptionsAwards } from '../../../types/types';
+import { IAwards, IOwlCarouselOptionsAwards } from '@/types/types';
 
 const AwardsAndRecognition: React.FC = () => {
     const AwardsData: IAwards[] = [
-        { id: 1, img: Award1, class: "award-1" },
-        { id: 2, img: Award2, class: "award-2" },
-        { id: 3, img: Award3, class: "award-3" },
-        { id: 4, img: Award4, class: "award-4" },
-        { id: 5, img: Award5, class: "award-5" }
+        { id: 1, img: Award1.src, class: "award-1" },
+        { id: 2, img: Award2.src, class: "award-2" },
+        { id: 3, img: Award3.src, class: "award-3" },
+        { id: 4, img: Award4.src, class: "award-4" },
+        { id: 5, img: Award5.src, class: "award-5" }
     ];
 
     const Options: IOwlCarouselOptionsAwards = {

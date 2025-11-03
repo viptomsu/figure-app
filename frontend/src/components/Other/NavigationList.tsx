@@ -1,10 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { CgMenuGridO } from "react-icons/cg";
 import { FiBarChart2 } from "react-icons/fi";
 import { BsHeart } from "react-icons/bs";
-import { useUIStore } from "../../stores";
+import { useUIStore } from "@/stores";
 
 const NavigationList: React.FC = () => {
   const { setShowSidebarCategories, setShowSidebarMenu } = useUIStore();

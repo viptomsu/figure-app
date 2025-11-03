@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Countdown from "./Countdown";
-import { Link } from "react-router-dom";
-import ProductCard from "../../ProductCard/ProductCard";
+import Link from "next/link";
+import ProductCard from "@/components/ProductCard/ProductCard";
 import OwlCarousel from "react-owl-carousel";
-import { Options } from "../../Other/OwlCarouselOptions";
-import { getFilteredProducts } from "../../../services/productService"; // Giả sử API này được đặt ở đây
+import { Options } from "@/components/Other/OwlCarouselOptions";
+import { getFilteredProducts } from "@/services/productService"; // Giả sử API này được đặt ở đây
 
 const DealOfTheDay: React.FC = () => {
   const [products, setProducts] = useState<any[]>([]); // State để lưu danh sách sản phẩm
