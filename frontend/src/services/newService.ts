@@ -1,121 +1,67 @@
-import axios from "axios";
-
-// Lấy URL của Backend từ file .env
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-// Hàm lấy token từ localStorage
-const getToken = (): string | null => {
-  const token = localStorage.getItem("auth_token");
-  return token ? token : null;
-};
+import apiClient from "./apiClient";
 
 // Hàm lấy tất cả tin tức với phân trang, tìm kiếm
 export const getAllNews = async (
-  page: number = 1,
-  limit: number = 10,
-  keyword: string = ""
+	page: number = 1,
+	limit: number = 10,
+	keyword: string = ""
 ): Promise<any> => {
-  try {
-    const response = await axios.get(`${API_URL}/news`, {
-      params: {
-        keyword,
-        page,
-        limit,
-      },
-      headers: {
-        Authorization: `Bearer ${getToken()}`, // Thêm token vào header
-      },
-    });
-    return response.data.payload;
-  } catch (error: any) {
-    console.error("Error fetching news", error);
-    throw error;
-  }
+	return apiClient.get(`/news`, {
+		params: {
+			keyword,
+			page,
+			limit,
+		},
+	});
 };
 
 // Hàm lấy tin tức theo ID
 export const getNewsById = async (id: string | number): Promise<any> => {
-  try {
-    const response = await axios.get(`${API_URL}/news/${id}`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`, // Thêm token vào header
-      },
-    });
-    return response.data;
-  } catch (error: any) {
-    console.error("Error fetching news by ID", error);
-    throw error;
-  }
+	return apiClient.get(`/news/${id}`);
 };
 
 // Hàm tạo tin tức mới
 export const createNews = async (
-  title: string,
-  content: string,
-  imageFile: File | null
+	title: string,
+	content: string,
+	imageFile: File | null
 ): Promise<any> => {
-  try {
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("content", content);
-    if (imageFile) {
-      formData.append("image", imageFile);
-    }
+	const formData = new FormData();
+	formData.append("title", title);
+	formData.append("content", content);
+	if (imageFile) {
+		formData.append("image", imageFile);
+	}
 
-    const response = await axios.post(`${API_URL}/news`, formData, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`, // Thêm token vào header
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    return response.data;
-  } catch (error: any) {
-    console.error("Error creating news", error);
-    throw error;
-  }
+	return apiClient.post(`/news`, formData, {
+		headers: {
+			"Content-Type": "multipart/form-data",
+		},
+	});
 };
 
 // Hàm cập nhật tin tức theo ID
 export const updateNews = async (
-  id: string | number,
-  title: string,
-  content: string,
-  imageFile: File | null
+	id: string | number,
+	title: string,
+	content: string,
+	imageFile: File | null
 ): Promise<any> => {
-  try {
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("content", content);
-    if (imageFile) {
-      formData.append("image", imageFile);
-    }
+	const formData = new FormData();
+	formData.append("title", title);
+	formData.append("content", content);
+	if (imageFile) {
+		formData.append("image", imageFile);
+	}
 
-    const response = await axios.put(`${API_URL}/news/${id}`, formData, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`, // Thêm token vào header
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    return response.data;
-  } catch (error: any) {
-    console.error("Error updating news", error);
-    throw error;
-  }
+	return apiClient.put(`/news/${id}`, formData, {
+		headers: {
+			"Content-Type": "multipart/form-data",
+		},
+	});
 };
 
 // Hàm xóa tin tức theo ID
 export const deleteNews = async (id: string | number): Promise<any> => {
-  try {
-    const response = await axios.delete(`${API_URL}/news/${id}`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`, // Thêm token vào header
-      },
-    });
-    return response.data;
-  } catch (error: any) {
-    console.error("Error deleting news", error);
-    throw error;
-  }
+	return apiClient.delete(`/news/${id}`);
 };

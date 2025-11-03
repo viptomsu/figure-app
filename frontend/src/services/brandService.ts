@@ -1,49 +1,22 @@
-import axios from "axios";
-
-// Lấy URL của Backend từ file .env
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-// Hàm lấy token từ localStorage
-const getToken = (): string | null => {
-  const token = localStorage.getItem("auth_token");
-  return token ? token : null;
-};
+import { API_CONFIG } from "./config";
+import apiClient from "./apiClient";
 
 // Hàm lấy tất cả thương hiệu với phân trang, tìm kiếm
 export const getAllBrands = async (
-  page: number = 1,
-  limit: number = 1000,
-  keyword: string = ""
+	page: number = 1,
+	limit: number = 1000,
+	keyword: string = ""
 ): Promise<any> => {
-  try {
-    const response = await axios.get(`${API_URL}/brands`, {
-      params: {
-        keyword,
-        page,
-        limit,
-      },
-      headers: {
-        Authorization: `Bearer ${getToken()}`, // Thêm token vào header
-      },
-    });
-    return response.data.payload;
-  } catch (error: any) {
-    console.error("Error fetching brands", error);
-    throw error;
-  }
+	return apiClient.get(`${API_CONFIG.ENDPOINTS.BRANDS}`, {
+		params: {
+			keyword,
+			page,
+			limit,
+		},
+	});
 };
 
 // Hàm lấy thương hiệu theo ID
 export const getBrandById = async (id: number): Promise<any> => {
-  try {
-    const response = await axios.get(`${API_URL}/brands/${id}`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`, // Thêm token vào header
-      },
-    });
-    return response.data;
-  } catch (error: any) {
-    console.error("Error fetching brand by ID", error);
-    throw error;
-  }
+	return apiClient.get(`${API_CONFIG.ENDPOINTS.BRANDS}/${id}`);
 };

@@ -42,7 +42,6 @@ const RegisterSection: React.FC = () => {
       email,
       phoneNumber, // Số điện thoại
       role: "CUSTOMER", // Đặt role là CUSTOMER
-      address: null, // Đặt địa chỉ là null
       fullName, // Tên đầy đủ
     };
 
