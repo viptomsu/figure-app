@@ -16,24 +16,20 @@ const Banner: React.FC = () => {
   ];
 
   return (
-    <section id="home-banner">
+    <section className="bg-white py-8">
       <div className="container">
-        <div className="home-banner-content">
-          <div className="banner-slider-wrapper banner-left">
+        <div className="flex flex-col lg:flex-row items-stretch justify-evenly h-[415px]">
+          <div className="banner-slider-wrapper flex-1 h-full">
             <Slider />
           </div>
-          <div className="banner-right-imgs">
+          <div className="banner-right-imgs flex-1 max-w-[390px] h-full flex flex-col justify-between gap-4">
             {BannerRightData.map((item) => (
-              <div key={item.id} className="banner-img-wrapper">
-                <Link href="/shop">
+              <div key={item.id} className="banner-img-wrapper flex-1 h-[calc(50%-8px)]">
+                <Link href="/shop" className="block w-full h-full">
                   <img
                     src={item.img}
                     alt="banner-img"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
+                    className="w-full h-full object-cover"
                   />
                 </Link>
               </div>

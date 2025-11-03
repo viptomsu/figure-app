@@ -15,34 +15,25 @@ const FooterBottom: React.FC = () => {
   ];
 
   return (
-    <div className="footer-bottom">
-      <div className="row">
-        <div className="col-lg-4 col-md-12">
-          {/* ======= Copyright ======= */}
-          <div className="copyright">
-            <p>
-              © 2024 VieFigure Store.
-              {/* <a href="" target="__blank">
-             
-              </a> */}
-            </p>
-          </div>
+    <div className="border-t border-gray-700 py-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+        <div className="copyright">
+          <p className="text-gray-300 text-sm">
+            © 2024 VieFigure Store.
+          </p>
         </div>
-        <div className="col-lg-8 col-md-12">
-          {/* ======= Thanh toán ======= */}
-          <div className="payment">
-            <div className="payment-text">
-              <p>Chúng tôi sử dụng thanh toán an toàn cho:</p>
-            </div>
-            <div className="payment-cards">
-              <ul>
-                {PaymentData.map((item) => (
-                  <li key={item.id}>
-                    <img src={item.img} alt="thẻ thanh toán" />
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <div className="payment">
+          <div className="payment-text mb-3">
+            <p className="text-gray-300 text-sm">Chúng tôi sử dụng thanh toán an toàn cho:</p>
+          </div>
+          <div className="payment-cards">
+            <ul className="flex space-x-3">
+              {PaymentData.map((item) => (
+                <li key={item.id}>
+                  <img src={item.img} alt="thẻ thanh toán" className="h-8 object-contain" />
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ import FooterBottom from './FooterBottom/FooterBottom';
 
 const Footer: React.FC = () => {
     return (
-        <div className="footer">
+        <div className="bg-gray-800 text-white">
             <div className="container">
                 <div className="footer-top-wrapper">
                     <FooterTop />
