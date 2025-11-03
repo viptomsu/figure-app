@@ -1,8 +1,7 @@
 import React from "react";
 import ProductCard from "../../../ProductCard/ProductCard";
 import SectionHeader from "../../Other/SectionHeader";
-import OwlCarousel from "react-owl-carousel";
-import { Options } from "../../../Other/OwlCarouselOptions";
+import CustomCarousel from "../../../Other/CustomCarousel";
 import { useProductsStore } from "../../../../stores";
 
 const Clothings: React.FC = () => {
@@ -14,16 +13,14 @@ const Clothings: React.FC = () => {
         <SectionHeader title="Clothings" />
       </div>
       <div className="owl-carousel-wrapper">
-        <OwlCarousel className="owl-theme" {...Options}>
+        <CustomCarousel>
           {products.map(
             (product: any, index: number) =>
               product.category === "Clothing & Apparel" && (
-                <div key={index} className="item">
-                  <ProductCard product={product} />
-                </div>
+                <ProductCard key={index} product={product} />
               )
           )}
-        </OwlCarousel>
+        </CustomCarousel>
       </div>
     </div>
   );

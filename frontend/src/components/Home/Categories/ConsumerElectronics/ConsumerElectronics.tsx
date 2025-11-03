@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "../../../ProductCard/ProductCard";
 import SectionHeader from "../../Other/SectionHeader";
-import OwlCarousel from "react-owl-carousel";
-import { Options } from "../../../Other/OwlCarouselOptions";
+import CustomCarousel from "../../../Other/CustomCarousel";
 import { getAllProducts } from "../../../../services/productService"; // Import hàm API
 
 interface ConsumerElectronicsProps {
@@ -46,17 +45,15 @@ const ConsumerElectronics: React.FC<ConsumerElectronicsProps> = ({
       </div>
       {/* ======= Owl-carousel ======= */}
       <div className="owl-carousel-wrapper">
-        <OwlCarousel className="owl-theme" {...Options}>
+        <CustomCarousel>
           {products.length > 0 ? (
             products.map((product: any, index: number) => (
-              <div key={index} className="item">
-                <ProductCard product={product} />
-              </div>
+              <ProductCard key={index} product={product} />
             ))
           ) : (
             <div>Không có sản phẩm nào</div> // Xử lý trường hợp không có sản phẩm
           )}
-        </OwlCarousel>
+        </CustomCarousel>
       </div>
     </div>
   );

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "../../ProductCard/ProductCard";
-import OwlCarousel from "react-owl-carousel";
-import { Options } from "../../Other/OwlCarouselOptions";
+import CustomCarousel from "../../Other/CustomCarousel";
 import { IProductProps } from "../../../types/types";
 import { getAllProducts } from "../../../services/productService"; // Import API
 
@@ -58,15 +57,13 @@ const RelatedProducts: React.FC<any> = ({ product }) => {
               <div className="row">
                 <div className="col-12">
                   <div className="related-products-slider">
-                    <OwlCarousel className="owl-theme" {...Options}>
+                    <CustomCarousel>
                       {relatedProducts.map(
                         (relatedProduct: any, index: number) => (
-                          <div key={index} className="item">
-                            <ProductCard product={relatedProduct} />
-                          </div>
+                          <ProductCard key={index} product={relatedProduct} />
                         )
                       )}
-                    </OwlCarousel>
+                    </CustomCarousel>
                   </div>
                 </div>
               </div>

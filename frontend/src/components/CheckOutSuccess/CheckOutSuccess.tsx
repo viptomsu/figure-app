@@ -80,7 +80,7 @@ const CheckOutSuccess: React.FC = () => {
           }}
         >
           <img
-            src={Checkout}
+            src={Checkout.src}
             alt="Checkout Success"
             style={{ width: "48px", height: "48px", marginRight: "16px" }}
           />

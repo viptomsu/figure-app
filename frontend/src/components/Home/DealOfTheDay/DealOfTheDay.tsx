@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import Countdown from "./Countdown";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard/ProductCard";
-import OwlCarousel from "react-owl-carousel";
-import { Options } from "@/components/Other/OwlCarouselOptions";
+import CustomCarousel from "@/components/Other/CustomCarousel";
 import { getFilteredProducts } from "@/services/productService"; // Giả sử API này được đặt ở đây
 
 const DealOfTheDay: React.FC = () => {
@@ -57,13 +56,11 @@ const DealOfTheDay: React.FC = () => {
         </div>
         {/* ======= Slider ======= */}
         <div className="slider-wrapper">
-          <OwlCarousel className="owl-theme" {...Options}>
+          <CustomCarousel>
             {products.map((product: any, index: number) => (
-              <div key={index} className="item">
-                <ProductCard product={product} />
-              </div>
+              <ProductCard key={index} product={product} />
             ))}
-          </OwlCarousel>
+          </CustomCarousel>
         </div>
       </div>
     </section>

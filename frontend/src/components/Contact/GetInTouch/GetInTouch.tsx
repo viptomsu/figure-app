@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup';
+import { yupResolver } from '@hookform/resolvers';
 import * as Yup from 'yup';
 
 const GetInTouch: React.FC = () => {
