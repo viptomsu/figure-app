@@ -4,14 +4,14 @@ import { ISectionHeaderProps } from '@/types/types';
 
 const SectionHeader: React.FC<ISectionHeaderProps> = ({ title }) => {
     return (
-        <div className="section-header">
+        <div className="section-header flex justify-between items-center">
             <div className="left-side">
                 <div className="section-title">
-                    <h4>{title}</h4>
+                    <h4 className="text-lg font-semibold">{title}</h4>
                 </div>
             </div>
             <div className="right-side">
-                <Link href="/shop">Xem tất cả</Link>
+                <Link href="/shop" className="text-blue-600 hover:text-blue-800 transition-colors">Xem tất cả</Link>
             </div>
         </div>
     )

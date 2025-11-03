@@ -39,9 +39,9 @@ const DealOfTheDay: React.FC = () => {
         {/* ======= Tiêu đề phần ======= */}
         <div className="section-header-wrapper">
           <div className="section-header">
-            <div className="left-side d-flex">
-              <div className="title">
-                <h4>Ưu đãi trong ngày</h4>
+            <div className="left-side flex items-center">
+              <div className="title mr-4">
+                <h4 className="text-lg font-semibold">Ưu đãi trong ngày</h4>
               </div>
               <div className="countdown-wrapper">
                 <Countdown />
@@ -49,7 +49,7 @@ const DealOfTheDay: React.FC = () => {
             </div>
             <div className="right-side">
               <div className="view-all">
-                <Link href="/shop">Xem tất cả</Link>
+                <Link href="/shop" className="text-blue-600 hover:text-blue-800 transition-colors">Xem tất cả</Link>
               </div>
             </div>
           </div>

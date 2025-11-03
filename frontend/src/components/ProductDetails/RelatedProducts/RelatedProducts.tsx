@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useEffect, useState } from "react";
 import ProductCard from "../../ProductCard/ProductCard";
 import CustomCarousel from "../../Other/CustomCarousel";
@@ -47,15 +49,15 @@ const RelatedProducts: React.FC<any> = ({ product }) => {
         <section id="related-products">
           <div className="container">
             <div className="related-products-content">
-              <div className="row">
-                <div className="col-12">
-                  <div className="title">
-                    <h3>Sản phẩm liên quan</h3>
+              <div className="w-full">
+                <div className="w-full">
+                  <div className="title text-center mb-4">
+                    <h3 className="text-2xl font-semibold">Sản phẩm liên quan</h3>
                   </div>
                 </div>
               </div>
-              <div className="row">
-                <div className="col-12">
+              <div className="w-full">
+                <div className="w-full">
                   <div className="related-products-slider">
                     <CustomCarousel>
                       {relatedProducts.map(

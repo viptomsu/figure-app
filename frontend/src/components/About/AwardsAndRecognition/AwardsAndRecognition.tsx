@@ -19,11 +19,11 @@ const AwardsAndRecognition: React.FC = () => {
     return (
         <section id="awards-and-recognition">
             <div className="container">
-                <div className="row">
-                    <div className="col-lg-8 offset-lg-2">
-                        <div className="section-title">
-                            <h2>Awards & Recognition</h2>
-                            <p>
+                <div className="max-w-4xl mx-auto">
+                    <div className="w-full">
+                        <div className="section-title text-center mb-8">
+                            <h2 className="text-3xl font-bold mb-4">Awards & Recognition</h2>
+                            <p className="text-gray-600">
                                 Industry leaders and influencers recognize Overstock as one of the
                                 most trust worthy retail companies in the U.S.,
                                 ranking high for both customer and employee satisfaction.
@@ -31,14 +31,14 @@ const AwardsAndRecognition: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-12">
+                <div className="w-full">
+                    <div className="w-full">
                         <div className="awards">
                             <CustomCarousel>
                                 {
                                     AwardsData.map(item => (
-                                        <div key={item.id} className={item.class + " awards-img"}>
-                                            <img src={item.img} alt="awards" />
+                                        <div key={item.id} className={item.class + " awards-img flex justify-center items-center"}>
+                                            <img src={item.img} alt="awards" className="h-20 object-contain" />
                                         </div>
                                     ))
                                 }

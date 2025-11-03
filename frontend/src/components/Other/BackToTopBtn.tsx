@@ -1,28 +1,49 @@
-import React, { useState } from 'react';
-import { VscArrowUp } from 'react-icons/vsc';
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { VscArrowUp } from "react-icons/vsc";
 
 const BackToTopBtn: React.FC = () => {
-    const [show, setShow] = useState<boolean>(false);
+	const [show, setShow] = useState<boolean>(false);
 
-    window.addEventListener("scroll", function (this: Window, e: Event): void {
-        if (window.pageYOffset > 500) {
-            setShow(true);
-        } else {
-            setShow(false);
-        }
-    });
+	useEffect(() => {
+		const handleScroll = () => {
+			if (window.pageYOffset > 500) {
+				setShow(true);
+			} else {
+				setShow(false);
+			}
+		};
 
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
-        window[`scrollTo`]({ top: 0 });
-    };
+		window.addEventListener("scroll", handleScroll);
 
-    return (
-        <div id="back-to-top-btn" className={show ? "show-back-to-top-btn" : ""}>
-            <button type="button" onClick={handleClick}>
-                <VscArrowUp />
-            </button>
-        </div>
-    )
+		return () => {
+			window.removeEventListener("scroll", handleScroll);
+		};
+	}, []);
+
+	const handleClick = (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+	): void => {
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	};
+
+	return (
+		<div
+			id="back-to-top-btn"
+			className={`fixed bottom-8 right-8 z-50 transition-all duration-300 ${
+				show
+					? "opacity-100 translate-y-0"
+					: "opacity-0 translate-y-4 pointer-events-none"
+			}`}>
+			<button
+				type="button"
+				onClick={handleClick}
+				className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full shadow-lg transition-colors duration-200">
+				<VscArrowUp className="text-xl" />
+			</button>
+		</div>
+	);
 };
 
 export default BackToTopBtn;

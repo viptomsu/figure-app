@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+"use client"
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { getAllProducts } from "@/services/productService"; // Import hàm gọi API
 import { formatCurrency } from "@/utils/currencyFormatter"; // Import hàm formatCurrency
 import Rating from "@/components/Other/Rating";
+import { useIsClient } from "@/hooks/useIsClient";
 
 const Search: React.FC = () => {
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
   const [searchValue, setSearchValue] = useState<string>("");
   const [products, setProducts] = useState<any[]>([]); // Lưu danh sách sản phẩm tìm được
   const [showSearchResult, setShowSearchResult] = useState<boolean>(false);
@@ -46,7 +54,7 @@ const Search: React.FC = () => {
   };
 
   const closeSearchUnder992 = () => {
-    if (window.innerWidth < 992) {
+    if (isClient && window.innerWidth < 992) {
       setShowSearchResult(false);
     }
   };
