@@ -1,15 +1,8 @@
 import React from 'react';
-import "react-image-gallery/styles/css/image-gallery.css";
-import ImageGallery from 'react-image-gallery';
-import { IProductProps, IReactImgGalleryOptions, IReactImgGalleryimages } from '@/types/types';
+import ImageGallery from '@/components/ui/image-gallery';
+import { IReactImgGalleryimages } from '@/types/types';
 
 const ImgSlider: React.FC<any> = ({ product }) => {
-    const options: IReactImgGalleryOptions = {
-        showPlayButton: false,
-        showFullscreenButton: false,
-        autoPlay: true
-    };
-
     // Kiểm tra xem product.images có tồn tại và là một mảng không
     const images: IReactImgGalleryimages[] = product?.images?.map((image: any) => ({
         original: image.imageUrl,   // Sử dụng đường dẫn gốc của ảnh
@@ -20,7 +13,9 @@ const ImgSlider: React.FC<any> = ({ product }) => {
         <div className="img-slider">
             <ImageGallery
                 items={images}
-                {...options}
+                showPlayButton={false}
+                showFullscreenButton={false}
+                autoPlay={true}
             />
         </div>
     )

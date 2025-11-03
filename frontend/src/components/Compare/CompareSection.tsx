@@ -2,11 +2,14 @@ import React from "react";
 import ProductItem from "./ProductItem";
 import Link from "next/link";
 import { HiArrowNarrowLeft } from "react-icons/hi";
-import SwiperCore, { Navigation, A11y } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { useCompareStore } from "../../stores";
-
-SwiperCore.use([Navigation, A11y]);
 
 const CompareSection: React.FC = () => {
   const { compare } = useCompareStore();
@@ -27,40 +30,27 @@ const CompareSection: React.FC = () => {
             <div className="row">
               <div className="col-12">
                 {/* ======= slider phần quan tâm ======= */}
-                <Swiper
-                  slidesPerView={1}
-                  navigation
-                  breakpoints={{
-                    "320": {
-                      slidesPerView: 1,
-                      spaceBetween: 0,
-                    },
-                    "576": {
-                      slidesPerView: 2,
-                      spaceBetween: 0,
-                    },
-                    "768": {
-                      slidesPerView: 3,
-                      spaceBetween: 0,
-                    },
-                    "992": {
-                      slidesPerView: 3,
-                      spaceBetween: 0,
-                    },
-                    "1200": {
-                      slidesPerView: 4,
-                      spaceBetween: 0,
-                    },
-                  }}
-                >
-                  <div className="compare-slider">
-                    {compare.map((product: any, index: number) => (
-                      <SwiperSlide key={index}>
-                        <ProductItem product={product} />
-                      </SwiperSlide>
-                    ))}
-                  </div>
-                </Swiper>
+                <div className="relative">
+                  <Carousel
+                    opts={{
+                      align: "start",
+                    }}
+                    className="w-full"
+                  >
+                    <CarouselContent>
+                      {compare.map((product: any, index: number) => (
+                        <CarouselItem 
+                          key={index}
+                          className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+                        >
+                          <ProductItem product={product} />
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="hidden md:flex" />
+                    <CarouselNext className="hidden md:flex" />
+                  </Carousel>
+                </div>
               </div>
             </div>
           </>

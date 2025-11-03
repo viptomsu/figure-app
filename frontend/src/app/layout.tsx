@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "react-toastify/dist/ReactToastify.css";
-import "swiper/swiper.scss";
-import "swiper/components/pagination/pagination.scss";
-import "swiper/components/navigation/navigation.scss";
-import "swiper/components/scrollbar/scrollbar.scss";
 import "./globals.css";
 import AppLayout from "./components/AppLayout";
 
