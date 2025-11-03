@@ -6,7 +6,10 @@ import { HiArrowNarrowLeft } from "react-icons/hi";
 import { useCartStore, useWishlistStore, useProductsStore } from "../../stores";
 import { toast } from "react-toastify";
 import { formatCurrency } from "../../utils/currencyFormatter"; // Hàm format tiền tệ
-import { Modal } from "react-bootstrap"; // Import Modal
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
 import ImgSlider from "../ProductDetails/PrimaryInfo/ImgSlider"; // Component for image slider
 import ProductInfo from "../ProductDetails/PrimaryInfo/ProductInfo"; // Component for product information
 
@@ -230,26 +233,26 @@ const WishlistSection: React.FC = () => {
         )}
       </div>
 
-      {/* ======= Modal để hiển thị thông tin sản phẩm có variations ======= */}
-      <Modal show={showModal} onHide={handleClose} className="quick-view-modal">
-        <Modal.Body>
-          <div className="d-flex justify-content-end">
-            <button className="btnClose" onClick={handleClose}>
+      {/* ======= Dialog để hiển thị thông tin sản phẩm có variations ======= */}
+      <Dialog open={showModal} onOpenChange={(open) => !open && handleClose()}>
+        <DialogContent className="max-w-4xl">
+          <div className="flex justify-end mb-4">
+            <button className="text-gray-500 hover:text-gray-700" onClick={handleClose}>
               ✖
             </button>
           </div>
           <div className="modal-product-info">
-            <div className="row">
-              <div className="col-lg-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
                 <ImgSlider product={selectedProduct} />
               </div>
-              <div className="col-lg-6">
+              <div>
                 <ProductInfo product={selectedProduct} />
               </div>
             </div>
           </div>
-        </Modal.Body>
-      </Modal>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

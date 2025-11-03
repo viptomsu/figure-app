@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { getAllNews } from "../../../services/newService"; // Đường dẫn tới API của bạn
-import { Row, Col } from "react-bootstrap";
 
 interface NewsItem {
   _id: number;
@@ -54,13 +53,10 @@ const NewsSection: React.FC = () => {
   return (
     <section id="news-section" style={sectionStyle}>
       <div className="container">
-        <Row>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {news.map((item: any, index: number) => (
-            <Col
+            <div
               key={index}
-              lg={4}
-              md={6}
-              sm={12}
               className="mb-4"
               style={newsItemStyle}
             >
@@ -84,9 +80,9 @@ const NewsSection: React.FC = () => {
                   </a>
                 </div>
               </div>
-            </Col>
+            </div>
           ))}
-        </Row>
+        </div>
       </div>
     </section>
   );

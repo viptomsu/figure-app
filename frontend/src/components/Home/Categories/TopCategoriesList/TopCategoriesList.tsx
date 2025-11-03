@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import { Row, Col } from "react-bootstrap";
 import { ITopCategoriesData } from "@/types/types";
 
 interface TopCategoriesListProps {
@@ -12,17 +11,17 @@ const TopCategoriesList: React.FC<TopCategoriesListProps> = ({
 }) => {
   return (
     <div className="top-categories-list">
-      <div className="row">
-        <div className="col-12">
+      <div className="w-full">
+        <div className="w-full">
           <div className="section-title">
             <h4>Danh Mục Nổi Bật Trong Tháng</h4>
           </div>
         </div>
       </div>
       <div className="categories-wrapper">
-        <Row>
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
           {categories.map((item) => (
-            <Col key={item.id} xl={2} lg={4} md={4} sm={4} xs={6}>
+            <div key={item.id}>
               <Link href={`/shop?categoryId=${item.id}`}>
                 <div className="category-item">
                   <div className="category-img">
@@ -41,9 +40,9 @@ const TopCategoriesList: React.FC<TopCategoriesListProps> = ({
                   </div>
                 </div>
               </Link>
-            </Col>
+            </div>
           ))}
-        </Row>
+        </div>
       </div>
     </div>
   );

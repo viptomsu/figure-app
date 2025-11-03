@@ -3,7 +3,10 @@ import { FiBarChart2 } from "react-icons/fi";
 import { BsHeart, BsBag } from "react-icons/bs";
 import { ImEye } from "react-icons/im";
 import Link from "next/link";
-import { Modal } from "react-bootstrap";
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
 import ProductInfo from "../ProductDetails/PrimaryInfo/ProductInfo";
 import ImgSlider from "../ProductDetails/PrimaryInfo/ImgSlider";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -213,26 +216,26 @@ const ProductCard: React.FC<any> = ({ product }) => {
         </div>
       </div>
 
-      {/* ======= Modal Thêm vào giỏ hàng ======= */}
-      <Modal show={showModal} onHide={handleClose} className="quick-view-modal">
-        <Modal.Body>
-          <div className="d-flex justify-content-end">
-            <button className="btnClose" onClick={() => handleClose()}>
+      {/* ======= Dialog Thêm vào giỏ hàng ======= */}
+      <Dialog open={showModal} onOpenChange={(open) => !open && handleClose()}>
+        <DialogContent className="max-w-4xl">
+          <div className="flex justify-end mb-4">
+            <button className="text-gray-500 hover:text-gray-700" onClick={() => handleClose()}>
               ✖
             </button>
           </div>
           <div className="modal-product-info">
-            <div className="row">
-              <div className="col-lg-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
                 <ImgSlider product={product} />
               </div>
-              <div className="col-lg-6">
+              <div>
                 <ProductInfo product={product} />
               </div>
             </div>
           </div>
-        </Modal.Body>
-      </Modal>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
