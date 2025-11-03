@@ -66,7 +66,7 @@ const Department: React.FC = () => {
           item.submenu ? (
             <li key={item.categoryId}>
               <Link
-                to="/shop"
+                href="/shop"
                 onClick={handleCloseCategories}
                 className="d-flex justify-content-between"
               >

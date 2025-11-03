@@ -41,7 +41,7 @@ const NavigationList: React.FC = () => {
           <p>Danh mục</p>
         </button>
         <Link
-          to="/compare"
+          href="/compare"
           className="compare-btn d-flex flex-column align-items-center"
         >
           <span>
@@ -50,7 +50,7 @@ const NavigationList: React.FC = () => {
           <p>phần quan tâm</p>
         </Link>
         <Link
-          to="/wishlist"
+          href="/wishlist"
           className="wishlist-btn d-flex flex-column align-items-center"
         >
           <span>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { HiArrowNarrowLeft } from "react-icons/hi";
 import { useCartStore, useWishlistStore, useProductsStore } from "../../stores";
 import { toast } from "react-toastify";
@@ -97,7 +97,7 @@ const WishlistSection: React.FC = () => {
                             <td className="img-td">
                               {/* ===== hình ảnh sản phẩm ===== */}
                               <div className="product-img">
-                                <Link to={`/product-details/${product._id}`}>
+                                <Link href={`/products/${product._id}`}>
                                   <img
                                     src={defaultImage}
                                     className="img-fluid"
@@ -111,7 +111,7 @@ const WishlistSection: React.FC = () => {
                               <div className="product-name">
                                 <Link
                                   style={{ color: "#0060c9" }}
-                                  to={`/product-details/${product._id}`}
+                                  href={`/products/${product._id}`}
                                 >
                                   {product.productName}
                                 </Link>
@@ -215,7 +215,7 @@ const WishlistSection: React.FC = () => {
               </p>
             </div>
             <div className="back-to-shop-link">
-              <Link to="/shop" className="d-flex align-items-center">
+              <Link href="/shop" className="d-flex align-items-center">
                 <span>
                   <HiArrowNarrowLeft color={"#ffffff"} />
                 </span>

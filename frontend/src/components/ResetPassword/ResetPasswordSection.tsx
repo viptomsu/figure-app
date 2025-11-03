@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -12,11 +12,11 @@ toast.configure();
 
 const ResetPasswordSection: React.FC = () => {
   const [loading, setLoading] = useState(false); // Quản lý trạng thái loading
-  const history = useHistory(); // Dùng để chuyển hướng trang sau khi đăng nhập thành công
-  const location = useLocation(); // Lấy token từ URL
+  const router = useRouter(); // Dùng để chuyển hướng trang sau khi đăng nhập thành công
+  const searchParams = useSearchParams(); // Lấy query params từ URL
 
   // Lấy token từ query params
-  const token = new URLSearchParams(location.search).get("token");
+  const token = searchParams.get("token");
 
   // Schema xác thực đầu vào
   const validationSchema = Yup.object().shape({
@@ -55,7 +55,7 @@ const ResetPasswordSection: React.FC = () => {
       toast.success("Mật khẩu của bạn đã được cập nhật thành công.");
 
       // Chuyển hướng về trang đăng nhập
-      history.push("/login");
+      router.push("/login");
     } catch (error) {
       // Hiển thị toast thông báo lỗi
       toast.error("Đặt lại mật khẩu không thành công. Vui lòng thử lại.");

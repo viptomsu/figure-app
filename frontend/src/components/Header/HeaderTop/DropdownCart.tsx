@@ -159,7 +159,7 @@ const DropdownCart: React.FC = () => {
                 </div>
                 <div className="checkout-btn d-flex">
                   <Link
-                    to="/checkout"
+                    href="/checkout"
                     className="btn-style-2 w-100 text-center"
                     onClick={(e) => {
                       handleCheckout(e);

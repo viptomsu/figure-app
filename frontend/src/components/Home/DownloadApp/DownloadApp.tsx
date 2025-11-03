@@ -1,6 +1,6 @@
 import React from 'react';
 import SubscribeForm from '../../Other/SubscribeForm';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import AppImg from '../../../assets/img/martfury-app/app-img.png';
 import GooglePlay from '../../../assets/img/martfury-app/google-play.png';
 import AppStore from '../../../assets/img/martfury-app/app-store.png';
@@ -35,7 +35,7 @@ const DownloadApp: React.FC = () => {
                                     {
                                         SmallImages.map(item => (
                                             <div key={item.id} className="small-img-wrapper">
-                                                <Link to="#/">
+                                                <Link href="#/">
                                                     <img src={item.img} alt="img" />
                                                 </Link>
                                             </div>

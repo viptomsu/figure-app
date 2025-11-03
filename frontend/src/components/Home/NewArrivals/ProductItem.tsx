@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { IProductProps } from '../../../types/types';
 import Rating from '../../Other/Rating';
 
@@ -12,7 +12,7 @@ const ProductItem: React.FC<any> = ({ product }) => {
             <div className="product-item-right-content">
                 <div className="product-item-title">
                     <h6>
-                        <Link to={`/product-details/${product._id}`}>
+                        <Link href={`/products/${product._id}`}>
                             {product.title}
                         </Link>
                     </h6>

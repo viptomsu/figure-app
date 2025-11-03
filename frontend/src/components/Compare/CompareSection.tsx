@@ -1,6 +1,6 @@
 import React from "react";
 import ProductItem from "./ProductItem";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { HiArrowNarrowLeft } from "react-icons/hi";
 import SwiperCore, { Navigation, A11y } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -71,7 +71,7 @@ const CompareSection: React.FC = () => {
               <p className="m-0">Danh sách phần quan tâm hiện đang trống.</p>
             </div>
             <div className="back-to-shop-link">
-              <Link to="/shop" className="d-flex align-items-center">
+              <Link href="/shop" className="d-flex align-items-center">
                 <span>
                   <HiArrowNarrowLeft color={"#ffffff"} />
                 </span>

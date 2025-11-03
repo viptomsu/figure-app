@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { useCartStore, useCompareStore, useProductsStore } from "../../stores";
 import { toast } from "react-toastify";
 import Rating from "../Other/Rating";
@@ -60,7 +60,7 @@ const ProductItem: React.FC<any> = ({ product }) => {
           </button>
         </div>
         <div className="product-img d-flex justify-content-center align-items-center">
-          <Link to={`/product-details/${product._id}`}>
+          <Link href={`/products/${product._id}`}>
             <img
               className="img-fluid"
               src={defaultImage}
@@ -74,7 +74,7 @@ const ProductItem: React.FC<any> = ({ product }) => {
           <h6>
             <Link
               style={{ color: "#0060c9" }}
-              to={`/product-details/${product._id}`}
+              href={`/products/${product._id}`}
             >
               {product.productName}
             </Link>

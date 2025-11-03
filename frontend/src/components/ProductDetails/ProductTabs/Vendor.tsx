@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 const Vendor: React.FC = () => {
     return (
@@ -9,7 +9,7 @@ const Vendor: React.FC = () => {
                 Digiworld US, New York’s no.1 online retailer was established in May 2012 with the aim and
                 vision to become the one-stop shop for retail in New York with implementation of best practices both online
             </p>
-            <Link to="#/">More Products from Gopro</Link>
+            <Link href="#/">More Products from Gopro</Link>
         </div>
     )
 };

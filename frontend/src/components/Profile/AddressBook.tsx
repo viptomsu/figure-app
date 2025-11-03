@@ -9,14 +9,14 @@ import {
 } from "../../services/addressBookService";
 import AddressBookModal from "./components/AddressBookModal";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons"; // Import các icon
-import { useHistory } from "react-router-dom"; // Import useHistory
+import { useRouter } from "next/navigation"; // Import useRouter
 
 const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
   const [addressBooks, setAddressBooks] = useState<any[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentAddress, setCurrentAddress] = useState<any>(null);
-  const history = useHistory(); // Sử dụng useHistory
+  const router = useRouter(); // Sử dụng useRouter
 
   useEffect(() => {
     fetchAddressBooks();
@@ -85,7 +85,7 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
   };
 
   const handleCheckoutNavigate = () => {
-    history.push("/checkout"); // Điều hướng sang trang checkout
+    router.push("/checkout"); // Điều hướng sang trang checkout
   };
 
   return (

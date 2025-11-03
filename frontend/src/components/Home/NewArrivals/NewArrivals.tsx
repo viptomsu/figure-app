@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import ProductItem from "./ProductItem";
 import { useProductsStore } from "../../../stores";
 import { IButtonsAndLink } from "../../../types/types";
@@ -30,7 +30,7 @@ const NewArrivals: React.FC = () => {
               <ul className="d-flex section-buttons-and-link">
                 {ButtonsAndLinkData.map((item) => (
                   <li key={item.id}>
-                    <Link to={item.href}>{item.title}</Link>
+                    <Link href={item.href}>{item.title}</Link>
                   </li>
                 ))}
               </ul>

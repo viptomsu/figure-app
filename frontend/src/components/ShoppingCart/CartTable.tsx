@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ICartProps } from "../../types/types";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { formatCurrency } from "../../utils/currencyFormatter"; // Hàm format tiền tệ
 import { toast } from "react-toastify";
 import { useCartStore, useProductsStore, useWishlistStore, useCompareStore } from "../../stores";
@@ -45,7 +45,7 @@ const CartTable: React.FC<ICartProps> = (props) => {
                   <div className="product-img-title d-flex align-items-center">
                     {/* ======= Ảnh sản phẩm ======= */}
                     <div className="product-img">
-                      <Link to={`/product-details/${product._id}`}>
+                      <Link href={`/products/${product._id}`}>
                         <img
                           className="img-fluid"
                           src={product.images[0]?.imageUrl}
@@ -58,7 +58,7 @@ const CartTable: React.FC<ICartProps> = (props) => {
                       <h6>
                         <Link
                           style={{ color: "#0060c9" }}
-                          to={`/product-details/${product._id}`}
+                          href={`/products/${product._id}`}
                         >
                           {product.productName}
                         </Link>

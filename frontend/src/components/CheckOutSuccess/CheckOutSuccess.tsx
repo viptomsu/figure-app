@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useHistory } from "react-router-dom";
+import { useRouter, useSearchParams } from "next/navigation";
 import Checkout from "../../assets/img/checkout.png";
 import { getAllOrders } from "../../services/orderService"; // Giả định API này đã có sẵn
 import { formatCurrency } from "../../utils/currencyFormatter";
@@ -7,23 +7,21 @@ import { sendOrderConfirmationEmail } from "../../services/emailService";
 import { useUserStore } from "../../stores";
 
 const CheckOutSuccess: React.FC = () => {
-  const location = useLocation();
-  const history = useHistory();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   // Lấy trạng thái người dùng từ Zustand
   const { user, isAuthenticated: isUserLoggedIn } = useUserStore();
 
-  // Lấy orderCode từ state được truyền qua khi điều hướng
-  const orderCode: string | undefined = location.state
-    ? (location.state as { orderCode: string }).orderCode
-    : undefined;
+  // Lấy orderCode từ query parameter
+  const orderCode = searchParams.get("orderCode");
   console.log(orderCode);
 
   const [orderData, setOrderData] = useState<any>(null);
 
   useEffect(() => {
     if (!orderCode) {
-      history.push("/"); // Điều hướng về trang chủ nếu không có orderCode
+      router.push("/"); // Điều hướng về trang chủ nếu không có orderCode
       return;
     }
 
@@ -281,7 +279,7 @@ const CheckOutSuccess: React.FC = () => {
         {isUserLoggedIn && (
           <div style={{ marginTop: "24px", textAlign: "center" }}>
             <button
-              onClick={() => history.push("/history")}
+              onClick={() => router.push("/history")}
               style={{
                 backgroundColor: "#0060c9",
                 color: "#ffffff",

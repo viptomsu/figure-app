@@ -2,7 +2,7 @@ import React from "react";
 import CartTable from "./CartTable";
 import CartTotals from "./CartTotals";
 import { HiArrowNarrowLeft } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { useCartStore } from "../../stores";
 
 const CartSection: React.FC = () => {
@@ -31,7 +31,7 @@ const CartSection: React.FC = () => {
               <div className="col-lg-6">
                 {/* ======= Quay lại cửa hàng ======= */}
                 <div className="back-to-shop-link">
-                  <Link to="/shop" className="d-flex align-items-center">
+                  <Link href="/shop" className="d-flex align-items-center">
                     <span>
                       <HiArrowNarrowLeft color="#ffffff" />
                     </span>
@@ -56,7 +56,7 @@ const CartSection: React.FC = () => {
               <p>Giỏ hàng của bạn đang trống.</p>
             </div>
             <div className="back-to-shop-link">
-              <Link to="/shop" className="d-flex align-items-center">
+              <Link href="/shop" className="d-flex align-items-center">
                 <span>
                   <HiArrowNarrowLeft />
                 </span>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -12,7 +12,7 @@ toast.configure();
 
 const ForgotPasswordSection: React.FC = () => {
   const [loading, setLoading] = useState(false); // Quản lý trạng thái loading
-  const history = useHistory(); // Dùng để chuyển hướng trang sau khi gửi yêu cầu thành công
+  const router = useRouter(); // Dùng để chuyển hướng trang sau khi gửi yêu cầu thành công
 
   // Schema xác thực đầu vào
   const validationSchema = Yup.object().shape({
@@ -45,7 +45,7 @@ const ForgotPasswordSection: React.FC = () => {
       toast.success("Liên kết đặt lại mật khẩu đã được gửi đến email của bạn.");
 
       // Chuyển hướng về trang đăng nhập sau khi gửi yêu cầu thành công
-      history.push("/login");
+      router.push("/login");
     } catch (error) {
       // Hiển thị toast thông báo lỗi
       toast.error("Yêu cầu quên mật khẩu không thành công. Vui lòng thử lại.");

@@ -1,6 +1,6 @@
 import React from "react";
 import { IProducts, ICartProps } from "../../types/types";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { toast } from "react-toastify"; // Import toast để hiển thị thông báo
 import { formatCurrency } from "../../utils/currencyFormatter";
 import { useUserStore } from "../../stores";
@@ -75,7 +75,7 @@ const CartTotals: React.FC<ICartProps> = (props) => {
       {/* ======= Nút thanh toán ======= */}
       <div className="checkout-btn">
         <Link
-          to="/checkout"
+          href="/checkout"
           className="btn-style btn-style-2 text-center w-100"
           onClick={handleCheckout} // Gọi hàm kiểm tra khi nhấn
           style={{ color: "#ffffff" }}

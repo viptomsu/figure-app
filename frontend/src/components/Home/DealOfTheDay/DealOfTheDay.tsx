@@ -50,7 +50,7 @@ const DealOfTheDay: React.FC = () => {
             </div>
             <div className="right-side">
               <div className="view-all">
-                <Link to="/shop">Xem tất cả</Link>
+                <Link href="/shop">Xem tất cả</Link>
               </div>
             </div>
           </div>

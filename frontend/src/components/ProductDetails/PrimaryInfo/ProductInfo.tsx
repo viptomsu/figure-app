@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { SocialMediaData } from "../../Other/SocialMediaData";
 import { FiBarChart2 } from "react-icons/fi";
 import { BsHeart } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { useCartStore, useWishlistStore, useCompareStore } from "../../../stores";
 import { toast } from "react-toastify";
 import Rating from "../../Other/Rating";
