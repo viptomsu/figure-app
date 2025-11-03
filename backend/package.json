@@ -1,7 +1,7 @@
 {
-  "name": "VieFigure-backend",
+  "name": "Figure-backend",
   "version": "1.0.0",
-  "description": "VieFigure Backend",
+  "description": "Figure Backend",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -18,7 +18,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "firebase-admin": "^12.5.0",
-    "VieFigure-backend": "file:",
+    "Figure-backend": "file:",
     "jsonwebtoken": "^9.0.2",
     "labibi-backend": "file:",
     "moment": "^2.30.1",

@@ -24,7 +24,7 @@ const LoginOne = (props) => {
               <div className="my-4">
                 <div className="text-center">
                   {/* Thay img bằng TextLogo */}
-                  <div style={textStyle}>VieFigure</div>
+                  <div style={textStyle}>Figure</div>
                 </div>
                 <Row justify="center">
                   <Col xs={24} sm={24} md={20} lg={20}>

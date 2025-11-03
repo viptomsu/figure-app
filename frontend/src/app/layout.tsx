@@ -7,8 +7,8 @@ import AppLayout from "./components/AppLayout";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "VieFigure Store",
-	description: "VieFigure E-Commerce Platform",
+	title: "Figure Store",
+	description: "Figure E-Commerce Platform",
 };
 
 export default function RootLayout({

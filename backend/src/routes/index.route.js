@@ -19,7 +19,7 @@ const indexRouter = express.Router();
 // Health check route
 indexRouter.get("/", (req, res) => {
   res.json({ 
-    message: "VieFigure Backend API is running!",
+    message: "Figure Backend API is running!",
     timestamp: new Date().toISOString(),
     status: "OK"
   });

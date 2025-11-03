@@ -52,7 +52,7 @@ export const Logo = (props) => {
           padding: "10px",
         }}
       >
-        VieFigure
+        Figure
       </span>
     </div>
   );

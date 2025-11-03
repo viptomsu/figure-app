@@ -76,7 +76,7 @@ const Categories: React.FC = () => {
         {/* Truyền categories qua props */}
         {mouseCategoryId && (
           <ConsumerElectronics
-            title={"Mô hình VieFigure"}
+            title={"Mô hình Figure"}
             categoryId={mouseCategoryId}
           />
         )}{" "}

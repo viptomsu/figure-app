@@ -1,68 +1,333 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Figure Admin Panel
 
-## Available Scripts
+React 16 admin dashboard for managing the Figure e-commerce platform.
 
-In the project directory, you can run:
+## Technology Stack
 
-### `yarn start`
+- **Framework**: React 16.12
+- **Language**: JavaScript (ES6+)
+- **UI Library**: Ant Design 4
+- **State Management**: Redux with Redux Saga
+- **Routing**: React Router v5
+- **Charts**: Chart.js, ApexCharts
+- **Rich Text**: TinyMCE, React Quill
+- **Real-time**: WebSocket support with SockJS
+- **HTTP Client**: Axios
+- **Build Tool**: Create React App (react-scripts)
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Prerequisites
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+- Node.js 14+ installed
+- Backend API server running
 
-### `yarn test`
+## Installation
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+cd admin
+npm install
+```
 
-### `yarn build`
+## Environment Configuration
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Create a `.env` file in the root directory:
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+```env
+REACT_APP_API_URL=http://localhost:5001
+REACT_APP_VERSION=1.1.3
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Development
 
-### `yarn eject`
+```bash
+# Start development server
+npm start
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+# Build for production
+npm run build
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# Run tests
+npm test
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+# Eject (one-time operation)
+npm run eject
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Project Structure
 
-## Learn More
+```
+admin/
+├── public/                 # Static assets
+│   ├── index.html         # HTML template
+│   └── favicon.ico        # Favicon
+├── src/
+│   ├── assets/            # Static resources (images, fonts)
+│   ├── auth/              # Authentication components
+│   ├── components/        # Reusable UI components
+│   │   ├── layout-components/  # Layout related components
+│   │   └── ...            # Other component groups
+│   ├── configs/           # Configuration files
+│   ├── constants/         # Application constants
+│   ├── hook/              # Custom hooks
+│   ├── lang/              # Internationalization files
+│   ├── layouts/           # Page layouts
+│   ├── redux/             # Redux store configuration
+│   │   ├── actions/       # Redux actions
+│   │   ├── reducers/      # Redux reducers
+│   │   └── sagas/         # Redux sagas
+│   ├── services/          # API service functions
+│   ├── utils/             # Utility functions
+│   ├── views/             # Page components
+│   │   ├── app-views/     # Main application pages
+│   │   └── auth-views/    # Authentication pages
+│   ├── App.js             # Main App component
+│   ├── index.js           # Application entry point
+│   └── index.scss         # Global styles
+├── jsconfig.json          # JavaScript configuration
+└── package.json
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Key Features
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Dashboard
+- Overview statistics and KPIs
+- Revenue charts and analytics
+- Recent orders and activities
+- Product performance metrics
+- User engagement statistics
 
-### Code Splitting
+### Product Management
+- Create, edit, and delete products
+- Product variations and inventory management
+- Bulk product operations
+- Product image upload and management
+- Product category and brand assignment
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+### Order Management
+- View and process orders
+- Update order status
+- Order filtering and search
+- Order details and history
+- Shipping and tracking management
 
-### Analyzing the Bundle Size
+### User Management
+- View and manage users
+- User role assignments
+- Account status management
+- User activity tracking
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+### Content Management
+- Banner and promotion management
+- News and announcements
+- Page content editing with rich text editor
+- Media library management
 
-### Making a Progressive Web App
+### Analytics
+- Sales reports and charts
+- Product performance analytics
+- Customer behavior insights
+- Revenue tracking
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+## Authentication System
 
-### Advanced Configuration
+The admin panel uses JWT-based authentication:
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+```javascript
+// Login action
+export const login = (user) => ({
+  type: LOGIN,
+  user
+});
 
-### Deployment
+// Check authentication
+export const authenticated = () => ({
+  type: AUTHENTICATED
+});
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+## Redux Store Structure
 
-### `yarn build` fails to minify
+### State Shape
+```javascript
+{
+  auth: {
+    token: null,
+    loading: false,
+    redirect: null
+  },
+  theme: {
+    currentTheme: THEME_CONFIG.LIGHT,
+    direction: 'ltr'
+  },
+  // ... other state slices
+}
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+### Main Reducers
+- `auth`: Authentication state
+- `theme`: UI theme settings
+- `product`: Product data
+- `order`: Order data
+- `user`: User data
+
+## Component Architecture
+
+### Layout Components
+- `AppLayout`: Main application layout
+- `TopNav`: Top navigation bar
+- `MenuNav`: Side navigation menu
+- `Header`: Page header component
+- `Footer`: Page footer component
+
+### Page Components
+Pages are organized under `src/views/`:
+- `dashboard-views/`: Dashboard pages
+- `app-views/`: Main application pages
+- `auth-views/`: Authentication pages
+
+### Common Components
+- `Charts/`: Chart components (Chart.js, ApexCharts)
+- `layout-components/`: Layout related components
+- `utils/`: Utility components
+
+## Navigation & Routing
+
+The app uses React Router v5 for navigation:
+
+```javascript
+// Example route configuration
+<Switch>
+  <Route path="/login" component={Login} />
+  <ProtectedRoute path="/dashboard" component={Dashboard} />
+  <ProtectedRoute path="/products" component={Products} />
+  <ProtectedRoute path="/orders" component={Orders} />
+  {/* ... other routes */}
+</Switch>
+```
+
+## API Integration
+
+API calls are handled through Redux Sagas:
+
+```javascript
+// Example saga
+function* fetchProducts() {
+  try {
+    const response = yield call(Api.getProducts);
+    yield put(fetchProductsSuccess(response.data));
+  } catch (error) {
+    yield put(fetchProductsError(error.message));
+  }
+}
+```
+
+## Forms & Validation
+
+Forms use Ant Design Form components:
+- Built-in validation rules
+- Custom validation functions
+- Form submission handling
+
+## Data Display
+
+### Tables
+Ant Design Table components for data display:
+- Sorting and filtering
+- Pagination
+- Custom cell renderers
+- Row selection
+
+### Charts
+- Line charts for trends
+- Bar charts for comparisons
+- Pie charts for distributions
+- Custom chart configurations
+
+## Internationalization
+
+The app supports multiple languages:
+- Language files in `src/lang/`
+- Dynamic language switching
+- Translation keys management
+
+## Development Guidelines
+
+1. Use functional components with hooks where applicable
+2. Follow Redux best practices for state management
+3. Implement proper error handling in sagas
+4. Use Ant Design components consistently
+5. Write component-level documentation
+6. Follow consistent naming conventions
+7. Implement loading states for async operations
+
+## Customization
+
+### Theme Customization
+Update theme settings in `src/config/theme.js`:
+- Primary colors
+- Typography settings
+- Component customizations
+
+### Component Customization
+- Extend Ant Design components
+- Create custom styled components
+- Maintain consistent design language
+
+## Performance Optimization
+
+- Code splitting with React.lazy
+- Component memoization with React.memo
+- Bundle size optimization
+- Image optimization
+- Lazy loading for heavy components
+
+## Deployment
+
+### Build Process
+```bash
+# Create production build
+npm run build
+
+# The build files will be in /build directory
+```
+
+### Environment Variables
+Set production environment variables:
+- API endpoint URL
+- Application version
+- Feature flags
+
+## Testing
+
+The app includes basic test setup with Create React App:
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm test -- --watch
+
+# Generate coverage report
+npm test -- --coverage
+```
+
+## Browser Compatibility
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+- IE 11 (limited support)
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## Support
+
+For issues and questions:
+- Create an issue in the repository
+- Contact the development team

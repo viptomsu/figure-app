@@ -19,7 +19,7 @@ const FooterBottom: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
         <div className="copyright">
           <p className="text-gray-300 text-sm">
-            © 2024 VieFigure Store.
+            © 2024 Figure Store.
           </p>
         </div>
         <div className="payment">

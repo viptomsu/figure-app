@@ -1,75 +1,55 @@
-# VieFigure E-Commerce Platform
+# Figure E-Commerce Platform
 
 ## Project Overview
-VieFigure is a full-stack e-commerce platform consisting of three main applications:
-- **Backend**: Node.js/Express API server with MongoDB database
-- **Frontend**: React TypeScript customer-facing e-commerce store
-- **Admin**: React JavaScript admin dashboard for store management
+Figure is a full-stack e-commerce platform with three main applications:
+- **Backend** (`/backend`): Node.js/Express API server with MongoDB database
+- **Frontend** (`/frontend`): Next.js 16 TypeScript customer-facing store
+- **Admin** (`/admin`): React JavaScript admin dashboard
 
-## Architecture
+## Quick Start
 
-### Backend (`/backend`)
-- **Framework**: Express.js with ES modules
-- **Database**: MongoDB with Mongoose ODM
+```bash
+# Clone the repository
+git clone <repository-url>
+cd figure-app
+
+# Install dependencies for all applications
+npm run install:all
+
+# Set up environment variables
+# Backend: Copy backend/.env.sample to backend/.env
+# Frontend: Copy frontend/.env.sample to frontend/.env
+# Admin: Copy admin/.env.sample to admin/.env
+
+# Start all development servers
+npm run dev:all
+```
+
+## Application Structure
+
+### Backend (Port 5001)
+- **Technology**: Node.js, Express, MongoDB, Mongoose
 - **Authentication**: JWT with refresh tokens
-- **File Upload**: Multer with Sharp for image processing
-- **Payment**: VNPay integration for Vietnamese payments
-- **Deployment**: Vercel serverless functions
+- **File Processing**: Multer with Sharp
+- **Payment**: VNPay integration
+- **Documentation**: See [backend/README.md](./backend/README.md)
 
-**Key Features:**
-- Product catalog with categories, brands, and variations
-- User authentication and authorization
-- Order management and tracking
-- Shopping cart and wishlist
-- Review and rating system
-- Address book management
-- Voucher/discount system
-- Email notifications with Nodemailer
-- Revenue analytics
-
-### Frontend (`/frontend`)
-- **Framework**: React 17 with TypeScript
-- **UI Library**: Ant Design 5, React Bootstrap
-- **State Management**: Redux with Redux Saga
-- **Routing**: React Router v5
+### Frontend (Port 3000)
+- **Technology**: Next.js 16, TypeScript, Tailwind CSS
+- **UI Libraries**: Ant Design 5, ShadCN UI
+- **State Management**: Zustand
 - **Payment**: PayPal integration
-- **Styling**: Sass/SCSS
+- **Documentation**: See [frontend/README.md](./frontend/README.md)
 
-**Key Features:**
-- Product browsing and search
-- Shopping cart management
-- User authentication and profiles
-- Order placement and tracking
-- Product reviews
-- Wishlist functionality
-- Multi-language support preparation
-
-### Admin (`/admin`)
-- **Framework**: React 16 with JavaScript
-- **UI Library**: Ant Design 4
+### Admin (Port 3001)
+- **Technology**: React 16, JavaScript, Ant Design 4
 - **State Management**: Redux with Redux Saga
 - **Charts**: Chart.js, ApexCharts
 - **Rich Text**: TinyMCE, React Quill
-- **Real-time**: WebSocket support with SockJS
+- **Documentation**: See [admin/README.md](./admin/README.md)
 
-**Key Features:**
-- Product management
-- Order processing
-- User management
-- Analytics dashboard
-- Content management
-- Real-time notifications
+## Common Development Commands
 
-## Development Workflow
-
-### Environment Setup
-1. Clone the repository
-2. Set up environment variables:
-   - Backend: Copy `.env.sample` to `.env` and configure
-   - Frontend: Uses default React development server
-   - Admin: Configure `.env` for API endpoints
-
-### Development Commands
 ```bash
 # Backend
 cd backend
@@ -78,68 +58,43 @@ npm start            # Production start
 
 # Frontend
 cd frontend
-npm start            # Development server on port 3000
+npm run dev          # Development server
 npm run build        # Production build
-npm test             # Run tests
+npm run start        # Start production server
+npm run lint         # Run linter
 
 # Admin
 cd admin
-npm start            # Development server on port 3001
+npm start            # Development server
 npm run build        # Production build
 npm test             # Run tests
 ```
 
-### Database Models
-- **User**: Authentication, profiles, roles
-- **Product**: Catalog with variations and images
-- **Order**: Order management and tracking
-- **Category/Brand**: Product classification
-- **Review**: Product rating system
-- **Voucher**: Discount management
-- **AddressBook**: User shipping addresses
-
-### API Structure
-- `/api/auth` - Authentication endpoints
-- `/api/products` - Product management
-- `/api/orders` - Order processing
-- `/api/users` - User management
-- `/api/categories` - Category management
-- `/api/brands` - Brand management
-- `/api/reviews` - Product reviews
-- `/api/vouchers` - Discount codes
-- `/api/vnpay` - Payment processing
-
-### Deployment
-- **Backend**: Vercel serverless functions
-- **Frontend**: Vercel static hosting
-- **Admin**: Vercel static hosting
-- **Database**: MongoDB Atlas
-
 ## Code Conventions
+
+### General
+- Use meaningful variable and function names
+- Follow consistent indentation (2 spaces for JavaScript/TypeScript)
+- Add comments for complex logic
+- Keep functions small and focused
 
 ### Backend
 - ES6 modules (`import/export`)
 - Async/await for async operations
 - Express route handlers with try-catch error handling
 - Mongoose schemas with validation
-- JWT middleware for protected routes
 
 ### Frontend
 - TypeScript for type safety
 - Functional components with hooks
-- Redux for global state management
-- Axios for API calls
-- Ant Design components for UI
+- Tailwind CSS for styling
+- Zustand for state management
 
 ### Admin
 - JavaScript ES6+
 - Class and functional components mixed
 - Redux Saga for side effects
-- Ant Design v4 components
-
-## Testing
-- Jest and React Testing Library for frontend testing
-- No specific backend testing framework configured
+- Ant Design components for UI
 
 ## Security Considerations
 - JWT tokens with refresh mechanism
@@ -147,3 +102,14 @@ npm test             # Run tests
 - Input validation with Mongoose schemas
 - File upload restrictions
 - Environment variable management
+
+## Deployment
+- **Backend**: Vercel serverless functions
+- **Frontend**: Vercel static hosting
+- **Admin**: Vercel static hosting
+- **Database**: MongoDB Atlas
+
+## Repository Links
+- [Backend Documentation](./backend/README.md)
+- [Frontend Documentation](./frontend/README.md)
+- [Admin Documentation](./admin/README.md)

@@ -11,7 +11,7 @@ export default function Loading() {
       gap: '20px'
     }}>
       <Spin size="large" />
-      <p>Loading VieFigure Store...</p>
+      <p>Loading Figure Store...</p>
     </div>
   )
 }
