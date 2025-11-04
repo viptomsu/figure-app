@@ -15,8 +15,6 @@ const CheckOutSuccess: React.FC = () => {
 
   // Lấy orderCode từ query parameter
   const orderCode = searchParams.get("orderCode");
-  console.log(orderCode);
-
   const [orderData, setOrderData] = useState<any>(null);
 
   useEffect(() => {
@@ -48,7 +46,7 @@ const CheckOutSuccess: React.FC = () => {
       }
     };
     handleSendEmail();
-  }, [orderCode, history]);
+  }, [orderCode, router]);
 
   if (!orderData) return null;
 
