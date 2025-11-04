@@ -31,7 +31,7 @@ const BackToTopBtn: React.FC = () => {
 	return (
 		<div
 			id="back-to-top-btn"
-			className={`fixed bottom-8 right-8 z-50 transition-all duration-300 ${
+			className={`fixed bottom-12.5 right-10 z-dropdown transition-all duration-300 md:hidden lg:flex ${
 				show
 					? "opacity-100 translate-y-0"
 					: "opacity-0 translate-y-4 pointer-events-none"
@@ -39,8 +39,8 @@ const BackToTopBtn: React.FC = () => {
 			<button
 				type="button"
 				onClick={handleClick}
-				className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full shadow-lg transition-colors duration-200">
-				<VscArrowUp className="text-xl" />
+				className="bg-white border border-gray-200 text-gray-600 h-11.25 w-11.25 rounded-full transition-all duration-300 hover:text-primary hover:border-primary">
+				<VscArrowUp className="text-xl mb-1" />
 			</button>
 		</div>
 	);

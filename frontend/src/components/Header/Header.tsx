@@ -74,29 +74,29 @@ const Header: React.FC = () => {
   }, [isClient]);
 
   return (
-    <div className="bg-red-600 z-999 w-full border border-red-600 rounded-xl">
+    <div className="bg-primary z-header w-full border border-primary rounded-[12px]">
       {/* ======= Header-top ======= */}
-      <div className="relative h-20">
-        <div className="bg-red-600 fixed top-0 right-0 w-full z-999">
+      <div className="relative h-header-height">
+        <div className="bg-primary fixed top-0 right-0 w-full z-header">
           <div className="container">
-            <div className="h-20 flex flex-row items-center justify-between w-full px-4">
+            <div className="h-header-height flex flex-row items-center justify-between w-full px-4">
               <div
-                className={showDepartments ? "department-wrapper" : "hidden"}
+                className={showDepartments ? "flex items-center justify-between w-full max-w-65 h-full relative cursor-pointer before:absolute before:top-0 before:left-0 before:w-full before:h-0.08rem before:bg-black before:scale-x-0 before:origin-right before:transition-transform before:transition-smooth hover:before:scale-x-1 hover:transform hover:-translate-y-5.25" : "hidden"}
               >
                 <Department />
               </div>
-              <div className={showDepartments ? "hidden" : "brand w-full max-w-68 h-full"}>
+              <div className={showDepartments ? "hidden" : "flex items-center justify-center w-full max-w-68 h-full"}>
                 <Link href="/" className="flex items-center justify-center h-full w-auto object-contain">
                   <img src={"/logo-header.png"} alt="logo" />
                 </Link>
               </div>
               {/* Hiển thị Search nếu màn hình lớn */}
               {isLargeScreen && (
-                <div className={showSearch ? "search-wrapper w-full" : "hidden"}>
+                <div className={showSearch ? "relative w-full" : "hidden"}>
                   <Search />
                 </div>
               )}
-              <div className="header-top-actions-wrapper">
+              <div className="flex">
                 <Actions />
               </div>
             </div>
@@ -105,67 +105,65 @@ const Header: React.FC = () => {
       </div>
 
       {/* ======= Header-bottom ======= */}
-      <div className="header-bottom-wrapper">
-        <div className="h-12 flex items-center justify-between gap-5 px-5 text-lg font-semibold box-border">
-          <div
-            className={
-              showCategories
-                ? "department-wrapper show-sidebar"
-                : "department-wrapper"
-            }
-          >
-            <Department />
+      <div className="h-12 flex items-center justify-between gap-5 px-5 text-lg font-semibold box-border">
+        <div
+          className={
+            showCategories
+              ? "flex items-center justify-between w-full max-w-65 h-full cursor-pointer relative bg-white shadow-lg fixed top-0 right-0 bottom-0 w-65 max-w-65 transition-all duration-300 transform translate-x-270 z-modal md:relative md:w-full md:max-w-65 md:bg-primary md:shadow-none md:transform-none md:z-auto"
+              : "flex items-center justify-between w-full max-w-65 h-full cursor-pointer relative"
+          }
+        >
+          <Department />
+        </div>
+        <div
+          className={
+            showMenu ? "flex items-center justify-between w-full max-w-80 h-full cursor-pointer relative bg-white shadow-lg fixed top-0 right-0 bottom-0 w-65 max-w-65 transition-all duration-300 transform translate-x-270 z-modal md:relative md:w-full md:max-w-80 md:bg-primary md:shadow-none md:transform-none md:z-auto" : "flex items-center justify-between w-full max-w-80 h-full cursor-pointer relative"
+          }
+        >
+          <div className="flex flex-row items-center justify-between px-4 text-primary">
+            <h6>MENU</h6>
+            <button type="button" onClick={handleCloseMenu}>
+              ✕
+            </button>
           </div>
-          <div
-            className={
-              showMenu ? "nav-links-wrapper show-sidebar" : "nav-links-wrapper"
-            }
-          >
-            <div className="flex flex-row items-center justify-between px-4 text-white">
-              <h6>MENU</h6>
-              <button type="button" onClick={handleCloseMenu}>
-                ✕
-              </button>
-            </div>
-            <ul className="flex gap-12 pb-1 list-none m-0">
-              {NavLinksData.map((link) =>
-                link.id === 1 ? (
-                  <li key={link.id}>
-                    <Link
-                      href={link.href}
-                      className={link.class}
-                      onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                        setShowSidebarMenu(false);
-                      }}
-                    >
-                      {link.icon}
-                      {link.title}
-                    </Link>
-                  </li>
-                ) : (
-                  <li key={link.id}>
-                    <Link
-                      href={link.href}
-                      className={link.class}
-                      onClick={handleCloseMenu}
-                    >
-                      {link.icon}
-                      {link.title}
-                    </Link>
-                  </li>
-                )
-              )}
-            </ul>
-          </div>
-          <div className="lang-and-monetary-unit-wrapper">
-            <LangAndMonetaryUnit />
-          </div>
+          <ul className="flex gap-12 pb-1 list-none m-0">
+            {NavLinksData.map((link) =>
+              link.id === 1 ? (
+                <li key={link.id}>
+                  <Link
+                    href={link.href}
+                    className={link.class}
+                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                      setShowSidebarMenu(false);
+                    }}
+                  >
+                    {link.icon}
+                    {link.title}
+                  </Link>
+                </li>
+              ) : (
+                <li key={link.id}>
+                  <Link
+                    href={link.href}
+                    className={link.class}
+                    onClick={handleCloseMenu}
+                  >
+                    {link.icon}
+                    {link.title}
+                  </Link>
+                </li>
+              )
+            )}
+          </ul>
+        </div>
+        <div className="flex items-center justify-between w-48">
+          <LangAndMonetaryUnit />
         </div>
       </div>
 
       {/* ======= dark bg-color overlay ======= */}
       <div
-        className={showMenu || showCategories ? "bg-black bg-opacity-50 fixed top-0 left-0 bottom-0 w-full z-9999" : "hidden"}
+        className={showMenu || showCategories ? "bg-black/50 fixed top-0 left-0 bottom-0 w-full z-modal" : "hidden"}
         onClick={() => {
           setShowSidebarMenu(false);
           setShowSidebarCategories(false);

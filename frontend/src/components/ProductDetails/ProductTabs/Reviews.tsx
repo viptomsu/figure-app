@@ -93,31 +93,25 @@ const Reviews: React.FC<any> = ({ product }) => {
   };
 
   return (
-    <div className="tabContent-reviews">
-      <h6>Gửi đánh giá của bạn</h6>
+    <div>
+      <h6 className="text-lg font-semibold mb-4">Gửi đánh giá của bạn</h6>
       <form onSubmit={handleSubmitReview}>
-        <div className="rating" style={{ marginBottom: "10px" }}>
-          <p>Xếp hạng của bạn cho sản phẩm này</p>
-          <div
-            className="stars"
-            style={{
-              display: "flex", // Bố trí các ngôi sao theo chiều ngang từ trái sang phải
-              flexDirection: "row", // Đảm bảo chiều sắp xếp từ trái qua phải
-            }}
-          >
+        <div className="mb-2.5">
+          <p className="text-sm text-gray-600 mb-2">Xếp hạng của bạn cho sản phẩm này</p>
+          <div className="flex flex-row">
             {[...Array(5)].map((_, i) => (
-              <label key={i}>
+              <label key={i} className="mr-1">
                 <input
                   type="radio"
                   name="rate"
                   value={i + 1}
                   onClick={() => setRating(i + 1)}
+                  className="hidden"
                 />
                 <AiFillStar
+                  className="text-2xl cursor-pointer"
                   style={{
-                    fontSize: "24px",
-                    color: i + 1 <= rating ? "gold" : "gray",
-                    marginRight: "5px", // Tạo khoảng cách giữa các ngôi sao
+                    color: i + 1 <= rating ? "gold" : "#dfdbdb",
                   }}
                 />
               </label>
@@ -125,69 +119,47 @@ const Reviews: React.FC<any> = ({ product }) => {
           </div>
         </div>
 
-        <div className="review-area">
+        <div>
           <textarea
             name="review"
-            className="w-100"
+            className="w-full p-2.5 border border-gray-200 rounded focus:outline-none focus:border-primary"
             placeholder="Viết đánh giá của bạn tại đây"
             rows={rows}
             value={reviewText}
             onChange={(e) => setReviewText(e.target.value)}
-            style={{
-              padding: "10px",
-              borderRadius: "5px",
-              border: "1px solid #ddd",
-            }}
           ></textarea>
-          <div className="submit-review-btn">
+          <div className="pt-6">
             <input
               type="submit"
-              value={isSubmitting ? "Đang gửi..." : "Gửi đánh giá"} // Thay đổi text khi đang gửi
-              disabled={isSubmitting} // Vô hiệu hóa nút khi đang gửi
-              style={{
-                backgroundColor: isSubmitting ? "#ccc" : "#0060c9", // Đổi màu nút khi đang gửi
-
-                color: "#fff",
-                padding: "10px 20px",
-                borderRadius: "5px",
-                border: "none",
-                cursor: isSubmitting ? "not-allowed" : "pointer", // Đổi trạng thái con trỏ khi đang gửi
-                marginTop: "10px",
-              }}
+              value={isSubmitting ? "Đang gửi..." : "Gửi đánh giá"}
+              disabled={isSubmitting}
+              className={`px-5 py-2.5 text-white rounded border-none cursor-pointer ${
+                isSubmitting
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-primary hover:bg-red-700"
+              } transition-all duration-300`}
             />
           </div>
         </div>
       </form>
 
       {/* Hiển thị các đánh giá */}
-      <div className="review-list" style={{ marginTop: "30px" }}>
-        <h6>Đánh giá sản phẩm</h6>
+      <div className="mt-7.5">
+        <h6 className="text-lg font-semibold mb-4">Đánh giá sản phẩm</h6>
         {loading ? (
           <p>Đang tải đánh giá...</p>
         ) : reviews.length > 0 ? (
           reviews.map((review: any, index: number) => (
             <div
               key={index}
-              className="review-item"
-              style={{
-                padding: "10px",
-                borderBottom: "1px solid #ddd",
-                marginBottom: "10px",
-              }}
+              className="p-2.5 border-b border-gray-200 mb-2.5"
             >
-              <div
-                className="review-header"
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontWeight: "bold",
-                }}
-              >
+              <div className="flex justify-between items-center font-semibold mb-2">
                 <strong>
                   {review.user.fullName} (
                   {maskPhoneNumber(review.user.phoneNumber)})
                 </strong>
-                <span>
+                <span className="text-sm text-gray-600">
                   {new Date(review.reviewDate).toLocaleDateString("vi-VN", {
                     day: "2-digit",
                     month: "2-digit",
@@ -195,20 +167,12 @@ const Reviews: React.FC<any> = ({ product }) => {
                   })}
                 </span>
               </div>
-              <div
-                className="review-rating"
-                style={{
-                  color: "gold",
-                  marginBottom: "10px",
-                  display: "flex",
-                  flexDirection: "row",
-                }}
-              >
+              <div className="flex flex-row mb-2">
                 {[...Array(review.rating)].map((_, i) => (
-                  <AiFillStar key={i} />
+                  <AiFillStar key={i} className="text-primary" />
                 ))}
               </div>
-              <p>{review.reviewText}</p>
+              <p className="text-gray-600">{review.reviewText}</p>
             </div>
           ))
         ) : (
@@ -217,20 +181,16 @@ const Reviews: React.FC<any> = ({ product }) => {
 
         {/* Nút phân trang */}
         {totalPages > 1 && (
-          <div className="pagination">
+          <div className="flex gap-2 mt-5">
             {[...Array(totalPages)].map((_, i) => (
               <button
                 key={i}
                 onClick={() => handlePageChange(i + 1)}
-                style={{
-                  padding: "5px 10px",
-                  margin: "0 5px",
-                  backgroundColor: currentPage === i + 1 ? "#333" : "#fff",
-                  color: currentPage === i + 1 ? "#fff" : "#000",
-                  borderRadius: "5px",
-                  border: "1px solid #ddd",
-                  cursor: "pointer",
-                }}
+                className={`px-3 py-1.5 rounded border ${
+                  currentPage === i + 1
+                    ? "bg-black text-white"
+                    : "bg-white text-black border-gray-200 hover:bg-gray-100"
+                } transition-all duration-300`}
               >
                 {i + 1}
               </button>

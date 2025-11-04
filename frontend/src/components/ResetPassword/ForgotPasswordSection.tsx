@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+// @ts-ignore
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
@@ -55,27 +56,33 @@ const ForgotPasswordSection: React.FC = () => {
   };
 
   return (
-    <section id="login">
+    <section id="login" className="py-20">
       <div className="container">
-        <div className="row">
-          <div className="col-xl-6 col-lg-6 col-md-8 offset-xl-3 offset-lg-3 offset-md-2">
-            <div className="login-area account-wrapper">
-              <h6>Quên mật khẩu</h6>
+        <div className="flex justify-center">
+          <div className="w-full max-w-2xl">
+            <div className="bg-white border border-gray-200 rounded-lg p-8">
+              <h6 className="text-xl font-semibold mb-6">Quên mật khẩu</h6>
               <form onSubmit={handleSubmit(handleForgotPassword)}>
-                <div className="inputs-wrapper w-100">
+                <div className="mb-6">
                   <input
-                    type="text"
-                    className={`w-100 ${errors.email ? "error-border" : ""}`}
+                    type="email"
+                    className={`w-full p-3 border rounded ${
+                      errors.email ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="Email"
                     {...register("email")}
                   />
-                  {errors.email && <p>{errors.email.message}</p>}
+                  {errors.email && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.email.message as string}
+                    </p>
+                  )}
                 </div>
 
-                <div className="submit-btn forgot-password">
+                <div>
                   <input
                     type="submit"
-                    className="w-100 text-white"
+                    className="w-full bg-primary text-white py-3 rounded font-semibold hover:bg-red-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
                     value={loading ? "Đang xử lý..." : "Gửi yêu cầu"}
                     disabled={loading}
                   />

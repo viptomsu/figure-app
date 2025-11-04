@@ -38,47 +38,40 @@ const CartTotals: React.FC<ICartProps> = (props) => {
   };
 
   return (
-    <div className="cart-totals">
-      <div className="cart-totals-content">
+    <div className="bg-white border border-gray-200 rounded-lg p-6">
+      <div>
         {/* ======= Tiêu đề ======= */}
-        <div className="cart-totals-title">
-          <h4>Tổng giỏ hàng</h4>
+        <div>
+          <h4 className="text-xl font-semibold mb-4">Tổng giỏ hàng</h4>
         </div>
         {/* ======= Tổng giá ban đầu ======= */}
-        <div
-          style={{ marginBottom: "10px" }}
-          className="discount price d-flex justify-content-between align-items-center"
-        >
+        <div className="flex justify-between items-center mb-2.5">
           <h6>Giá ban đầu</h6>
           <p>
             <span>{formatCurrency(totalPrice, "VND")}</span>
           </p>
         </div>
         {/* ======= Số tiền giảm giá ======= */}
-        <div
-          style={{ marginBottom: "10px" }}
-          className="discount price d-flex justify-content-between align-items-center"
-        >
+        <div className="flex justify-between items-center mb-2.5">
           <h6>Giảm giá</h6>
           <p>
             <span>-{formatCurrency(totalDiscount, "VND")}</span>
           </p>
         </div>
         {/* ======= Tổng số tiền sau khi giảm giá ======= */}
-        <div className="grand-total price d-flex justify-content-between">
-          <h5>Tổng tiền</h5>
+        <div className="flex justify-between items-center border-t border-gray-200 pt-2.5">
+          <h5 className="text-lg font-semibold">Tổng tiền</h5>
           <p>
-            <span>{formatCurrency(finalTotal, "VND")}</span>
+            <span className="text-primary font-bold">{formatCurrency(finalTotal, "VND")}</span>
           </p>
         </div>
       </div>
       {/* ======= Nút thanh toán ======= */}
-      <div className="checkout-btn">
+      <div className="mt-6">
         <Link
           href="/checkout"
-          className="btn-style btn-style-2 text-center w-100"
-          onClick={handleCheckout} // Gọi hàm kiểm tra khi nhấn
-          style={{ color: "#ffffff" }}
+          className="block w-full text-center bg-primary text-white py-3 rounded hover:bg-red-700 transition-all duration-300"
+          onClick={handleCheckout}
         >
           Thanh toán
         </Link>

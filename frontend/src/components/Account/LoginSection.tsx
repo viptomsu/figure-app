@@ -66,69 +66,73 @@ const LoginSection: React.FC = () => {
   };
 
   return (
-    <section id="login">
+    <section id="login" className="py-20">
       <div className="container">
-        <div className="row">
-          <div className="col-xl-6 col-lg-6 col-md-8 offset-xl-3 offset-lg-3 offset-md-2">
-            <div className="links d-flex justify-content-center">
-              <Link href="/login" className="text-dark">
+        <div className="flex justify-center">
+          <div className="w-full max-w-2xl">
+            <div className="flex justify-center gap-8 mb-8">
+              <Link href="/login" className="text-gray-900 font-medium">
                 Đăng nhập
               </Link>
-              <Link href="/register" className="text-muted">
+              <Link href="/register" className="text-gray-600 hover:text-gray-900">
                 Đăng ký
               </Link>
             </div>
-            <div className="login-area account-wrapper">
-              <h6>Đăng nhập tài khoản</h6>
+            <div className="bg-white border border-gray-200 rounded-lg p-8">
+              <h6 className="text-xl font-semibold mb-6">Đăng nhập tài khoản</h6>
               <form onSubmit={handleSubmit(handleLogin)}>
-                <div className="inputs-wrapper w-100">
+                <div className="mb-4">
                   <input
                     type="text"
-                    className={`w-100 ${errors.username ? "error-border" : ""}`}
+                    className={`w-full p-3 border rounded ${
+                      errors.username ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="Tên đăng nhập"
                     {...register("username")}
                   />
-                  {errors.username && <p>{errors.username.message as string}</p>}
+                  {errors.username && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.username.message as string}
+                    </p>
+                  )}
                 </div>
-                <div className="inputs-wrapper w-100">
+                <div className="mb-4">
                   <input
                     type="password"
-                    className={`w-100 ${errors.password ? "error-border" : ""}`}
+                    className={`w-full p-3 border rounded ${
+                      errors.password ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="Mật khẩu"
                     {...register("password")}
                   />
-                  {errors.password && <p>{errors.password.message as string}</p>}
+                  {errors.password && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.password.message as string}
+                    </p>
+                  )}
                 </div>
-                <div className="checkbox-input-wrapper d-flex justify-content-between">
-                  <div className="d-flex">
-                    <input type="checkbox" name="remember" id="remember" />
-                    <label htmlFor="remember">Ghi nhớ tài khoản</label>
+                <div className="flex justify-between items-center mb-6">
+                  <div className="flex items-center">
+                    <input type="checkbox" name="remember" id="remember" className="mr-2" />
+                    <label htmlFor="remember" className="text-sm text-gray-600">
+                      Ghi nhớ tài khoản
+                    </label>
                   </div>
-                  <Link href="/forgot-password" className="text-muted">
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm text-gray-600 hover:text-primary"
+                  >
                     Quên mật khẩu?
                   </Link>
                 </div>
-                <div className="submit-btn login">
+                <div>
                   <input
                     type="submit"
-                    style={{ color: "#ffffff" }}
-                    className="w-100"
+                    className="w-full bg-primary text-white py-3 rounded font-semibold hover:bg-red-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
                     value={loginLoading ? "Đang xử lý..." : "Đăng nhập"}
                     disabled={loginLoading}
                   />
                 </div>
-                {/* <div className="social-media">
-                  <small>Kết nối với:</small>
-                  <ul className="d-flex">
-                    {SocialMediaData.map((item) => (
-                      <li key={item.id}>
-                        <a href={item.href} className={item.class}>
-                          {item.icon}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div> */}
               </form>
             </div>
           </div>

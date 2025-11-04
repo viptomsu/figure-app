@@ -59,73 +59,100 @@ const RegisterSection: React.FC = () => {
   };
 
   return (
-    <section id="register">
+    <section id="register" className="py-20">
       <div className="container">
-        <div className="row">
-          <div className="col-xl-6 col-lg-6 col-md-8 offset-xl-3 offset-lg-3 offset-md-2">
-            <div className="links d-flex justify-content-center">
-              <Link href="/login" className="text-muted">
+        <div className="flex justify-center">
+          <div className="w-full max-w-2xl">
+            <div className="flex justify-center gap-8 mb-8">
+              <Link href="/login" className="text-gray-600 hover:text-gray-900">
                 Đăng nhập
               </Link>
-              <Link href="/register" className="text-dark">
+              <Link href="/register" className="text-gray-900 font-medium">
                 Đăng ký
               </Link>
             </div>
-            <div className="register-area account-wrapper">
-              <h6>Đăng ký tài khoản</h6>
+            <div className="bg-white border border-gray-200 rounded-lg p-8">
+              <h6 className="text-xl font-semibold mb-6">Đăng ký tài khoản</h6>
               <form onSubmit={handleSubmit(handleSignup)}>
-                <div className="inputs-wrapper w-100">
+                <div className="mb-4">
                   <input
                     type="text"
-                    className={`w-100 ${errors.fullName ? "error-border" : ""}`}
+                    className={`w-full p-3 border rounded ${
+                      errors.fullName ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="Tên đầy đủ"
                     {...register("fullName")}
                   />
-                  {errors.fullName && <p>{errors.fullName.message as string}</p>}
+                  {errors.fullName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.fullName.message as string}
+                    </p>
+                  )}
                 </div>
-                <div className="inputs-wrapper w-100">
+                <div className="mb-4">
                   <input
                     type="text"
-                    className={`w-100 ${errors.username ? "error-border" : ""}`}
+                    className={`w-full p-3 border rounded ${
+                      errors.username ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="Tên đăng nhập"
                     {...register("username")}
                   />
-                  {errors.username && <p>{errors.username.message as string}</p>}
+                  {errors.username && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.username.message as string}
+                    </p>
+                  )}
                 </div>
-                <div className="inputs-wrapper w-100">
+                <div className="mb-4">
                   <input
                     type="password"
-                    className={`w-100 ${errors.password ? "error-border" : ""}`}
+                    className={`w-full p-3 border rounded ${
+                      errors.password ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="Mật khẩu"
                     {...register("password")}
                   />
-                  {errors.password && <p>{errors.password.message as string}</p>}
+                  {errors.password && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.password.message as string}
+                    </p>
+                  )}
                 </div>
-                <div className="inputs-wrapper w-100">
+                <div className="mb-4">
                   <input
-                    type="text"
-                    className={`w-100 ${errors.password ? "error-border" : ""}`}
+                    type="email"
+                    className={`w-full p-3 border rounded ${
+                      errors.email ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="Email"
                     {...register("email")}
                   />
-                  {errors.email && <p>{errors.email.message as string}</p>}
+                  {errors.email && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.email.message as string}
+                    </p>
+                  )}
                 </div>
-                <div className="inputs-wrapper w-100">
+                <div className="mb-4">
                   <input
                     type="text"
                     placeholder="Số điện thoại"
-                    className={`w-100 ${
-                      errors.phoneNumber ? "error-border" : ""
+                    className={`w-full p-3 border rounded ${
+                      errors.phoneNumber ? "border-red-500" : "border-gray-300"
                     }`}
                     {...register("phoneNumber")}
                   />
-                  {errors.phoneNumber && <p>{errors.phoneNumber.message as string}</p>}
+                  {errors.phoneNumber && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.phoneNumber.message as string}
+                    </p>
+                  )}
                 </div>
-                <div className="submit-btn login">
+                <div>
                   <input
                     type="submit"
-                    style={{ color: "#ffffff" }}
-                    className="w-100"
+                    className="w-full bg-primary text-white py-3 rounded font-semibold hover:bg-red-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
                     value={signupLoading ? "Đang xử lý..." : "Đăng ký"}
                     disabled={signupLoading}
                   />

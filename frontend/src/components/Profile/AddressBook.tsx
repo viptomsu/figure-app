@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { List, Button, Row, Col } from "antd";
 import { toast } from "react-toastify";
 import {
   getAddressBooksByUserId,
@@ -89,56 +88,50 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
   };
 
   return (
-    <div>
-      <Row
-        justify="space-between"
-        align="middle"
-        style={{ marginBottom: "20px" }}
-      >
-        <Col>
-          <h6>Quản lý địa chỉ giao hàng</h6>
-        </Col>
-        <Col>
-          <Button
-            style={{ backgroundColor: "rgb(189 30 30)" }}
-            type="primary"
-            onClick={() => {
-              setIsEditMode(false);
-              setCurrentAddress(null);
-              setIsModalVisible(true);
-            }}
-          >
-            Thêm địa chỉ mới
-          </Button>
-        </Col>
-      </Row>
+    <div className="bg-white p-5 rounded-lg shadow-md">
+      <div className="flex justify-between items-center mb-5">
+        <h6 className="text-xl font-semibold m-0">Quản lý địa chỉ giao hàng</h6>
+        <button
+          className="bg-primary text-white px-4 py-2 rounded hover:bg-red-700 transition-all duration-300"
+          onClick={() => {
+            setIsEditMode(false);
+            setCurrentAddress(null);
+            setIsModalVisible(true);
+          }}
+        >
+          Thêm địa chỉ mới
+        </button>
+      </div>
 
-      <List
-        bordered
-        dataSource={addressBooks}
-        renderItem={(address) => (
-          <List.Item
-            actions={[
-              <Button
-                type="link"
-                icon={<EditOutlined />}
-                onClick={() => handleEditAddress(address)}
-              />,
-              // <Button
-              //   type="link"
-              //   danger
-              //   icon={<DeleteOutlined />}
-              //   onClick={() => handleDeleteAddress(address._id)}
-              // />,
-            ]}
-          >
-            <List.Item.Meta
-              title={address.recipientName}
-              description={`${address.phoneNumber}, ${address.email}, ${address.address}, ${address.ward}, ${address.district}, ${address.city}`}
-            />
-          </List.Item>
+      <div className="border border-gray-200 rounded">
+        {addressBooks.length > 0 ? (
+          addressBooks.map((address) => (
+            <div
+              key={address._id}
+              className="flex justify-between items-center p-4 border-b border-gray-200 last:border-b-0"
+            >
+              <div>
+                <h6 className="font-semibold mb-1">{address.recipientName}</h6>
+                <p className="text-sm text-gray-600 m-0">
+                  {address.phoneNumber}, {address.email}, {address.address}, {address.ward}, {address.district}, {address.city}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  className="text-primary hover:text-red-700 transition-all duration-300"
+                  onClick={() => handleEditAddress(address)}
+                >
+                  <EditOutlined />
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="p-4 text-center text-gray-600">
+            Chưa có địa chỉ nào. Hãy thêm địa chỉ mới!
+          </div>
         )}
-      />
+      </div>
 
       <AddressBookModal
         visible={isModalVisible}
@@ -149,19 +142,13 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
       />
 
       {/* Button điều hướng sang trang checkout */}
-      <div style={{ textAlign: "center", marginTop: "20px" }}>
-        <Button
-          style={{
-            backgroundColor: "#0060c9",
-            color: "white",
-            padding: "10px 20px",
-            borderRadius: "5px",
-            fontSize: "16px",
-          }}
+      <div className="text-center mt-5">
+        <button
+          className="bg-primary text-white px-5 py-2.5 rounded text-base hover:bg-red-700 transition-all duration-300"
           onClick={handleCheckoutNavigate} // Điều hướng khi bấm nút
         >
           Thanh toán
-        </Button>
+        </button>
       </div>
     </div>
   );

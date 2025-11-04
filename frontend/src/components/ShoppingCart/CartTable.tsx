@@ -19,16 +19,16 @@ const CartTable: React.FC<ICartProps> = (props) => {
   const { makeCompareProductIsInCartFalse } = useCompareStore();
 
   return (
-    <div className="cart-table">
-      <table className="w-100">
+    <div className="overflow-x-auto">
+      <table className="w-full">
         {/* ======= Tiêu đề bảng ======= */}
         <thead>
-          <tr>
-            <th>Sản phẩm</th>
-            <th>Giá</th>
-            <th>Số lượng</th>
-            <th>Tổng</th>
-            <th>Xóa</th>
+          <tr className="border-b border-gray-200">
+            <th className="text-left py-5 pl-5 font-semibold">Sản phẩm</th>
+            <th className="text-center py-5 font-semibold">Giá</th>
+            <th className="text-center py-5 font-semibold">Số lượng</th>
+            <th className="text-center py-5 font-semibold">Tổng</th>
+            <th className="text-center py-5 font-semibold">Xóa</th>
           </tr>
         </thead>
         {/* ======= Nội dung bảng ======= */}
@@ -40,24 +40,24 @@ const CartTable: React.FC<ICartProps> = (props) => {
               : product.price * (1 - product.discount / 100);
 
             return (
-              <tr key={index}>
-                <td>
-                  <div className="product-img-title d-flex align-items-center">
+              <tr key={index} className="border-b border-gray-200">
+                <td className="py-5">
+                  <div className="flex items-center">
                     {/* ======= Ảnh sản phẩm ======= */}
-                    <div className="product-img">
+                    <div className="w-25 h-25 mr-3.75">
                       <Link href={`/products/${product._id}`}>
                         <img
-                          className="img-fluid"
+                          className="w-full h-full object-contain"
                           src={product.images[0]?.imageUrl}
                           alt={product.productName}
                         />
                       </Link>
                     </div>
                     {/* ======= Tên sản phẩm ======= */}
-                    <div className="product-title">
+                    <div>
                       <h6>
                         <Link
-                          style={{ color: "#0060c9" }}
+                          className="text-primary hover:underline"
                           href={`/products/${product._id}`}
                         >
                           {product.productName}
@@ -66,55 +66,33 @@ const CartTable: React.FC<ICartProps> = (props) => {
                     </div>
                   </div>
                 </td>
-                <td>
+                <td className="text-center">
                   {/* ======= Giá sản phẩm ======= */}
-                  <div className="product-price">
-                    {product.discount ? (
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        {/* Giá gốc gạch ngang */}
-                        <p
-                          style={{
-                            margin: "0",
-                            color: "gray",
-                            textDecoration: "line-through",
-                            marginRight: "10px", // Tạo khoảng cách giữa giá gốc và giá đã giảm
-                          }}
-                        >
-                          {formatCurrency(
-                            product.selectedPrice || product.price,
-                            "VND"
-                          )}{" "}
-                          đ
-                        </p>
-                        {/* Giá sau khi giảm */}
-                        <p
-                          style={{
-                            margin: "0",
-                            color: "red",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {formatCurrency(discountedPrice, "VND")} đ
-                        </p>
-                      </div>
-                    ) : (
-                      <p style={{ margin: "0", fontWeight: "bold" }}>
-                        {formatCurrency(product.selectedPrice || product.price)}
+                  {product.discount ? (
+                    <div className="flex items-center justify-center">
+                      {/* Giá gốc gạch ngang */}
+                      <p className="m-0 text-gray-500 line-through mr-2.5">
+                        {formatCurrency(
+                          product.selectedPrice || product.price,
+                          "VND"
+                        )}{" "}
+                        đ
                       </p>
-                    )}
-                  </div>
+                      {/* Giá sau khi giảm */}
+                      <p className="m-0 text-primary font-bold">
+                        {formatCurrency(discountedPrice, "VND")} đ
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="m-0 font-bold">
+                      {formatCurrency(product.selectedPrice || product.price)}
+                    </p>
+                  )}
                 </td>
 
-                <td>
+                <td className="text-center">
                   {/* ======= Số lượng ======= */}
-                  <div
-                    className="quantity-wrapper"
-                    style={{
-                      display: "flex", // Đặt phần tử con theo hàng ngang
-                      alignItems: "center", // Căn giữa theo chiều dọc
-                      justifyContent: "center", // Căn giữa theo chiều ngang
-                    }}
-                  >
+                  <div className="flex items-center justify-center">
                     {/* Nút giảm số lượng */}
                     <button
                       type="button"
@@ -123,33 +101,24 @@ const CartTable: React.FC<ICartProps> = (props) => {
                           decreaseProductCount(product._id);
                         }
                       }}
-                      disabled={product.count === 1} // Vô hiệu hóa nếu số lượng là 1
-                      style={{
-                        backgroundColor:
-                          product.count === 1 ? "#ccc" : "#ffcc00",
-                        color: "#000",
-                        border: "none",
-                        padding: "5px 10px",
-                        borderRadius: "4px",
-                        fontSize: "16px",
-                        cursor: product.count === 1 ? "not-allowed" : "pointer",
-                        marginRight: "5px",
-                        width: "40px", // Đặt kích thước cố định cho nút
-                        height: "40px",
-                      }}
+                      disabled={product.count === 1}
+                      className={`w-10 h-10 rounded border-none text-base ${
+                        product.count === 1
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-yellow-400 cursor-pointer"
+                      } transition-all duration-300`}
                     >
                       -
                     </button>
 
                     {/* Hiển thị số lượng sản phẩm */}
-                    <div className="quantity-area d-flex align-items-center">
-                      <input
-                        type="text"
-                        size={size}
-                        readOnly
-                        value={product.count}
-                      />
-                    </div>
+                    <input
+                      type="text"
+                      size={size}
+                      readOnly
+                      value={product.count}
+                      className="w-12 text-center border-x border-gray-300 py-2"
+                    />
 
                     {/* Nút tăng số lượng */}
                     <button
@@ -163,36 +132,25 @@ const CartTable: React.FC<ICartProps> = (props) => {
                           );
                         }
                       }}
-                      disabled={product.count >= product.stock} // Vô hiệu hóa nếu đạt giới hạn
-                      style={{
-                        backgroundColor:
-                          product.count >= product.stock ? "#ccc" : "#0060c9",
-                        color: "#ffffff",
-                        border: "none",
-                        padding: "5px 10px",
-                        borderRadius: "4px",
-                        fontSize: "16px",
-                        cursor:
-                          product.count >= product.stock
-                            ? "not-allowed"
-                            : "pointer",
-                        marginLeft: "10px",
-                        width: "40px",
-                        height: "40px",
-                      }}
+                      disabled={product.count >= product.stock}
+                      className={`w-10 h-10 rounded border-none text-white text-base ml-2.5 ${
+                        product.count >= product.stock
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-primary hover:bg-red-700"
+                      } transition-all duration-300`}
                     >
                       +
                     </button>
                   </div>
                 </td>
 
-                <td>
+                <td className="text-center">
                   {/* ======= Tổng tiền ======= */}
-                  <p className="total-price m-0">
+                  <p className="m-0 font-bold">
                     {formatCurrency(discountedPrice * product.count)}
                   </p>
                 </td>
-                <td>
+                <td className="text-center">
                   {/* ======= Nút xóa ======= */}
                   <button
                     type="button"
@@ -207,6 +165,7 @@ const CartTable: React.FC<ICartProps> = (props) => {
                           '" đã được xoá khỏi giỏ hàng.'
                       );
                     }}
+                    className="text-gray-500 hover:text-primary text-xl"
                   >
                     ✕
                   </button>

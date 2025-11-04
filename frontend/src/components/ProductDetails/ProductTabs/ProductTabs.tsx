@@ -15,17 +15,22 @@ const ProductTabs: React.FC<any> = ({ product }) => {
   ];
 
   return (
-    <div className="product-tabs">
+    <div className="pt-20 pb-7.5">
       {/* ======= Danh sách tab ======= */}
-      <div className="tab-list">
-        <ul>
+      <div className="border-b border-gray-200">
+        <ul className="flex items-center justify-between w-[525px] h-12.5">
           {TabList.map((tabListItem) => (
             <li
               key={tabListItem.id}
-              className={tabListItem.title === clickedBtn ? "active-btn" : ""}
+              className="flex items-center justify-center h-full text-xl font-semibold text-gray-600 border-b-2 border-transparent transition-all duration-300"
             >
               <button
                 type="button"
+                className={`h-full ${
+                  tabListItem.title === clickedBtn
+                    ? "text-black border-b-2 border-black"
+                    : ""
+                }`}
                 onClick={(e: React.MouseEvent<HTMLButtonElement>): void => {
                   setClickedBtn(tabListItem.title);
                 }}
@@ -39,17 +44,17 @@ const ProductTabs: React.FC<any> = ({ product }) => {
         </ul>
       </div>
       {/* ======= Nội dung tab ======= */}
-      <div className="tab-content-wrapper">
-        <div
-          className={clickedBtn === "Mô tả" ? "description-wrapper" : "d-none"}
-        >
-          <Description product={product} />
-        </div>
-        <div
-          className={clickedBtn === "Đánh giá" ? "reviews-wrapper" : "d-none"}
-        >
-          <Reviews product={product} />
-        </div>
+      <div className="pt-5">
+        {clickedBtn === "Mô tả" && (
+          <div>
+            <Description product={product} />
+          </div>
+        )}
+        {clickedBtn === "Đánh giá" && (
+          <div>
+            <Reviews product={product} />
+          </div>
+        )}
       </div>
     </div>
   );

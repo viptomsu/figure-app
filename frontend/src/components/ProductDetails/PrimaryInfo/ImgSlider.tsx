@@ -10,7 +10,7 @@ const ImgSlider: React.FC<any> = ({ product }) => {
     })) || [];
 
     return (
-        <div className="img-slider">
+        <div>
             <ImageGallery
                 items={images}
                 showPlayButton={false}

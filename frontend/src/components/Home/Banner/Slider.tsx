@@ -32,32 +32,34 @@ const Slider: React.FC = () => {
   };
 
   return (
-    <div className="banner-slider">
+    <div className="relative w-full h-full">
       {/* ======= Slide item ======= */}
       {SliderData.map((item) => (
         <div
           key={item.id}
-          className={item.id === tabIndex ? "slide-item" : "d-none"}
+          className={item.id === tabIndex ? "block w-full h-full" : "hidden"}
         >
-          <Link href="/shop">
+          <Link href="/shop" className="block w-full h-full">
             <img
               src={item.img}
               alt="slide-img"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover", // Ensure image fills the container
-              }}
+              className="w-full h-full object-cover"
             />
           </Link>
         </div>
       ))}
       {/* ======= Slider buttons ======= */}
-      <div className="slider-btns">
-        <button onClick={handleLeftBtnClick} className="left-btn">
+      <div className="absolute inset-0 flex items-center justify-between px-4">
+        <button
+          onClick={handleLeftBtnClick}
+          className="flex items-center justify-center w-16 h-16 bg-black/30 hover:bg-black/50 rounded-full transition-all duration-300"
+        >
           <FaChevronLeft size={60} color="#fff" />
         </button>
-        <button onClick={handleRightBtnClick} className="right-btn">
+        <button
+          onClick={handleRightBtnClick}
+          className="flex items-center justify-center w-16 h-16 bg-black/30 hover:bg-black/50 rounded-full transition-all duration-300"
+        >
           <FaChevronRight size={60} color="#fff" />
         </button>
       </div>

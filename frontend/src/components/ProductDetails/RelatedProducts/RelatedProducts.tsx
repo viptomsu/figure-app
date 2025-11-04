@@ -45,32 +45,20 @@ const RelatedProducts: React.FC<any> = ({ product }) => {
 	return (
 		<>
 			{!loading && relatedProducts.length !== 0 ? (
-				<section id="related-products">
+				<section id="related-products" className="pb-15">
 					<div className="container">
-						<div className="related-products-content">
-							<div className="w-full">
-								<div className="w-full">
-									<div className="title text-center mb-4">
-										<h3 className="text-2xl font-semibold">
-											Sản phẩm liên quan
-										</h3>
-									</div>
-								</div>
-							</div>
-							<div className="w-full">
-								<div className="w-full">
-									<div className="related-products-slider">
-										<CustomCarousel>
-											{relatedProducts.map(
-												(relatedProduct: any, index: number) => (
-													<ProductCard key={index} product={relatedProduct} />
-												)
-											)}
-										</CustomCarousel>
-									</div>
-								</div>
-							</div>
+						<div className="text-center mb-4">
+							<h3 className="text-2xl font-semibold">
+								Sản phẩm liên quan
+							</h3>
 						</div>
+						<CustomCarousel>
+							{relatedProducts.map(
+								(relatedProduct: any, index: number) => (
+									<ProductCard key={index} product={relatedProduct} />
+								)
+							)}
+						</CustomCarousel>
 					</div>
 				</section>
 			) : (

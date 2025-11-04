@@ -110,14 +110,14 @@ const AddressBookModal: React.FC<AddressBookModalProps> = ({
           label="Tên người nhận"
           rules={[{ required: true, message: "Vui lòng nhập tên người nhận!" }]}
         >
-          <Input placeholder="Tên người nhận" style={{ height: "40px" }} />
+          <Input placeholder="Tên người nhận" className="h-10" />
         </Form.Item>
         <Form.Item
           name="phoneNumber"
           label="Số điện thoại"
           rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}
         >
-          <Input placeholder="Số điện thoại" style={{ height: "40px" }} />
+          <Input placeholder="Số điện thoại" className="h-10" />
         </Form.Item>
         <Form.Item
           name="email"
@@ -130,14 +130,14 @@ const AddressBookModal: React.FC<AddressBookModalProps> = ({
             },
           ]}
         >
-          <Input placeholder="Email" style={{ height: "40px" }} />
+          <Input placeholder="Email" className="h-10" />
         </Form.Item>
         <Form.Item
           name="address"
           label="Địa chỉ"
           rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
         >
-          <Input placeholder="Địa chỉ" style={{ height: "40px" }} />
+          <Input placeholder="Địa chỉ" className="h-10" />
         </Form.Item>
         <Form.Item
           name="city"
@@ -146,7 +146,7 @@ const AddressBookModal: React.FC<AddressBookModalProps> = ({
         >
           <Select
             placeholder="Chọn Tỉnh/Thành phố"
-            style={{ height: "40px" }}
+            className="h-10"
             onChange={handleProvinceChange}
           >
             {provinces.map((province) => (
@@ -163,7 +163,7 @@ const AddressBookModal: React.FC<AddressBookModalProps> = ({
         >
           <Select
             placeholder="Chọn Quận/Huyện"
-            style={{ height: "40px" }}
+            className="h-10"
             onChange={handleDistrictChange}
             disabled={!selectedProvince}
           >
@@ -181,7 +181,7 @@ const AddressBookModal: React.FC<AddressBookModalProps> = ({
         >
           <Select
             placeholder="Chọn Phường/Xã"
-            style={{ height: "40px" }}
+            className="h-10"
             disabled={!selectedDistrict}
           >
             {wards.map((ward) => (

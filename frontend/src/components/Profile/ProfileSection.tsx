@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+// @ts-ignore
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
@@ -86,53 +87,25 @@ const ProfileSection: React.FC = () => {
   };
 
   return (
-    <section
-      id="profile"
-      style={{ padding: "20px", maxWidth: "700px", margin: "0 auto" }}
-    >
+    <section id="profile" className="py-5 max-w-[700px] mx-auto">
       <Tabs
         defaultActiveKey="1"
         tabBarStyle={{ color: "#0060c9" }}
         tabBarGutter={30}
       >
         <Tabs.TabPane tab="Thông tin cá nhân" key="1">
-          <div
-            style={{
-              backgroundColor: "#fff",
-              padding: "20px",
-              borderRadius: "10px",
-              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginBottom: "20px",
-              }}
-            >
+          <div className="bg-white p-5 rounded-lg shadow-md">
+            <div className="flex justify-center mb-5">
               <div
-                style={{ cursor: "pointer", position: "relative" }}
+                className="cursor-pointer relative"
                 onClick={() => document.getElementById("avatarInput")?.click()}
               >
                 <img
                   src={imagePreview || "https://via.placeholder.com/100"}
                   alt="Avatar"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    borderRadius: "50%",
-                    border: "2px solid #ccc",
-                  }}
+                  className="w-25 h-25 rounded-full border-2 border-gray-300"
                 />
-                <p
-                  style={{
-                    marginTop: "10px",
-                    color: "#0060c9",
-                    fontSize: "14px",
-                    textAlign: "center",
-                  }}
-                >
+                <p className="mt-2.5 text-primary text-sm text-center">
                   Thay đổi avatar
                 </p>
               </div>
@@ -140,76 +113,72 @@ const ProfileSection: React.FC = () => {
             <input
               id="avatarInput"
               type="file"
-              style={{ display: "none" }}
+              className="hidden"
               onChange={handleImageChange}
             />
             <form onSubmit={handleSubmit(handleUpdateProfile)}>
-              <div style={{ marginBottom: "15px" }}>
-                <label>Họ và tên</label>
+              <div className="mb-4">
+                <label className="block mb-1">Họ và tên</label>
                 <input
                   type="text"
-                  style={{ width: "100%", padding: "10px" }}
+                  className="w-full p-2.5 border border-gray-300 rounded"
                   {...register("fullName")}
                 />
                 {errors.fullName && (
-                  <p style={{ color: "red", fontSize: "12px" }}>
-                    {errors.fullName.message}
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.fullName.message as string}
                   </p>
                 )}
               </div>
-              <div style={{ marginBottom: "15px" }}>
-                <label>Email</label>
+              <div className="mb-4">
+                <label className="block mb-1">Email</label>
                 <input
                   type="email"
-                  style={{ width: "100%", padding: "10px" }}
+                  className="w-full p-2.5 border border-gray-300 rounded"
                   {...register("email")}
                 />
                 {errors.email && (
-                  <p style={{ color: "red", fontSize: "12px" }}>
-                    {errors.email.message}
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.email.message as string}
                   </p>
                 )}
               </div>
-              <div style={{ marginBottom: "15px" }}>
-                <label>Số điện thoại</label>
+              <div className="mb-4">
+                <label className="block mb-1">Số điện thoại</label>
                 <input
                   type="text"
-                  style={{ width: "100%", padding: "10px" }}
+                  className="w-full p-2.5 border border-gray-300 rounded"
                   {...register("phoneNumber")}
                 />
                 {errors.phoneNumber && (
-                  <p style={{ color: "red", fontSize: "12px" }}>
-                    {errors.phoneNumber.message}
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.phoneNumber.message as string}
                   </p>
                 )}
               </div>
-              <div style={{ marginBottom: "15px" }}>
-                <label>Địa chỉ</label>
+              <div className="mb-4">
+                <label className="block mb-1">Địa chỉ</label>
                 <input
                   type="text"
-                  style={{ width: "100%", padding: "10px" }}
+                  className="w-full p-2.5 border border-gray-300 rounded"
                   {...register("address")}
                 />
                 {errors.address && (
-                  <p style={{ color: "red", fontSize: "12px" }}>
-                    {errors.address.message}
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.address.message as string}
                   </p>
                 )}
               </div>
 
-              <div style={{ textAlign: "center" }}>
+              <div className="text-center">
                 <input
                   type="submit"
                   disabled={isLoading}
-                  style={{
-                    backgroundColor: isLoading ? "#999" : "#0060c9",
-                    color: "white",
-                    padding: "10px 20px",
-                    borderRadius: "5px",
-                    border: "none",
-                    cursor: isLoading ? "not-allowed" : "pointer",
-                    fontSize: "16px",
-                  }}
+                  className={`px-5 py-2.5 text-white rounded border-none cursor-pointer text-base ${
+                    isLoading
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-primary hover:bg-red-700"
+                  } transition-all duration-300`}
                   value={isLoading ? "Đang cập nhật..." : "Cập nhật thông tin"}
                 />
               </div>

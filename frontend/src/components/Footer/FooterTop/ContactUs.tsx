@@ -7,22 +7,22 @@ const ContactUs: React.FC = () => {
     <div className="contact-us">
       {/* ======= Title ======= */}
       <div className="contact-us-title">
-        <h6>Liên hệ với chúng tôi</h6>
+        <h6 className="font-semibold mb-7.5">Liên hệ với chúng tôi</h6>
       </div>
       <div className="contact-us-content">
         {/* ======= Content - text ======= */}
         <div className="text">
-          <p>Gọi cho chúng tôi 24/7</p>
-          <h3> (+84) 0368654275</h3>
-          <p>
+          <p className="text-(--color-text) text-sm">Gọi cho chúng tôi 24/7</p>
+          <h3 className="text-2xl font-bold text-(--color-primary)"> (+84) 0368654275</h3>
+          <p className="text-(--color-text) text-sm">
             Ba Vì, Hà Nội
             <br />
-            <Link href="#/">vietducforindiv@gmail.com</Link>
+            <Link href="#/" className="text-(--color-text) no-underline hover:text-(--color-primary) transition-(--transition-normal)">vietducforindiv@gmail.com</Link>
           </p>
         </div>
         {/* ======= Content - social media ======= */}
         <div className="social-media">
-          <ul>
+          <ul className="flex items-center justify-between w-40 m-0 p-0 pt-6.25">
             {SocialMediaData.map((item) => (
               <li key={item.id}>
                 <Link href={item.href} className={item.class}>

@@ -46,37 +46,34 @@ const ProductItem: React.FC<any> = ({ product }) => {
   const handleClose = () => setShowModal(false); // Đóng modal
 
   return (
-    <div className="compare-product-item">
-      <div className="top-part box">
-        <div className="remove-btn">
-          <button
-            type="button"
-            onClick={() => {
-              removeFromCompare(product._id);
-              makeIsInCompareFalse(product._id);
-              toast.error(
-                '"' + product.productName + '" đã được xóa khỏi phần quan tâm.'
-              );
-            }}
-          >
-            Xóa
-          </button>
-        </div>
-        <div className="product-img d-flex justify-content-center align-items-center">
-          <Link href={`/products/${product._id}`}>
-            <img
-              className="img-fluid"
-              src={defaultImage}
-              alt={product.productName}
-            />
-          </Link>
-        </div>
+    <div className="bg-white rounded-lg shadow-md overflow-hidden h-full flex flex-col">
+      <div className="relative p-4">
+        <button
+          type="button"
+          className="absolute top-2 right-2 z-10 bg-white rounded-full p-1 text-gray-500 hover:text-red-600 shadow-sm"
+          onClick={() => {
+            removeFromCompare(product._id);
+            makeIsInCompareFalse(product._id);
+            toast.error(
+              '"' + product.productName + '" đã được xóa khỏi phần quan tâm.'
+            );
+          }}
+        >
+          ✕
+        </button>
+        <Link href={`/products/${product._id}`}>
+          <img
+            src={defaultImage}
+            alt={product.productName}
+            className="w-full h-48 object-cover rounded"
+          />
+        </Link>
       </div>
-      <div className="middle-part">
-        <div className="title">
-          <h6>
+      <div className="flex-1 p-4 flex flex-col">
+        <div className="mb-2">
+          <h6 className="text-lg font-semibold">
             <Link
-              style={{ color: "#0060c9" }}
+              className="text-primary hover:text-red-700"
               href={`/products/${product._id}`}
             >
               {product.productName}
@@ -84,94 +81,65 @@ const ProductItem: React.FC<any> = ({ product }) => {
           </h6>
         </div>
 
-        {/* Hiển thị giá theo điều kiện có discount hay không */}
-        <div className="price">
+        <div className="mb-4">
           {product.discount ? (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              {/* Giá gốc gạch ngang */}
-              <p
-                style={{
-                  margin: "0",
-                  color: "gray",
-                  textDecoration: "line-through",
-                  marginRight: "10px", // Tạo khoảng cách giữa giá gốc và giá đã giảm
-                }}
-              >
+            <div className="flex items-center gap-2">
+              <p className="m-0 text-gray-500 line-through">
                 {formatCurrency(product.price)}
               </p>
-              {/* Giá sau khi giảm */}
-              <p
-                style={{
-                  margin: "0",
-                  color: "red",
-                  fontWeight: "bold",
-                }}
-              >
+              <p className="m-0 text-red-600 font-bold">
                 {formatCurrency(
                   product.price - (product.price * product.discount) / 100
                 )}
               </p>
             </div>
           ) : (
-            <p style={{ margin: "0", fontWeight: "bold" }}>
+            <p className="m-0 font-bold text-lg">
               {formatCurrency(product.price)}
             </p>
           )}
         </div>
 
-        {/* Hiển thị từng variation */}
-        {product.variations.map((variation: any, index: number) => (
-          <div
-            key={index}
-            className="variation-item"
-            style={{ paddingRight: "20px", paddingLeft: "20px" }}
-          >
-            {/* Hiển thị thông tin variation */}
+        <div className="space-y-2 mb-4">
+          {product.variations.map((variation: any, index: number) => (
             <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "5px 0",
-                borderBottom: "1px solid #ccc",
-              }}
+              key={index}
+              className="px-5 py-2 border-b border-gray-200 last:border-b-0"
             >
-              <div>
-                <strong>{variation.attributeValue}</strong>
-              </div>
-              <div>
-                <p style={{ fontWeight: "bold", margin: 0 }}>
-                  {formatCurrency(variation.price)}
-                </p>
-                <p style={{ margin: "0", fontSize: "12px", color: "#555" }}>
-                  Số lượng: {variation.quantity}
-                </p>
+              <div className="flex justify-between items-center">
+                <div>
+                  <strong className="text-sm">{variation.attributeValue}</strong>
+                </div>
+                <div>
+                  <p className="font-bold text-sm m-0">
+                    {formatCurrency(variation.price)}
+                  </p>
+                  <p className="m-0 text-xs text-gray-600">
+                    Số lượng: {variation.quantity}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
 
-        <div className="rating-area box">
+        <div className="mb-4">
           <Rating value={product.avgRating} />
         </div>
-      </div>
-      <div className="bottom-part box d-flex align-items-center">
-        <div className="add-to-cart-btn d-flex justify-content-center w-100">
+
+        <div className="mt-auto">
           {product.isInCart ? (
-            // ===== Nút đã thêm vào giỏ hàng ===== //
-            <button type="button" className="disabledBtn w-100" disabled>
+            <button
+              type="button"
+              className="w-full bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed"
+              disabled
+            >
               Đã thêm vào giỏ hàng
             </button>
           ) : (
-            // ===== Nút thêm vào giỏ hàng ===== //
             <button
-              style={{ color: "#ffffff" }}
               type="button"
-              className="w-100"
+              className="w-full bg-primary text-white py-2 px-4 rounded hover:bg-red-700 transition-all duration-300"
               onClick={handleAddToCart}
             >
               Thêm vào giỏ hàng
@@ -180,7 +148,6 @@ const ProductItem: React.FC<any> = ({ product }) => {
         </div>
       </div>
 
-      {/* Dialog hiển thị khi sản phẩm có variation */}
       <Dialog open={showModal} onOpenChange={(open) => !open && handleClose()}>
         <DialogContent className="max-w-4xl">
           <div className="flex justify-end mb-4">
@@ -188,14 +155,12 @@ const ProductItem: React.FC<any> = ({ product }) => {
               ✖
             </button>
           </div>
-          <div className="modal-product-info">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div>
-                <ImgSlider product={selectedProduct} />
-              </div>
-              <div>
-                <ProductInfo product={selectedProduct} />
-              </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+              <ImgSlider product={selectedProduct} />
+            </div>
+            <div>
+              <ProductInfo product={selectedProduct} />
             </div>
           </div>
         </DialogContent>

@@ -49,40 +49,48 @@ const HistorySection: React.FC = () => {
   }, [pagination.page, pagination.limit, user]);
 
   const generateStatus = (status: string) => {
-    let color = "";
+    let colorClass = "";
+    let borderClass = "";
+    let bgClass = "";
     switch (status) {
       case "Chờ xác nhận":
-        color = "#FF9900";
+        colorClass = "text-orange-500";
+        borderClass = "border-orange-500";
+        bgClass = "bg-orange-50";
         break;
       case "Đã xác nhận":
-        color = "#0000FF";
+        colorClass = "text-blue-600";
+        borderClass = "border-blue-600";
+        bgClass = "bg-blue-50";
         break;
       case "Đã đóng gói":
-        color = "#800080";
+        colorClass = "text-purple-600";
+        borderClass = "border-purple-600";
+        bgClass = "bg-purple-50";
         break;
       case "Đang vận chuyển":
-        color = "#008000";
+        colorClass = "text-green-600";
+        borderClass = "border-green-600";
+        bgClass = "bg-green-50";
         break;
       case "Đã hủy":
-        color = "#FF0000";
+        colorClass = "text-red-600";
+        borderClass = "border-red-600";
+        bgClass = "bg-red-50";
         break;
       case "Đã giao hàng":
-        color = "#008080";
+        colorClass = "text-teal-600";
+        borderClass = "border-teal-600";
+        bgClass = "bg-teal-50";
         break;
       default:
-        color = "gray";
+        colorClass = "text-gray-500";
+        borderClass = "border-gray-500";
+        bgClass = "bg-gray-50";
     }
     return (
       <span
-        style={{
-          color: color,
-          padding: "3px 8px",
-          border: `1px solid ${color}`,
-          borderRadius: "5px",
-          backgroundColor: `${color}20`,
-          textAlign: "center",
-          display: "inline-block",
-        }}
+        className={`inline-block text-center px-2 py-1 rounded ${colorClass} ${borderClass} ${bgClass} border`}
       >
         {status}
       </span>
@@ -164,7 +172,7 @@ const HistorySection: React.FC = () => {
       title: "Thao tác",
       key: "action",
       render: (_: any, record: any) => (
-        <div style={{ display: "flex", gap: "0.5rem" }}>
+        <div className="flex gap-2">
           <Button onClick={() => showOrderDetail(record)}>Xem chi tiết</Button>
           {record.status === "Chờ xác nhận" && (
             <Button danger onClick={() => handleCancelOrder(record)}>
@@ -186,35 +194,20 @@ const HistorySection: React.FC = () => {
 
     return (
       <div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "600" }}>
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-semibold">
             Mã đơn hàng: {selectedOrder.code}
           </h2>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <div className="flex items-center gap-4">
             <Tag color="orange">{selectedOrder.status}</Tag>
           </div>
         </div>
-        <p style={{ color: "#6B7280" }}>
+        <p className="text-gray-600">
           {new Date(selectedOrder.date).toLocaleString()}
         </p>
 
-        <div
-          style={{
-            border: "1px solid #E5E7EB",
-            borderRadius: "0.5rem",
-            padding: "1rem",
-            marginTop: "1rem",
-          }}
-        >
-          <h3 style={{ fontWeight: "600", marginBottom: "0.5rem" }}>
-            Sản phẩm trong đơn hàng
-          </h3>
+        <div className="border border-gray-200 rounded-lg p-4 mt-4">
+          <h3 className="font-semibold mb-2">Sản phẩm trong đơn hàng</h3>
           {selectedOrder.orderDetails.map((item: any) => {
             console.log(item);
             const defaultImageUrl =
@@ -224,39 +217,27 @@ const HistorySection: React.FC = () => {
             return (
               <div
                 key={item._id}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "1rem",
-                }}
+                className="flex justify-between items-center mb-4"
               >
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "1rem" }}
-                >
+                <div className="flex items-center gap-4">
                   <img
                     src={defaultImageUrl}
                     alt={item.product.productName}
-                    style={{
-                      width: "5rem",
-                      height: "5rem",
-                      objectFit: "cover",
-                      borderRadius: "0.5rem",
-                    }}
+                    className="w-20 h-20 object-cover rounded-lg"
                   />
                   <div>
-                    <p style={{ fontWeight: "600" }}>
+                    <p className="font-semibold">
                       {item.product.productName}
                     </p>
-                    <p style={{ fontSize: "0.875rem", color: "#6B7280" }}>
+                    <p className="text-sm text-gray-600">
                       Lựa chọn:{" "}
                       {item.productVariation?.attributeValue || "Không có"}
                     </p>
                   </div>
                 </div>
                 <div>
-                  <p style={{ color: "#6B7280" }}>x{item.quantity}</p>
-                  <p style={{ fontWeight: "600" }}>
+                  <p className="text-gray-600">x{item.quantity}</p>
+                  <p className="font-semibold">
                     {formatCurrency(item.price)}
                   </p>
                 </div>
@@ -265,24 +246,9 @@ const HistorySection: React.FC = () => {
           })}
         </div>
 
-        <div
-          style={{
-            border: "1px solid #E5E7EB",
-            borderRadius: "0.5rem",
-            padding: "1rem",
-            marginTop: "1rem",
-          }}
-        >
-          <h3 style={{ fontWeight: "600", marginBottom: "0.5rem" }}>
-            Tóm tắt đơn hàng
-          </h3>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "0.5rem",
-            }}
-          >
+        <div className="border border-gray-200 rounded-lg p-4 mt-4">
+          <h3 className="font-semibold mb-2">Tóm tắt đơn hàng</h3>
+          <div className="flex justify-between mb-2">
             <p>Tổng tiền</p>
             <p>
               {formatCurrency(
@@ -290,13 +256,7 @@ const HistorySection: React.FC = () => {
               )}
             </p>
           </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "0.5rem",
-            }}
-          >
+          <div className="flex justify-between mb-2">
             <p>Giảm giá</p>
             {selectedOrder.discount ? (
               <p>
@@ -311,30 +271,14 @@ const HistorySection: React.FC = () => {
               <p>Không có</p>
             )}
           </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontWeight: "bold",
-              fontSize: "1.125rem",
-            }}
-          >
+          <div className="flex justify-between font-bold text-lg">
             <p>Tổng đơn hàng</p>
             <p>{formatCurrency(selectedOrder.totalPrice)}</p>
           </div>
         </div>
 
-        <div
-          style={{
-            border: "1px solid #E5E7EB",
-            borderRadius: "0.5rem",
-            padding: "1rem",
-            marginTop: "1rem",
-          }}
-        >
-          <h3 style={{ fontWeight: "600", marginBottom: "0.5rem" }}>
-            Thông tin người nhận
-          </h3>
+        <div className="border border-gray-200 rounded-lg p-4 mt-4">
+          <h3 className="font-semibold mb-2">Thông tin người nhận</h3>
           <div>
             <div>
               <p>

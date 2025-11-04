@@ -43,140 +43,110 @@ const CheckoutInfo: React.FC<IProps> = (props) => {
   };
 
   return (
-    <div className="checkout-info">
+    <div>
       <form
         onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
           e.preventDefault(); // Ngăn load lại trang
           props.handleShippingSubmit();
         }}
       >
-        <div className="row">
-          <div className="col-12">
-            <div className="title text-center">
-              <h1 style={{ marginTop: "20px" }}>Thông tin thanh toán</h1>
-            </div>
-          </div>
+        <div className="text-center">
+          <h1 className="text-3xl font-bold mt-5">Thông tin thanh toán</h1>
         </div>
-        <div className="row">
-          <div className="col-lg-8 offset-lg-2">
-            <div className="checkout-info-area">
-              <div className="shipping-address">
-                <h5>Thông tin người nhận</h5>
-                <div className="row">
-                  <div className="col-12">
-                    <div className="input-wrapper">
-                      <label>Người nhận</label>
-                      <input
-                        type="text"
-                        placeholder="Người nhận"
-                        name="recipientName"
-                        value={address.recipientName}
-                        onChange={handleInputChange}
-                        className="form-control"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="input-wrapper">
-                      <label>Số điện thoại</label>
-                      <input
-                        type="text"
-                        placeholder="Số điện thoại"
-                        name="phoneNumber"
-                        value={address.phoneNumber}
-                        onChange={handleInputChange}
-                        className="form-control"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="input-wrapper">
-                      <label>Email</label>
-                      <input
-                        type="text"
-                        placeholder="Email"
-                        name="email"
-                        value={address.email}
-                        onChange={handleInputChange}
-                        className="form-control"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-12">
-                    <div className="input-wrapper">
-                      <label>Địa chỉ nhận hàng</label>
-                      <input
-                        type="text"
-                        placeholder="Địa chỉ"
-                        name="address"
-                        value={address.address}
-                        onChange={handleInputChange}
-                        className="form-control"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-12">
-                    <div className="input-wrapper">
-                      <input
-                        type="text"
-                        placeholder="Phường/Xã"
-                        name="ward"
-                        value={address.ward}
-                        onChange={handleInputChange}
-                        className="form-control"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-6">
-                    <div className="input-wrapper">
-                      <input
-                        type="text"
-                        placeholder="Quận/Huyện"
-                        name="district"
-                        value={address.district}
-                        onChange={handleInputChange}
-                        className="form-control"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-6">
-                    <div className="input-wrapper">
-                      <input
-                        type="text"
-                        placeholder="Thành phố"
-                        name="city"
-                        value={address.city}
-                        onChange={handleInputChange}
-                        className="form-control"
-                      />
-                    </div>
-                  </div>
-                </div>
+        <div className="w-full max-w-3xl mx-auto mt-8">
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <h5 className="text-lg font-semibold mb-4">Thông tin người nhận</h5>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-2">Người nhận</label>
+                <input
+                  type="text"
+                  placeholder="Người nhận"
+                  name="recipientName"
+                  value={address.recipientName}
+                  onChange={handleInputChange}
+                  className="w-full p-2.5 border border-gray-300 rounded"
+                />
+              </div>
+              <div>
+                <label className="block mb-2">Số điện thoại</label>
+                <input
+                  type="text"
+                  placeholder="Số điện thoại"
+                  name="phoneNumber"
+                  value={address.phoneNumber}
+                  onChange={handleInputChange}
+                  className="w-full p-2.5 border border-gray-300 rounded"
+                />
+              </div>
+              <div>
+                <label className="block mb-2">Email</label>
+                <input
+                  type="text"
+                  placeholder="Email"
+                  name="email"
+                  value={address.email}
+                  onChange={handleInputChange}
+                  className="w-full p-2.5 border border-gray-300 rounded"
+                />
+              </div>
+              <div></div>
+              <div className="md:col-span-2">
+                <label className="block mb-2">Địa chỉ nhận hàng</label>
+                <input
+                  type="text"
+                  placeholder="Địa chỉ"
+                  name="address"
+                  value={address.address}
+                  onChange={handleInputChange}
+                  className="w-full p-2.5 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <input
+                  type="text"
+                  placeholder="Phường/Xã"
+                  name="ward"
+                  value={address.ward}
+                  onChange={handleInputChange}
+                  className="w-full p-2.5 border border-gray-300 rounded"
+                />
+              </div>
+              <div>
+                <input
+                  type="text"
+                  placeholder="Quận/Huyện"
+                  name="district"
+                  value={address.district}
+                  onChange={handleInputChange}
+                  className="w-full p-2.5 border border-gray-300 rounded"
+                />
+              </div>
+              <div>
+                <input
+                  type="text"
+                  placeholder="Thành phố"
+                  name="city"
+                  value={address.city}
+                  onChange={handleInputChange}
+                  className="w-full p-2.5 border border-gray-300 rounded"
+                />
               </div>
             </div>
           </div>
         </div>
-        <div className="row">
-          <div className="col-lg-8 offset-lg-2">
-            <div className="bottom-links d-flex justify-content-between">
-              <Button
-                onClick={props.handlePrev} // Gọi hàm quay lại khi nhấn nút
-                style={{
-                  backgroundColor: "#fff",
-                  color: "#000",
-                  border: "1px solid #000",
-                  padding: "8px 16px",
-                }}
-              >
-                <HiArrowNarrowLeft /> Quay lại
-              </Button>
-              <input
-                type="submit"
-                value="Tiếp tục đến vận chuyển"
-                className="btn btn-primary"
-              />
-            </div>
-          </div>
+        <div className="w-full max-w-3xl mx-auto mt-6 flex justify-between">
+          <Button
+            onClick={props.handlePrev}
+            className="flex items-center gap-2 px-4 py-2 border border-black bg-white text-black rounded hover:bg-gray-100"
+          >
+            <HiArrowNarrowLeft /> Quay lại
+          </Button>
+          <input
+            type="submit"
+            value="Tiếp tục đến vận chuyển"
+            className="px-6 py-2.5 bg-primary text-white rounded hover:bg-red-700 transition-all duration-300 cursor-pointer"
+          />
         </div>
       </form>
     </div>

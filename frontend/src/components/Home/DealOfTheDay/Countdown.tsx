@@ -9,7 +9,7 @@ const Countdown: React.FC = () => {
     "00"
   );
 
-  let interval: any = useRef();
+  let interval: any = useRef(null);
 
   // Đếm ngược 24 giờ (86400000 milliseconds)
   const startTimer = (): void => {
@@ -58,21 +58,21 @@ const Countdown: React.FC = () => {
   }, []); // Chỉ chạy 1 lần khi component được mount
 
   return (
-    <div className="countdown d-flex">
-      <div className="text">
-        <p>Kết thúc sau:</p>
+    <div className="flex items-center">
+      <div className="mr-3">
+        <p className="text-sm text-gray-600 m-0">Kết thúc sau:</p>
       </div>
-      <div className="items d-flex justify-content-center align-items-center">
-        <div className="box hour">
-          <span>{countdownHours}</span>
+      <div className="flex items-center">
+        <div className="bg-primary text-white px-3 py-1 rounded text-center min-w-[50px]">
+          <span className="text-lg font-semibold">{countdownHours}</span>
         </div>
-        <span className="colon-symbol">:</span>
-        <div className="box minute">
-          <span>{countdownMinutes}</span>
+        <span className="mx-2 text-gray-600">:</span>
+        <div className="bg-primary text-white px-3 py-1 rounded text-center min-w-[50px]">
+          <span className="text-lg font-semibold">{countdownMinutes}</span>
         </div>
-        <span className="colon-symbol">:</span>
-        <div className="box second">
-          <span>{countdownSeconds}</span>
+        <span className="mx-2 text-gray-600">:</span>
+        <div className="bg-primary text-white px-3 py-1 rounded text-center min-w-[50px]">
+          <span className="text-lg font-semibold">{countdownSeconds}</span>
         </div>
       </div>
     </div>

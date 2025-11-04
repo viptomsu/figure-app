@@ -38,15 +38,15 @@ const Department: React.FC = () => {
   }
 
   return (
-    <div className="department d-flex">
+    <div className="department flex items-center justify-between h-full w-full max-w-65 cursor-pointer relative">
       <div className="icon">
         <span>
           <GiHamburgerMenu color="#ffffff" />
         </span>
       </div>
 
-      <div className="text" style={{ color: "#ffffff" }}>
-        <h6>Danh mục sản phẩm</h6>
+      <div className="text pl-3" style={{ color: "#ffffff" }}>
+        <h6 className="font-semibold m-0">Danh mục sản phẩm</h6>
       </div>
       <div className="title" style={{ color: "#ffffff" }}>
         <h6>Danh mục sản phẩm</h6>
@@ -66,11 +66,11 @@ const Department: React.FC = () => {
       >
         {categories.map((item: any) =>
           item.submenu ? (
-            <li key={item.categoryId}>
+            <li key={item.categoryId} className="relative w-full transition-(--transition-normal)">
               <Link
                 href="/shop"
                 onClick={handleCloseCategories}
-                className="d-flex justify-content-between"
+                className="flex justify-between w-full text-black block py-2.5 no-underline"
               >
                 <p className="m-0 p-0">
                   <span>
@@ -78,7 +78,7 @@ const Department: React.FC = () => {
                     <img
                       src={item.image}
                       alt={item.categoryName}
-                      style={{ width: "24px", height: "24px" }}
+                      className="w-6 h-6"
                     />
                   </span>{" "}
                   {item.categoryName}
@@ -90,17 +90,18 @@ const Department: React.FC = () => {
               {/* Thêm logic submenu nếu có */}
             </li>
           ) : (
-            <li key={item._id}>
+            <li key={item._id} className="relative w-full transition-(--transition-normal)">
               <Link
-                to={`/shop?categoryId=${item._id}`}
+                href={`/shop?categoryId=${item._id}`}
                 onClick={handleCloseCategories}
+                className="text-black block w-full py-2.5 no-underline"
               >
                 <span>
                   {/* Hiển thị hình ảnh danh mục */}
                   <img
                     src={item.image}
                     alt={item.categoryName}
-                    style={{ width: "24px", height: "24px" }}
+                    className="w-6 h-6"
                   />
                 </span>{" "}
                 {item.categoryName}

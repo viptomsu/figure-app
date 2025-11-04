@@ -1,7 +1,7 @@
 // header
 export interface INavMenuDataTypes {
   id: number;
-  icon: JSX.Element;
+  icon: React.ReactNode;
   title: string;
   href: string;
   class: string;
@@ -11,9 +11,9 @@ export interface IActionDataTypes {
   id: number;
   href: string;
   sup: number;
-  icon: JSX.Element;
+  icon: React.ReactNode;
   class: string;
-  dropdownContent?: JSX.Element;
+  dropdownContent?: React.ReactNode;
   func?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
@@ -21,7 +21,7 @@ export interface IActionDataTypes {
 export interface ICategoriesListDataTypes {
   id: number;
   title: string;
-  icon: JSX.Element;
+  icon: React.ReactNode;
   submenuTitle?: string;
   submenuTitle2?: string;
   submenu?: {
@@ -42,7 +42,7 @@ export interface IAdsData1 {
 // home > advantages
 export interface IAdvantagesDataTypes {
   id: number;
-  icon: JSX.Element;
+  icon: React.ReactNode;
   title: string;
   paragraph: string;
 }
@@ -87,7 +87,7 @@ export interface ISmallImages {
 export interface ISocialMedia {
   id: number;
   href: string;
-  icon: JSX.Element;
+  icon: React.ReactNode;
   class: string;
 }
 
@@ -191,7 +191,7 @@ export interface IPaginationProps {
 export interface IContactItems {
   id: number;
   title: string;
-  content: JSX.Element;
+  content: React.ReactNode;
 }
 
 // footer bottom

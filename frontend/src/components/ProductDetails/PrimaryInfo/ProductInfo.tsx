@@ -65,31 +65,32 @@ const ProductInfo: React.FC<any> = ({ product }) => {
 	);
 
 	return (
-		<div className="product-info">
+		<div className="pr-12.5">
 			{/* ===== Tiêu đề và xếp hạng ===== */}
-			<div className="title-and-rating">
-				<h5>{product?.productName}</h5>
-				<p className="d-flex">
+			<div>
+				<h5 className="text-2xl font-medium mb-2">{product?.productName}</h5>
+				<div className="flex items-center gap-2">
 					<Rating value={product?.avgRating} />
-					<small className="review-count text-muted">
+					<small className="text-gray-600 text-sm">
 						({product?.reviewCount} đánh giá)
 					</small>
-				</p>
+				</div>
 			</div>
-			<div className="price-and-description">
-				<div className="price">
+
+			<div className="mt-4">
+				<div>
 					{/* Nếu có discount và có giá cũ (từ selectedVariation hoặc product.price), hiển thị giá cũ */}
 					{(selectedVariation?.price || product?.price) &&
 						product?.discount && (
-							<p className="old-price d-flex">
-								<del>
+							<div className="flex items-center">
+								<del className="text-gray-500">
 									{formatCurrency(selectedVariation?.price ?? product.price)}
 								</del>
-							</p>
+							</div>
 						)}
 
 					{/* Hiển thị giá mới sau khi đã tính discount */}
-					<p className="new-price">
+					<p className="text-primary text-xl font-bold mt-1">
 						{formatCurrency(
 							selectedVariation?.price
 								? displayedPrice
@@ -102,64 +103,50 @@ const ProductInfo: React.FC<any> = ({ product }) => {
 			</div>
 
 			{/* ===== Biến thể (Variations) ===== */}
-			<div className="variations">
+			<div className="mt-4">
 				{/* Render variations grouped by attributeName */}
 				{Object.keys(groupedVariations).map((attributeName) => (
-					<div key={attributeName} className="variation-group mt-3">
-						<p className="attribute-name">
-							<strong>{attributeName}:</strong>
+					<div key={attributeName} className="mt-3">
+						<p className="font-semibold">
+							{attributeName}:
 						</p>
-						<div className="variation-options d-flex flex-wrap mt-2">
+						<div className="flex flex-wrap gap-2 mt-2">
 							{groupedVariations[attributeName].map((variation: Variation) => (
 								<div
 									key={variation._id}
-									className={`variation-option ${
-										selectedVariation?._id === variation._id ? "selected" : ""
+									className={`px-2.5 py-2 rounded border text-center cursor-pointer transition-all duration-300 ${
+										selectedVariation?._id === variation._id
+											? "border-primary bg-primary/10"
+											: "border-gray-300 hover:border-primary"
 									}`}
-									onClick={() => handleVariationChange(variation)}
-									style={{
-										border:
-											selectedVariation?._id === variation._id
-												? "2px solid red"
-												: "1px solid grey",
-										padding: "10px",
-										borderRadius: "8px",
-										cursor: "pointer",
-										margin: "5px",
-										textAlign: "center",
-										width: "100px", // Adjust width to make them look nice
-									}}>
-									<p>{variation.attributeValue}</p>
+									onClick={() => handleVariationChange(variation)}>
+									<p className="text-sm">{variation.attributeValue}</p>
 								</div>
 							))}
 						</div>
 						{/* Divider between different attribute groups */}
-						<hr style={{ width: "100%", margin: "10px 0" }} />
+						<hr className="w-full my-2.5" />
 					</div>
 				))}
 			</div>
 
 			{/* ===== Số lượng và nút thêm vào giỏ hàng ===== */}
-			<div className="quantity-and-buttons">
-				<div className="top-btns">
-					<div className="quantity-wrapper top-btn">
-						<div className="quantity-area d-flex align-items-center">
-							<button className="minus-btn" disabled>
-								−
-							</button>
-							<input type="text" readOnly value={1} />
-							<button className="plus-btn" disabled>
-								+
-							</button>
-						</div>
+			<div className="mt-4">
+				<div className="flex gap-4 items-center">
+					<div className="flex items-center border border-gray-300 rounded">
+						<button className="px-3 py-2" disabled>
+							−
+						</button>
+						<input type="text" readOnly value={1} className="w-12 text-center border-x border-gray-300 py-2" />
+						<button className="px-3 py-2" disabled>
+							+
+						</button>
 					</div>
-					<div className="add-to-cart-btn top-btn">
+					<div>
 						{/* Nút thêm vào giỏ hàng */}
 						<button
 							type="button"
-							style={{
-								backgroundColor: "#0060c9",
-							}}
+							className="bg-primary text-white px-6 py-2.5 rounded hover:bg-red-700 transition-all duration-300"
 							title="Thêm vào giỏ hàng"
 							onClick={() => {
 								addToCart({
@@ -180,13 +167,13 @@ const ProductInfo: React.FC<any> = ({ product }) => {
 							Thêm vào giỏ hàng
 						</button>
 					</div>
-					<div className="small-btns d-flex">
-						<div className="wishlist-btn top-btn">
+					<div className="flex gap-2">
+						<div>
 							{product.isInWishlist ? (
 								<button
 									type="button"
 									title="Đã thêm vào Wishlist"
-									className="disabledBtn"
+									className="bg-gray-400 text-white p-2 rounded cursor-not-allowed"
 									disabled>
 									<BsHeart />
 								</button>
@@ -194,6 +181,7 @@ const ProductInfo: React.FC<any> = ({ product }) => {
 								<button
 									type="button"
 									title="Thêm vào Wishlist"
+									className="bg-gray-200 text-gray-700 p-2 rounded hover:bg-primary hover:text-white transition-all duration-300"
 									onClick={() => {
 										addToWishlist(product);
 										toast.success(
@@ -204,12 +192,12 @@ const ProductInfo: React.FC<any> = ({ product }) => {
 								</button>
 							)}
 						</div>
-						<div className="compare-btn top-btn">
+						<div>
 							{product.isInCompare ? (
 								<button
 									type="button"
 									title="Đã thêm vào so sánh"
-									className="disabledBtn"
+									className="bg-gray-400 text-white p-2 rounded cursor-not-allowed"
 									disabled>
 									<FiBarChart2 />
 								</button>
@@ -217,6 +205,7 @@ const ProductInfo: React.FC<any> = ({ product }) => {
 								<button
 									type="button"
 									title="Thêm vào so sánh"
+									className="bg-gray-200 text-gray-700 p-2 rounded hover:bg-primary hover:text-white transition-all duration-300"
 									onClick={() => {
 										addToCompare(product);
 										toast.success(
@@ -232,21 +221,21 @@ const ProductInfo: React.FC<any> = ({ product }) => {
 			</div>
 
 			{/* ===== SKU, Danh mục, Thương hiệu ===== */}
-			<div className="sku-tags-and-categories">
-				<div className="sku">
-					<span>Còn lại:</span>
-					<p>{product.stock} sản phẩm</p>
+			<div className="mt-6 space-y-2">
+				<div>
+					<span className="text-sm font-medium">Còn lại:</span>
+					<p className="text-sm">{product.stock} sản phẩm</p>
 				</div>
-				<div className="sku">
-					<span>SKU:</span>
-					<p>{product._id}</p>
+				<div>
+					<span className="text-sm font-medium">SKU:</span>
+					<p className="text-sm">{product._id}</p>
 				</div>
-				<div className="brand">
-					<span>Danh mục: {product.category?.categoryName}</span>
+				<div>
+					<span className="text-sm font-medium">Danh mục: {product.category?.categoryName}</span>
 					<p></p>
 				</div>
-				<div className="brand">
-					<span>Thương hiệu: {product.brand?.brandName}</span>
+				<div>
+					<span className="text-sm font-medium">Thương hiệu: {product.brand?.brandName}</span>
 					<p></p>
 				</div>
 			</div>

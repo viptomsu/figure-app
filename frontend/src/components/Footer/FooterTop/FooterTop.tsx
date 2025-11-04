@@ -5,22 +5,22 @@ import Link from "next/link";
 
 const FooterTop: React.FC = () => {
   return (
-    <div className="py-8">
+    <div className="pb-12.5">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="contact-us-wrapper">
+        <div>
           <ContactUs />
         </div>
-        <div className="links-wrapper">
+        <div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {LinksData.map((item) => (
-              <div key={item.id} className="links-item">
-                <div className="title mb-4">
+              <div key={item.id}>
+                <div className="mb-7.5">
                   <h6 className="text-white font-semibold">{item.title}</h6>
                 </div>
-                <ul className="links m-0 space-y-2">
+                <ul className="m-0 pt-5 space-y-2">
                   {item.links.map((linkItem) => (
                     <li key={linkItem.id}>
-                      <Link href={linkItem.href} className="text-gray-300 hover:text-white transition-colors">{linkItem.title}</Link>
+                      <Link href={linkItem.href} className="text-gray-400 hover:text-white transition-all duration-300 no-underline">{linkItem.title}</Link>
                     </li>
                   ))}
                 </ul>

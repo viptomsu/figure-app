@@ -38,20 +38,18 @@ const ConsumerElectronics: React.FC<ConsumerElectronicsProps> = ({
   }
 
   return (
-    <div className="consumer-electronics">
-      {/* ======= Section header ======= */}
-      <div className="section-header-wrapper">
-        <SectionHeader title={title} /> {/* Tiêu đề đã dịch sang tiếng Việt */}
+    <div className="mb-12">
+      <div className="mb-6">
+        <SectionHeader title={title} />
       </div>
-      {/* ======= Owl-carousel ======= */}
-      <div className="owl-carousel-wrapper">
+      <div>
         <CustomCarousel>
           {products.length > 0 ? (
             products.map((product: any, index: number) => (
               <ProductCard key={index} product={product} />
             ))
           ) : (
-            <div>Không có sản phẩm nào</div> // Xử lý trường hợp không có sản phẩm
+            <div>Không có sản phẩm nào</div>
           )}
         </CustomCarousel>
       </div>

@@ -63,6 +63,7 @@ const DropdownCart: React.FC = () => {
                       <div className="remove-btn">
                         <button
                           type="button"
+                          className="pr-4 text-base transition-(--transition-normal) hover:text-red-600"
                           onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                             removeFromCart(product._id);
                             makeIsInCartFalse(product._id);
@@ -83,12 +84,13 @@ const DropdownCart: React.FC = () => {
                       {/* ======= Hình ảnh sản phẩm ======= */}
                       <div className="product-img">
                         <Link
-                          to={`/product-details/${product._id}`}
+                          href={`/products/${product._id}`}
                           onClick={closeDropdownCart}
+                          className="no-underline"
                         >
-                          <div className="img-wrapper">
+                          <div className="img-wrapper h-[65px] w-[45px]">
                             <img
-                              className="img-fluid"
+                              className="w-full h-full object-cover"
                               src={product.images[0]?.imageUrl}
                               alt={product.productName}
                             />
@@ -97,14 +99,14 @@ const DropdownCart: React.FC = () => {
                       </div>
                     </td>
                     <td>
-                      <ul className="d-flex flex-column align-items-start">
+                      <ul className="flex flex-col items-start p-0 m-0">
                         {/* ======= Tên sản phẩm ======= */}
                         <li>
-                          <h6 className="product-title">
+                          <h6 className="product-title m-0">
                             <Link
-                              style={{ color: "#0060c9" }}
-                              to={`/product-details/${product._id}`}
+                              href={`/products/${product._id}`}
                               onClick={closeDropdownCart}
+                              className="text-red-400 no-underline text-sm"
                             >
                               {product.productName}
                             </Link>
@@ -112,7 +114,7 @@ const DropdownCart: React.FC = () => {
                         </li>
                         {/* ======= Biến thể đã chọn ======= */}
                         <li>
-                          <small className="text-muted">
+                          <small className="text-gray-500">
                             Lựa chọn:{" "}
                             {product.selectedAttribute
                               ? product.selectedAttribute
@@ -121,8 +123,8 @@ const DropdownCart: React.FC = () => {
                         </li>
                         {/* ======= Số lượng và giá ======= */}
                         <li className="count-and-price">
-                          <small className="d-flex">
-                            <p className="total-price price d-flex align-items-center">
+                          <small className="flex">
+                            <p className="total-price price flex items-center m-0">
                               <span>
                                 {/* Hiển thị giá sau khi đã áp dụng giảm giá */}
                                 {formatCurrency(
@@ -132,7 +134,7 @@ const DropdownCart: React.FC = () => {
                                 đ
                               </span>
                             </p>
-                            <span className="multiplication">×</span>
+                            <span className="multiplication mx-1.25">×</span>
                             <span className="book-count">{product.count}</span>
                           </small>
                         </li>
@@ -144,23 +146,27 @@ const DropdownCart: React.FC = () => {
             </table>
 
             {/* ======= Tổng tiền (subtotal) ======= */}
-            <div className="total-area">
-              <div className="top-content d-flex justify-content-between">
-                <h6>Tổng cộng</h6>
-                <p>
+            <div className="total-area border-t border-gray-300 mt-7.5 pt-3.5">
+              <div className="top-content flex justify-between pb-3.5">
+                <h6 className="font-semibold text-lg m-0">Tổng cộng</h6>
+                <p className="font-semibold text-lg m-0">
                   <span>{formatCurrency(totalPrice, "VND")} đ</span>
                 </p>
               </div>
-              <div className="links d-flex align-items-center justify-content-between">
+              <div className="links flex items-center justify-between">
                 <div className="view-cart-btn text-center">
-                  <Link href="/cart" onClick={closeDropdownCart}>
+                  <Link 
+                    href="/cart" 
+                    onClick={closeDropdownCart}
+                    className="inline-block bg-transparent border-2 border-red-600 text-red-600 py-2.5 px-8.75 text-center no-underline transition-(--transition-normal) hover:bg-red-600 hover:text-white"
+                  >
                     Xem giỏ hàng
                   </Link>
                 </div>
-                <div className="checkout-btn d-flex">
+                <div className="checkout-btn flex">
                   <Link
                     href="/checkout"
-                    className="btn-style-2 w-100 text-center"
+                    className="bg-red-600 text-white py-2.5 px-8.75 text-center no-underline transition-(--transition-normal) hover:bg-red-700 w-full"
                     onClick={(e) => {
                       handleCheckout(e);
                       closeDropdownCart(e); // Đóng dropdown sau khi nhấn Thanh Toán
@@ -176,7 +182,7 @@ const DropdownCart: React.FC = () => {
           // ======= Thông báo giỏ hàng trống ======= //
           <div className="empty-cart">
             <div className="alert-text text-center">
-              <p className="paragraph mb-1">Giỏ hàng hiện đang trống.</p>
+              <p className="paragraph mb-1 text-sm">Giỏ hàng hiện đang trống.</p>
             </div>
           </div>
         )}

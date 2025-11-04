@@ -62,10 +62,10 @@ const Actions: React.FC = () => {
 	};
 
 	return (
-		<div className="header-top-actions d-flex">
+		<div className="header-top-actions flex">
 			<div className="left-actions">
-				<ul>
-					<li>
+				<ul className="list-none m-0 p-0">
+					<li className="relative">
 						<button
 							type="button"
 							className="search-btnn"
@@ -76,26 +76,22 @@ const Actions: React.FC = () => {
 						</button>
 					</li>
 					{ActionsData.map((item) => (
-						<li key={item.id}>
+						<li key={item.id} className="relative">
 							{item.href === "#/" ? (
 								<a
-									style={{ color: "#ffffff" }}
 									href={item.href}
-									className={item.class}
+									className={`${item.class} relative text-white transition-(--transition-normal) hover:text-red-600`}
 									onClick={item.func}>
 									{item.icon}
-									{item.sup > 0 && <sup>{item.sup}</sup>}{" "}
-									{/* Chỉ hiển thị số lượng nếu > 0 */}
+									{item.sup > 0 && <sup className="absolute top-2.25 right-[-10px] text-[12px] flex items-center justify-center bg-black text-white w-5 h-5 rounded-full">{item.sup}</sup>}
 								</a>
 							) : (
 								<Link
-									style={{ color: "#ffffff" }}
 									href={item.href}
-									className={item.class}
+									className={`${item.class} relative text-white transition-(--transition-normal) hover:text-red-600`}
 									onClick={item.func}>
 									{item.icon}
-									{item.sup > 0 && <sup>{item.sup}</sup>}{" "}
-									{/* Chỉ hiển thị số lượng nếu > 0 */}
+									{item.sup > 0 && <sup className="absolute top-2.25 right-[-10px] text-[12px] flex items-center justify-center bg-black text-white w-5 h-5 rounded-full">{item.sup}</sup>}
 								</Link>
 							)}
 							{item.dropdownContent}
@@ -103,20 +99,15 @@ const Actions: React.FC = () => {
 					))}
 				</ul>
 			</div>
-			<div className="right-actions d-flex">
-				<div className="user-icon">
+			<div className="right-actions flex">
+				<div className="user-icon h-10 w-11 pr-2.5">
 					{/* Kiểm tra nếu có user và avatar */}
 					{user && user.avatar ? (
 						<Link href="/profile">
 							<img
 								src={user.avatar}
 								alt={user.fullName}
-								style={{
-									width: "40px", // Kích thước của avatar
-									height: "40px", // Kích thước của avatar
-									borderRadius: "50%", // Làm cho avatar thành hình tròn
-									objectFit: "cover", // Đảm bảo hình ảnh bao phủ toàn bộ khung
-								}}
+								className="w-10 h-10 rounded-full object-cover"
 							/>
 						</Link>
 					) : (
@@ -126,70 +117,34 @@ const Actions: React.FC = () => {
 									"https://i.pinimg.com/originals/94/e4/cb/94e4cb5ae194975f6dc84d1495c3abcd.gif"
 								}
 								alt="User Icon"
-								style={{
-									width: "40px", // Kích thước của avatar
-									height: "40px", // Kích thước của avatar
-									borderRadius: "50%", // Làm cho avatar thành hình tròn
-									objectFit: "cover", // Đảm bảo hình ảnh bao phủ toàn bộ khung
-								}}
+								className="w-10 h-10 rounded-full object-cover"
 							/>
 						</Link>
 					)}
 				</div>
 
-				<div
-					className="links"
-					style={{ display: "flex", alignItems: "center" }}>
+				<div className="links flex items-center">
 					{/* Nếu user đã đăng nhập */}
 					{user && user.fullName ? (
 						<>
-							<span
-								style={{
-									fontWeight: "bold",
-									maxWidth: "150px", // Giới hạn chiều rộng để đảm bảo fullName nằm trong 1 dòng
-									whiteSpace: "nowrap", // Ngăn không cho text xuống dòng
-									overflow: "hidden", // Ẩn phần vượt quá chiều rộng
-									textOverflow: "ellipsis", // Hiển thị dấu 3 chấm nếu text bị cắt
-									color: "#ffffff",
-								}}>
+							<span className="font-bold max-w-36 whitespace-nowrap overflow-hidden text-ellipsis text-white">
 								{user.fullName}
 							</span>
 							<button
 								onClick={handleLogout}
-								style={{
-									marginLeft: "10px",
-									padding: "5px 10px",
-									fontSize: "14px",
-									whiteSpace: "nowrap",
-									cursor: "pointer",
-									color: "#ffffff",
-								}}>
+								className="ml-2.5 p-1.25 text-[14px] whitespace-nowrap cursor-pointer text-white">
 								Đăng xuất
 							</button>
 						</>
 					) : (
 						<>
 							<Link
-								style={{
-									fontWeight: "bold",
-									maxWidth: "150px", // Giới hạn chiều rộng để đảm bảo fullName nằm trong 1 dòng
-									whiteSpace: "nowrap", // Ngăn không cho text xuống dòng
-									overflow: "hidden", // Ẩn phần vượt quá chiều rộng
-									textOverflow: "ellipsis", // Hiển thị dấu 3 chấm nếu text bị cắt
-									color: "#ffffff",
-								}}
+								className="font-bold max-w-36 whitespace-nowrap overflow-hidden text-ellipsis text-white"
 								href="/login">
 								Đăng nhập
 							</Link>
 							<Link
-								style={{
-									fontWeight: "bold",
-									maxWidth: "150px", // Giới hạn chiều rộng để đảm bảo fullName nằm trong 1 dòng
-									whiteSpace: "nowrap", // Ngăn không cho text xuống dòng
-									overflow: "hidden", // Ẩn phần vượt quá chiều rộng
-									textOverflow: "ellipsis", // Hiển thị dấu 3 chấm nếu text bị cắt
-									color: "#ffffff",
-								}}
+								className="font-bold max-w-36 whitespace-nowrap overflow-hidden text-ellipsis text-white"
 								href="/register">
 								Đăng ký
 							</Link>

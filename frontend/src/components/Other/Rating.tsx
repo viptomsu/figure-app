@@ -1,7 +1,7 @@
 import React from "react";
 import { IRatingProps } from "../../types/types";
 
-const Rating: React.FC<IRatingProps> = ({ value, color }) => {
+const Rating: React.FC<IRatingProps> = ({ value, color = "#FFA41C" }) => {
   // Làm tròn đến 1 chữ số thập phân
   const roundedValue = Math.round(value * 10) / 10;
 
@@ -27,8 +27,6 @@ const Rating: React.FC<IRatingProps> = ({ value, color }) => {
   );
 };
 
-Rating.defaultProps = {
-  color: "#FFA41C",
-};
+
 
 export default Rating;

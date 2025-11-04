@@ -33,38 +33,25 @@ const DealOfTheDay: React.FC = () => {
 	}
 
 	return (
-		<section id="deal-of-the-day">
+		<section id="deal-of-the-day" className="py-12 bg-gray-50">
 			<div className="container">
-				{/* ======= Tiêu đề phần ======= */}
-				<div className="section-header-wrapper">
-					<div className="section-header">
-						<div className="left-side flex items-center">
-							<div className="title mr-4">
-								<h4 className="text-lg font-semibold">Ưu đãi trong ngày</h4>
-							</div>
-							<div className="countdown-wrapper">
-								<Countdown />
-							</div>
-						</div>
-						<div className="right-side">
-							<div className="view-all">
-								<Link
-									href="/shop"
-									className="text-blue-600 hover:text-blue-800 transition-colors">
-									Xem tất cả
-								</Link>
-							</div>
-						</div>
+				<div className="flex items-center justify-between mb-6">
+					<div className="flex items-center">
+						<h4 className="text-2xl font-semibold mr-4">Ưu đãi trong ngày</h4>
+						<Countdown />
 					</div>
+					<Link
+						href="/shop"
+						className="text-primary hover:text-red-700 transition-colors"
+					>
+						Xem tất cả
+					</Link>
 				</div>
-				{/* ======= Slider ======= */}
-				<div className="slider-wrapper">
-					<CustomCarousel>
-						{products.map((product: any, index: number) => (
-							<ProductCard key={index} product={product} />
-						))}
-					</CustomCarousel>
-				</div>
+				<CustomCarousel>
+					{products.map((product: any, index: number) => (
+						<ProductCard key={index} product={product} />
+					))}
+				</CustomCarousel>
 			</div>
 		</section>
 	);

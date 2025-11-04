@@ -18,45 +18,45 @@ const NavigationList: React.FC = () => {
   };
 
   return (
-    <div id="navigation-list">
-      <div className="navigation-list-content d-flex justify-content-between align-items-center">
+    <div id="navigation-list" className="hidden lg:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-300 py-3 flex justify-center items-center z-dropdown">
+      <div className="flex justify-between items-center w-[calc(50%+40px)]">
         <button
           type="button"
-          className="nav-menu-btn d-flex flex-column align-items-center"
+          className="flex flex-col items-center"
           onClick={handleShowMenu}
         >
           <span>
             <GiHamburgerMenu />
           </span>
-          <p>Menu</p>
+          <p className="m-0">Menu</p>
         </button>
         <button
           type="button"
-          className="sidebar-categories-btn d-flex flex-column align-items-center"
+          className="flex flex-col items-center"
           onClick={handleShowCategories}
         >
-          <span>
+          <span className="text-2xl">
             <CgMenuGridO />
           </span>
-          <p>Danh mục</p>
+          <p className="m-0">Danh mục</p>
         </button>
         <Link
           href="/compare"
-          className="compare-btn d-flex flex-column align-items-center"
+          className="flex flex-col items-center text-black no-underline"
         >
-          <span>
+          <span className="text-xl border-2 border-black rounded-[2px]">
             <FiBarChart2 />
           </span>
-          <p>phần quan tâm</p>
+          <p className="m-0">phần quan tâm</p>
         </Link>
         <Link
           href="/wishlist"
-          className="wishlist-btn d-flex flex-column align-items-center"
+          className="flex flex-col items-center text-black no-underline"
         >
-          <span>
+          <span className="text-xl">
             <BsHeart />
           </span>
-          <p>Yêu thích</p>
+          <p className="m-0">Yêu thích</p>
         </Link>
       </div>
     </div>

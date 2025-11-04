@@ -152,310 +152,207 @@ const Payment: React.FC<IProps> = (props) => {
   const totalPriceUSD = discountedPrice / exchangeRate;
 
   return (
-    <div className="checkout-payment">
-      <div className="row">
-        <div className="col-12">
-          <div className="title text-center">
-            <h1 style={{ marginTop: "20px" }}>Thanh toán</h1>
-          </div>
-        </div>
+    <div>
+      <div className="text-center">
+        <h1 className="text-3xl font-bold mt-5">Thanh toán</h1>
       </div>
-      <div className="row">
-        <div className="col-lg-8">
-          <div className="checkout-payment-area">
-            <div
-              style={{
-                marginBottom: "20px",
-                backgroundColor: "#f9f9f9",
-                padding: "20px",
-                borderRadius: "8px",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              <h5
-                style={{
-                  fontSize: "18px",
-                  marginBottom: "10px",
-                  fontWeight: "600",
-                }}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+        <div className="lg:col-span-2">
+          <div className="bg-gray-50 rounded-lg p-5 shadow-sm mb-5">
+            <h5 className="text-lg font-semibold mb-2.5">Áp dụng mã giảm giá</h5>
+            <input
+              type="text"
+              placeholder="Nhập mã giảm giá"
+              value={voucherCode}
+              onChange={(e) => setVoucherCode(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded mb-2.5 text-base"
+            />
+            <div className="flex gap-2.5">
+              <button
+                type="button"
+                className="h-12.5 px-7.5 bg-primary text-white font-semibold text-base rounded transition-all duration-300 hover:bg-red-700"
+                onClick={handleApplyVoucher}
               >
-                Áp dụng mã giảm giá
-              </h5>
-              <input
-                type="text"
-                placeholder="Nhập mã giảm giá"
-                value={voucherCode}
-                onChange={(e) => setVoucherCode(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  borderRadius: "4px",
-                  border: "1px solid #ccc",
-                  marginBottom: "10px",
-                  fontSize: "16px",
-                }}
-              />
-              <div style={{ display: "flex", gap: "10px" }}>
+                Áp dụng Voucher
+              </button>
+              {discount && (
                 <button
                   type="button"
-                  style={{
-                    backgroundColor: "#0060c9",
-                    border: "none",
-                    height: "50px",
-                    padding: "0 30px",
-                    borderRadius: "4px",
-                    fontWeight: "600",
-                    fontSize: "16px",
-                    transition: "all 0.3s ease",
-                    cursor: "pointer",
-                    color: "#ffffff",
-                  }}
-                  onClick={handleApplyVoucher}
+                  className="h-12.5 px-7.5 bg-black text-white font-semibold text-base rounded transition-all duration-300 hover:bg-gray-800"
+                  onClick={handleRemoveVoucher}
                 >
-                  Áp dụng Voucher
+                  Không dùng voucher
                 </button>
-                {discount ? (
-                  <button
-                    type="button"
-                    style={{
-                      backgroundColor: "#000000",
-                      border: "none",
-                      height: "50px",
-                      padding: "0 30px",
-                      borderRadius: "4px",
-                      fontWeight: "600",
-                      fontSize: "16px",
-                      transition: "all 0.3s ease",
-                      cursor: "pointer",
-                      color: "#FFFFFF",
-                    }}
-                    onClick={handleRemoveVoucher}
-                  >
-                    Không dùng voucher
-                  </button>
-                ) : null}
-              </div>
-              <p
-                style={{
-                  color: discount > 0 ? "green" : "red",
-                  marginTop: "10px",
-                }}
-              >
-                {voucherMessage}
-              </p>
+              )}
             </div>
+            <p className={`mt-2.5 ${discount > 0 ? "text-green-600" : "text-red-600"}`}>
+              {voucherMessage}
+            </p>
+          </div>
 
-            {/* Rest of the form for payment methods */}
-            <form>
-              <div className="payment-methods">
-                <h5>Phương thức thanh toán</h5>
-                <div className="inputs">
-                  {/* Voucher Section */}
-                  <div className="row">
-                    <div className="col-12">
-                      <div className="radio-input-wrapper d-flex align-items-center">
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          id="cod"
-                          checked={showCodContent === true}
-                          onChange={() => {
-                            setShowCodContent(true);
-                            setShowPaypalContent(false);
-                            setShowVNPayContent(false);
-                          }}
-                        />
-                        <label
-                          htmlFor="cod"
-                          style={{ fontWeight: "bold", fontSize: "18px" }}
-                        >
-                          Thanh toán khi nhận hàng (COD)
-                        </label>
-                      </div>
-                      <div className="radio-input-wrapper d-flex align-items-center">
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          id="paypalMethod"
-                          checked={showPaypalContent === true}
-                          onChange={() => {
-                            setShowCodContent(false);
-                            setShowPaypalContent(true);
-                            setShowVNPayContent(false);
-                          }}
-                        />
-                        <label
-                          style={{ fontWeight: "bold", fontSize: "18px" }}
-                          htmlFor="paypalMethod"
-                        >
-                          PayPal
-                        </label>
-                      </div>
-                      <div className="radio-input-wrapper d-flex align-items-center">
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          id="vnpayMethod"
-                          checked={showVNPayContent === true}
-                          onChange={() => {
-                            setShowCodContent(false);
-                            setShowPaypalContent(false);
-                            setShowVNPayContent(true);
-                          }}
-                        />
-                        <label
-                          style={{ fontWeight: "bold", fontSize: "18px" }}
-                          htmlFor="vnpayMethod"
-                        >
-                          VNPay
-                        </label>
-                      </div>
-                    </div>
-                    <div className="col-12">
-                      {/* === COD === */}
-                      <div className={showCodContent ? "for-cod" : "d-none"}>
-                        <div className="submit-btn-wrapper">
-                          <button
-                            type="button"
-                            style={{
-                              backgroundColor: "#0060c9",
-                              color: "#ffffff",
-                              border: "0",
-                              height: "50px",
-                              padding: "0 30px",
-                              borderRadius: "4px",
-                              fontWeight: "600",
-                              fontSize: "16px",
-                              transition: "all 0.3s ease",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => handlePaymentSubmit("COD")}
-                          >
-                            Thanh toán khi nhận hàng
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* === Paypal === */}
-                      <div
-                        className={showPaypalContent ? "for-paypal" : "d-none"}
+          <form>
+            <div>
+              <h5 className="text-lg font-semibold mb-4">Phương thức thanh toán</h5>
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    id="cod"
+                    checked={showCodContent === true}
+                    onChange={() => {
+                      setShowCodContent(true);
+                      setShowPaypalContent(false);
+                      setShowVNPayContent(false);
+                    }}
+                    className="mr-3"
+                  />
+                  <label htmlFor="cod" className="font-bold text-lg">
+                    Thanh toán khi nhận hàng (COD)
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    id="paypalMethod"
+                    checked={showPaypalContent === true}
+                    onChange={() => {
+                      setShowCodContent(false);
+                      setShowPaypalContent(true);
+                      setShowVNPayContent(false);
+                    }}
+                    className="mr-3"
+                  />
+                  <label htmlFor="paypalMethod" className="font-bold text-lg">
+                    PayPal
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    id="vnpayMethod"
+                    checked={showVNPayContent === true}
+                    onChange={() => {
+                      setShowCodContent(false);
+                      setShowPaypalContent(false);
+                      setShowVNPayContent(true);
+                    }}
+                    className="mr-3"
+                  />
+                  <label htmlFor="vnpayMethod" className="font-bold text-lg">
+                    VNPay
+                  </label>
+                </div>
+                <div className="mt-6">
+                  {/* === COD === */}
+                  {showCodContent && (
+                    <div>
+                      <button
+                        type="button"
+                        className="h-12.5 px-7.5 bg-primary text-white font-semibold text-base rounded transition-all duration-300 hover:bg-red-700"
+                        onClick={() => handlePaymentSubmit("COD")}
                       >
-                        <PayPalScriptProvider
-                          options={{
-                            clientId: process.env.REACT_APP_PAYPAL_CLIENT_ID!,
-                          }}
-                        >
-                          <PayPalButtons
-                            style={{ layout: "vertical" }}
-                            createOrder={(data, actions) => {
-                              // Kiểm tra nếu actions.order tồn tại
-                              if (actions && actions.order) {
-                                return actions.order.create({
-                                  intent: "CAPTURE",
-                                  purchase_units: [
-                                    {
-                                      amount: {
-                                        currency_code: "USD",
-                                        value: totalPriceUSD.toFixed(2),
-                                      },
-                                    },
-                                  ],
-                                });
-                              }
-                              return Promise.reject(
-                                new Error("Order creation failed")
+                        Thanh toán khi nhận hàng
+                      </button>
+                    </div>
+                  )}
+
+                  {/* === Paypal === */}
+                  {showPaypalContent && (
+                    <PayPalScriptProvider
+                      options={{
+                        clientId: process.env.REACT_APP_PAYPAL_CLIENT_ID!,
+                      }}
+                    >
+                      <PayPalButtons
+                        style={{ layout: "vertical" }}
+                        createOrder={(data, actions) => {
+                          if (actions && actions.order) {
+                            return actions.order.create({
+                              intent: "CAPTURE",
+                              purchase_units: [
+                                {
+                                  amount: {
+                                    currency_code: "USD",
+                                    value: totalPriceUSD.toFixed(2),
+                                  },
+                                },
+                              ],
+                            });
+                          }
+                          return Promise.reject(
+                            new Error("Order creation failed")
+                          );
+                        }}
+                        onApprove={async (data, actions) => {
+                          if (actions && actions.order) {
+                            try {
+                              const details = await actions.order.capture();
+                              const givenName =
+                                details?.payer?.name?.given_name ||
+                                "Khách hàng";
+                              handlePaymentSubmit("Paypal");
+                              toast.success(
+                                `Giao dịch thành công! Xin chào, ${givenName}`
                               );
-                            }}
-                            onApprove={async (data, actions) => {
-                              if (actions && actions.order) {
-                                try {
-                                  const details = await actions.order.capture();
-                                  const givenName =
-                                    details?.payer?.name?.given_name ||
-                                    "Khách hàng";
-                                  handlePaymentSubmit("Paypal");
-                                  toast.success(
-                                    `Giao dịch thành công! Xin chào, ${givenName}`
-                                  );
-                                } catch (error) {
-                                  console.error(
-                                    "Lỗi khi hoàn thành thanh toán:",
-                                    error
-                                  );
-                                  toast.error("Lỗi khi hoàn thành thanh toán.");
-                                }
-                              } else {
-                                return Promise.reject(
-                                  new Error("Order capture failed")
-                                );
-                              }
-                            }}
-                            onError={(err) => {
-                              console.error("Lỗi khi thanh toán PayPal:", err);
-                              toast.error("Lỗi khi thanh toán PayPal.");
-                            }}
-                          />
-                        </PayPalScriptProvider>
-                      </div>
+                            } catch (error) {
+                              console.error(
+                                "Lỗi khi hoàn thành thanh toán:",
+                                error
+                              );
+                              toast.error("Lỗi khi hoàn thành thanh toán.");
+                            }
+                          } else {
+                            return Promise.reject(
+                              new Error("Order capture failed")
+                            );
+                          }
+                        }}
+                        onError={(err) => {
+                          console.error("Lỗi khi thanh toán PayPal:", err);
+                          toast.error("Lỗi khi thanh toán PayPal.");
+                        }}
+                      />
+                    </PayPalScriptProvider>
+                  )}
 
-                      {/* === VNPay === */}
-                      <div
-                        className={showVNPayContent ? "for-vnpay" : "d-none"}
-                      >
-                        <div className="submit-btn-wrapper">
-                          <button
-                            type="button"
-                            style={{
-                              backgroundColor: "#0060c9",
-                              color: "#ffffff",
-                              border: "0",
-                              height: "50px",
-                              padding: "0 30px",
-                              borderRadius: "4px",
-                              fontWeight: "600",
-                              fontSize: "16px",
-                              transition: "all 0.3s ease",
-                              cursor: "pointer",
-                            }}
-                            onClick={handleVNPayPayment} // Gọi hàm thanh toán VNPay
-                          >
-                            Thanh toán qua VNPay
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  {/* === VNPay === */}
+                  {showVNPayContent && (
+                    <button
+                      type="button"
+                      className="h-12.5 px-7.5 bg-primary text-white font-semibold text-base rounded transition-all duration-300 hover:bg-red-700"
+                      onClick={handleVNPayPayment}
+                    >
+                      Thanh toán qua VNPay
+                    </button>
+                  )}
                 </div>
               </div>
-            </form>
-          </div>
-        </div>
-        <div className="col-lg-4">
-          <div className="cart-totals-and-orders">
-            {/* === top === */}
-            <div className="top d-flex justify-content-between">
-              <h6>SẢN PHẨM</h6>
-              <h6>TỔNG</h6>
             </div>
-            {/* === body === */}
-            <div className="body">
-              <ul>
+          </form>
+        </div>
+        <div className="lg:col-span-1">
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h6 className="font-semibold">SẢN PHẨM</h6>
+              <h6 className="font-semibold">TỔNG</h6>
+            </div>
+            <div className="border-t border-gray-200 pt-4">
+              <ul className="space-y-3">
                 {cart.map((product: any) => (
-                  <li
-                    key={product._id}
-                    className="d-flex justify-content-between"
-                  >
-                    <div className="left">
+                  <li key={product._id} className="flex justify-between">
+                    <div>
                       <Link href={`/products/${product._id}`}>
-                        <p className="title">{product.productName}</p>
-                        <p className="count text-muted">
-                          Số lượng:
-                          <span> {product.count}</span>
+                        <p className="font-medium">{product.productName}</p>
+                        <p className="text-sm text-gray-600">
+                          Số lượng: <span>{product.count}</span>
                         </p>
                       </Link>
                     </div>
-                    <div className="right d-flex">
-                      <p>
+                    <div>
+                      <p className="font-medium">
                         {formatCurrency(
                           calculateDiscountedPrice(product) * product.count
                         )}
@@ -465,48 +362,37 @@ const Payment: React.FC<IProps> = (props) => {
                 ))}
               </ul>
             </div>
-            {/* === bottom === */}
-            <div className="bottom">
-              <div className="subtotal d-flex justify-content-between">
-                <h6>TẠM TÍNH</h6>
-                <div className="price d-flex">
-                  <p>{formatCurrency(totalPriceVND)}</p>
-                </div>
+            <div className="border-t border-gray-200 mt-4 pt-4 space-y-2">
+              <div className="flex justify-between">
+                <h6 className="font-semibold">TẠM TÍNH</h6>
+                <p>{formatCurrency(totalPriceVND)}</p>
               </div>
               {discount > 0 && (
-                <div className="subtotal d-flex justify-content-between">
-                  <h6>GIẢM GIÁ</h6>
-                  <div className="price d-flex">
-                    <p>- {formatCurrency((totalPriceVND * discount) / 100)}</p>
-                  </div>
+                <div className="flex justify-between">
+                  <h6 className="font-semibold">GIẢM GIÁ</h6>
+                  <p>- {formatCurrency((totalPriceVND * discount) / 100)}</p>
                 </div>
               )}
-              <div className="total d-flex justify-content-between">
-                <h6>TỔNG</h6>
-                <div className="price d-flex">
-                  <p>{formatCurrency(discountedPrice)}</p>
-                </div>
+              <div className="flex justify-between border-t border-gray-200 pt-2">
+                <h6 className="text-lg font-bold">TỔNG</h6>
+                <p className="text-primary font-bold text-lg">
+                  {formatCurrency(discountedPrice)}
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
       <ToastContainer />
-      <div className="row">
-        <div className="col-12">
-          <div className="bottom-links d-flex">
-            <button
-              type="button"
-              className="d-flex align-items-center"
-              onClick={() => props.back()}
-            >
-              <span>
-                <HiArrowNarrowLeft />
-              </span>
-              <p>Quay lại bước vận chuyển</p>
-            </button>
-          </div>
-        </div>
+      <div className="mt-6">
+        <button
+          type="button"
+          className="flex items-center text-gray-700 hover:text-primary transition-colors"
+          onClick={() => props.back()}
+        >
+          <HiArrowNarrowLeft className="mr-2" />
+          <p>Quay lại bước vận chuyển</p>
+        </button>
       </div>
     </div>
   );

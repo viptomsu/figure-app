@@ -60,10 +60,10 @@ const Search: React.FC = () => {
   };
 
   return (
-    <div className="search">
+    <div className="relative">
       {/* ======= search-form ======= */}
       <form
-        className="d-flex"
+        className="flex"
         onSubmit={(e: React.FormEvent<HTMLFormElement>) => e.preventDefault()}
       >
         <input
@@ -71,30 +71,31 @@ const Search: React.FC = () => {
           value={searchValue}
           placeholder="Nhập từ khóa..."
           onChange={handleChange}
+          className="bg-white rounded-l-[4px] w-full text-black h-10.5 border-none"
         />
-        <button style={{ width: "180px" }} type="submit">
+        <button style={{ width: "180px" }} type="submit" className="max-w-32.5 px-6 text-sm text-white border-none font-bold rounded-r-[4px] bg-red-800">
           Tìm kiếm
         </button>
         <button
           type="button"
-          className="close-search-area"
+          className="absolute right-28 top-2.5 hidden"
           onClick={() => setShowSearchResult(false)}
         >
           ✕
         </button>
         <button
           type="button"
-          className={showCloseBtn ? "close-btn" : "d-none"}
+          className={showCloseBtn ? "absolute right-28 top-2.5" : "hidden"}
           onClick={handleCloseBtnClick}
         >
           ✕
         </button>
-        <div className={showSpinner ? "lds-dual-ring" : "d-none"}></div>
+        <div className={showSpinner ? "absolute right-28 top-3 inline-block" : "hidden"}></div>
       </form>
       {/* ======= search-result ======= */}
-      <div className={showSearchResult ? "search-result-wrapper" : "d-none"}>
+      <div className={showSearchResult ? "absolute w-full p-5 bg-white border border-primary z-dropdown" : "hidden"}>
         {products.length > 0 ? (
-          <div className="search-result">
+          <div className="max-h-400px min-h-30 overflow-y-auto">
             {products.map((product: any, index: number) => {
               const defaultImage = product.images.find(
                 (image: any) => image.isDefault
@@ -107,61 +108,41 @@ const Search: React.FC = () => {
                   : product.price;
 
               return (
-                <div key={index} className="product-item d-flex">
-                  <div className="img">
+                <div key={index} className="flex items-center py-4 border-b border-primary">
+                  <div className="h-[55px]">
                     <img src={defaultImage} alt={product.productName} />
                   </div>
-                  <div className="info">
+                  <div className="pl-6">
                     <Link
-                      to={`/product-details/${product._id}`}
+                      href={`/products/${product._id}`}
                       onClick={() => {
                         setShowSearchResult(false);
                         setShowCloseBtn(false);
                         setSearchValue("");
                         closeSearchUnder992();
                       }}
+                      className="no-underline transition-all duration-300 ease hover:text-primary"
                     >
-                      <h6>{product.productName}</h6>
+                      <h6 className="text-sm font-normal m-0">{product.productName}</h6>
                     </Link>
-                    <div
-                      className="rating-area box"
-                      style={{ display: "inline-block" }}
-                    >
+                    <div className="inline-block">
                       <Rating value={product.avgRating} />
                     </div>
 
                     <div className="product-price">
                       {product.discount ? (
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
+                        <div className="flex items-center">
                           {/* Giá gốc gạch ngang */}
-                          <p
-                            style={{
-                              margin: "0",
-                              color: "gray",
-                              textDecoration: "line-through",
-                              marginRight: "10px", // Tạo khoảng cách giữa giá gốc và giá đã giảm
-                            }}
-                          >
+                          <p className="m-0 text-gray-500 line-through mr-2.5">
                             {formatCurrency(product.price)}
                           </p>
                           {/* Giá sau khi giảm */}
-                          <p
-                            style={{
-                              margin: "0",
-                              color: "red",
-                              fontWeight: "bold",
-                            }}
-                          >
+                          <p className="m-0 text-primary font-bold">
                             {formatCurrency(discountPrice)}
                           </p>
                         </div>
                       ) : (
-                        <p style={{ margin: "0", fontWeight: "bold" }}>
+                        <p className="m-0 font-bold">
                           {formatCurrency(product.price)}
                         </p>
                       )}
@@ -172,7 +153,7 @@ const Search: React.FC = () => {
             })}
           </div>
         ) : (
-          <p className="my-2">Không tìm thấy sản phẩm nào.</p>
+          <p className="my-2 text-sm">Không tìm thấy sản phẩm nào.</p>
         )}
       </div>
     </div>

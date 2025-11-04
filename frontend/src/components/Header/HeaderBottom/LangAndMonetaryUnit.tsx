@@ -16,11 +16,11 @@ const LangAndMonetaryUnit: React.FC = () => {
 
   return (
     <div className="lang-and-monetary-unit">
-      <ul>
+      <ul className="flex items-center justify-between list-none p-0 m-0">
         {/* Hiển thị mục Lịch sử đặt hàng nếu user đã đăng nhập */}
         {isUserLoggedIn && (
-          <li onClick={handleClick} style={{ cursor: "pointer" }}>
-            <p style={{ color: "#ffffff" }}>Lịch sử đặt hàng</p>
+          <li onClick={handleClick} className="cursor-pointer">
+            <p className="m-0 text-white text-sm">Lịch sử đặt hàng</p>
           </li>
         )}
       </ul>

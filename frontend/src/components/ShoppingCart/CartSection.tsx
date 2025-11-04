@@ -9,54 +9,43 @@ const CartSection: React.FC = () => {
   const { cart } = useCartStore();
 
   return (
-    <section id="cart-section">
+    <section id="cart-section" className="py-22 pb-27.5">
       <div className="container">
-        <div className="row">
-          <div className="col-12">
-            {/* ======= Tiêu đề ======= */}
-            <div className="title text-center">
-              <h1>Giỏ hàng</h1>
-            </div>
-          </div>
+        <div className="text-center pb-12.5">
+          <h1>Giỏ hàng</h1>
         </div>
         {cart.length > 0 ? (
           <>
-            <div className="row">
-              <div className="col-12">
-                {/* ======= Bảng giỏ hàng ======= */}
-                <CartTable cart={cart} />
-              </div>
+            <div className="w-full">
+              {/* ======= Bảng giỏ hàng ======= */}
+              <CartTable cart={cart} />
             </div>
-            <div className="row">
-              <div className="col-lg-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+              <div>
                 {/* ======= Quay lại cửa hàng ======= */}
-                <div className="back-to-shop-link">
-                  <Link href="/shop" className="d-flex align-items-center">
-                    <span>
-                      <HiArrowNarrowLeft color="#ffffff" />
-                    </span>
-                    <p className="m-0" style={{ color: "#ffffff" }}>
-                      Quay lại
-                    </p>
-                  </Link>
-                </div>
+                <Link href="/shop" className="flex items-center">
+                  <span>
+                    <HiArrowNarrowLeft color="#ffffff" />
+                  </span>
+                  <p className="m-0 text-white">
+                    Quay lại
+                  </p>
+                </Link>
               </div>
-              <div className="col-lg-6">
+              <div>
                 {/* ======= Tổng giỏ hàng ======= */}
-                <div className="cart-totals-wrapper">
-                  <CartTotals cart={cart} />
-                </div>
+                <CartTotals cart={cart} />
               </div>
             </div>
           </>
         ) : (
           // ======= Thông báo giỏ hàng trống ======= //
           <>
-            <div className="empty-alert-wrapper">
+            <div className="text-center">
               <p>Giỏ hàng của bạn đang trống.</p>
             </div>
-            <div className="back-to-shop-link">
-              <Link href="/shop" className="d-flex align-items-center">
+            <div className="mt-4">
+              <Link href="/shop" className="flex items-center">
                 <span>
                   <HiArrowNarrowLeft />
                 </span>
