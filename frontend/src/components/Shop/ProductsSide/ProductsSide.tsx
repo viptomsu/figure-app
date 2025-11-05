@@ -22,7 +22,7 @@ const ProductsSide: React.FC<any> = ({
   };
 
   return (
-    <div className="products-side">
+    <div>
       <div className="flex justify-between items-center bg-orange-50 px-3.75 py-2 mb-2.5 rounded-lg border border-orange-50">
         <div className="flex items-center">
           <span className="text-sm font-semibold mr-1.75">
@@ -53,7 +53,7 @@ const ProductsSide: React.FC<any> = ({
 
         <button
           type="button"
-          className="filter-btn hidden sm:flex items-center gap-2 text-sm text-gray-700 hover:text-primary"
+          className="hidden sm:flex items-center gap-2 text-sm text-gray-700 hover:text-primary"
           onClick={handleFilterBtnClick}
         >
           <span className="text-lg">
@@ -63,10 +63,10 @@ const ProductsSide: React.FC<any> = ({
         </button>
       </div>
 
-      <div className="products">
+      <div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
           {products.map((product: any, index: number) => (
-            <div key={index} className="item">
+            <div key={index}>
               <ProductCard product={product} />
             </div>
           ))}
