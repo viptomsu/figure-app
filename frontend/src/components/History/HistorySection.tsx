@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Tag, Table, Avatar, message, Modal } from "antd";
+import { Tag, message } from "antd";
 import { Button } from "@/components/ui/button";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@/components/ui/pagination";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import NiceModal from "@ebay/nice-modal-react";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import OrderDetailsModal from "./OrderDetailsModal";
 import {
   getOrdersByUserId,
   updateOrderStatus,
 } from "../../services/orderService";
 import { formatCurrency } from "../../utils/currencyFormatter";
 import { useUserStore } from "../../stores";
+
+NiceModal.register('confirm-dialog', ConfirmDialog);
 
 const HistorySection: React.FC = () => {
   const [orders, setOrders] = useState<any[]>([]);
@@ -17,8 +25,7 @@ const HistorySection: React.FC = () => {
     totalElements: 0,
     limit: 5,
   });
-  const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
 
   // Lấy thông tin người dùng từ Zustand store
   const { user } = useUserStore();
@@ -29,6 +36,12 @@ const HistorySection: React.FC = () => {
       try {
         const { content, page, totalPages, totalElements } =
           await getOrdersByUserId(userId, currentPage, limit);
+
+        if (currentPage > totalPages && totalPages > 0) {
+          setPagination((prev) => ({ ...prev, page: totalPages }));
+          return;
+        }
+
         setOrders(content);
         setPagination({
           page,
@@ -98,250 +111,155 @@ const HistorySection: React.FC = () => {
     );
   };
   const handleCancelOrder = async (order: any) => {
-    Modal.confirm({
+    if (isConfirmDialogVisible) return;
+
+    setIsConfirmDialogVisible(true);
+    NiceModal.show('confirm-dialog', {
       title: "Xác nhận huỷ đơn hàng",
-      content: `Bạn có chắc chắn muốn huỷ đơn hàng ${order.code}?`,
-      okText: "Xác nhận",
-      cancelText: "Hủy",
-      onOk: async () => {
+      description: `Bạn có chắc chắn muốn huỷ đơn hàng ${order.code}?`,
+      onConfirm: async () => {
         try {
           await updateOrderStatus(order._id, "Đã hủy");
           message.success("Đơn hàng đã được huỷ thành công");
-          // Làm mới dữ liệu
-          fetchUserOrders();
+          fetchUserOrders(pagination.page, pagination.limit);
         } catch (error) {
           message.error("Không thể huỷ đơn hàng");
+          throw error;
+        } finally {
+          setIsConfirmDialogVisible(false);
         }
       },
+      onCancel: () => {
+        setIsConfirmDialogVisible(false);
+      },
+      confirmText: "Xác nhận",
+      cancelText: "Hủy",
+      variant: "destructive"
     });
   };
-  const columns = [
-    {
-      title: "Người đặt hàng",
-      dataIndex: "addressBook",
-      key: "addressBook",
-      render: (addressBook: any) => (
-        <div className="flex items-center gap-2">
-          <span>{addressBook.recipientName}</span>
-        </div>
-      ),
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "addressBook",
-      key: "address",
-      render: (addressBook: any) =>
-        `${addressBook.address}, ${addressBook.ward}, ${addressBook.district}, ${addressBook.city}`,
-    },
-    {
-      title: "Số điện thoại",
-      dataIndex: "addressBook",
-      key: "address",
-      render: (addressBook: any) => `${addressBook.phoneNumber}`,
-    },
-    {
-      title: "Email",
-      dataIndex: "addressBook",
-      key: "address",
-      render: (addressBook: any) => `${addressBook.email}`,
-    },
-    {
-      title: "Mã đơn hàng",
-      dataIndex: "code",
-      key: "code",
-    },
-    {
-      title: "Ngày đặt",
-      dataIndex: "date",
-      key: "date",
-      render: (date: string) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: "Tổng tiền",
-      dataIndex: "totalPrice",
-      key: "totalPrice",
-      render: (totalPrice: number) => `${formatCurrency(totalPrice)}`,
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-      align: "center" as const,
-      render: (status: string) => generateStatus(status),
-    },
-    {
-      title: "Thao tác",
-      key: "action",
-      render: (_: any, record: any) => (
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => showOrderDetail(record)}>Xem chi tiết</Button>
-          {record.status === "Chờ xác nhận" && (
-            <Button variant="destructive" onClick={() => handleCancelOrder(record)}>
-              Huỷ đơn hàng
-            </Button>
-          )}
-        </div>
-      ),
-    },
-  ];
 
   const showOrderDetail = (order: any) => {
-    setSelectedOrder(order);
-    setModalVisible(true);
+    NiceModal.show(OrderDetailsModal, { order });
   };
 
-  const renderOrderDetails = () => {
-    if (!selectedOrder) return null;
-
-    return (
-      <div>
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold">
-            Mã đơn hàng: {selectedOrder.code}
-          </h2>
-          <div className="flex items-center gap-4">
-            <Tag color="orange">{selectedOrder.status}</Tag>
-          </div>
-        </div>
-        <p className="text-gray-600">
-          {new Date(selectedOrder.date).toLocaleString()}
-        </p>
-
-        <div className="border border-gray-200 rounded-lg p-4 mt-4">
-          <h3 className="font-semibold mb-2">Sản phẩm trong đơn hàng</h3>
-          {selectedOrder.orderDetails.map((item: any) => {
-            console.log(item);
-            const defaultImageUrl =
-              item.product.images.find((img: any) => img.isDefault)?.imageUrl ||
-              "URL của ảnh mặc định";
-
-            return (
-              <div
-                key={item._id}
-                className="flex justify-between items-center mb-4"
-              >
-                <div className="flex items-center gap-4">
-                  <img
-                    src={defaultImageUrl}
-                    alt={item.product.productName}
-                    className="w-20 h-20 object-cover rounded-lg"
-                  />
-                  <div>
-                    <p className="font-semibold">
-                      {item.product.productName}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Lựa chọn:{" "}
-                      {item.productVariation?.attributeValue || "Không có"}
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-gray-600">x{item.quantity}</p>
-                  <p className="font-semibold">
-                    {formatCurrency(item.price)}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="border border-gray-200 rounded-lg p-4 mt-4">
-          <h3 className="font-semibold mb-2">Tóm tắt đơn hàng</h3>
-          <div className="flex justify-between mb-2">
-            <p>Tổng tiền</p>
-            <p>
-              {formatCurrency(
-                selectedOrder.totalPrice / (1 - selectedOrder.discount / 100)
-              )}
-            </p>
-          </div>
-          <div className="flex justify-between mb-2">
-            <p>Giảm giá</p>
-            {selectedOrder.discount ? (
-              <p>
-                -{" "}
-                {formatCurrency(
-                  (selectedOrder.totalPrice /
-                    (1 - selectedOrder.discount / 100)) *
-                    (selectedOrder.discount / 100)
-                )}
-              </p>
-            ) : (
-              <p>Không có</p>
-            )}
-          </div>
-          <div className="flex justify-between font-bold text-lg">
-            <p>Tổng đơn hàng</p>
-            <p>{formatCurrency(selectedOrder.totalPrice)}</p>
-          </div>
-        </div>
-
-        <div className="border border-gray-200 rounded-lg p-4 mt-4">
-          <h3 className="font-semibold mb-2">Thông tin người nhận</h3>
-          <div>
-            <div>
-              <p>
-                <strong>Khách hàng:</strong>{" "}
-                {selectedOrder.addressBook.recipientName}
-              </p>
-              <p>
-                <strong>Email:</strong> {selectedOrder.addressBook.email}
-              </p>
-            </div>
-            <div>
-              <p>
-                <strong>Số điện thoại:</strong>{" "}
-                {selectedOrder.addressBook.phoneNumber ||
-                  "Không có số điện thoại"}
-              </p>
-            </div>
-            <div>
-              <p>
-                <strong>Địa chỉ:</strong> {selectedOrder.addressBook.address},{" "}
-                {selectedOrder.addressBook.ward},{" "}
-                {selectedOrder.addressBook.district},{" "}
-                {selectedOrder.addressBook.city}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  const handlePageChange = (page: number) => {
+    setPagination((prev) => ({ ...prev, page }));
   };
 
-  const handleTableChange = (pagination: any) => {
-    setPagination((prev) => ({
-      ...prev,
-      page: pagination.current,
-      limit: pagination.limit,
-    }));
+  const getPageNumbers = () => {
+    const currentPage = pagination.page;
+    const totalPages = pagination.totalPages;
+
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    if (currentPage <= 4) {
+      return [1, 2, 3, 4, 5, 'ellipsis', totalPages];
+    }
+
+    if (currentPage >= totalPages - 3) {
+      return [1, 'ellipsis', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+
+    return [1, 'ellipsis', currentPage - 1, currentPage, currentPage + 1, 'ellipsis', totalPages];
   };
 
   return (
     <div className="max-w-container mx-auto px-4">
-      <Table
-        columns={columns}
-        dataSource={orders}
-        rowKey={(record) => record.orderId}
-        loading={loading}
-        pagination={{
-          current: pagination.page,
-          pageSize: pagination.limit,
-          total: pagination.totalElements,
-        }}
-        onChange={handleTableChange}
-      />
-      <Modal
-        title="Chi tiết đơn hàng"
-        visible={modalVisible}
-        onCancel={() => setModalVisible(false)}
-        footer={null}
-        width={1000}
-      >
-        {renderOrderDetails()}
-      </Modal>
+      {loading ? (
+        <div className="flex justify-center items-center min-h-[400px]">
+          <LoadingSpinner size="lg" />
+        </div>
+      ) : (
+        <>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Người đặt hàng</TableHead>
+                <TableHead>Địa chỉ</TableHead>
+                <TableHead>Số điện thoại</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Mã đơn hàng</TableHead>
+                <TableHead>Ngày đặt</TableHead>
+                <TableHead>Tổng tiền</TableHead>
+                <TableHead className="text-center">Trạng thái</TableHead>
+                <TableHead>Thao tác</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {orders.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                    Không có đơn hàng nào
+                  </TableCell>
+                </TableRow>
+              ) : (
+                orders.map((order) => (
+                  <TableRow key={order._id || order.code}>
+                    <TableCell>{order.addressBook.recipientName}</TableCell>
+                    <TableCell>{`${order.addressBook.address}, ${order.addressBook.ward}, ${order.addressBook.district}, ${order.addressBook.city}`}</TableCell>
+                    <TableCell>{order.addressBook.phoneNumber}</TableCell>
+                    <TableCell>{order.addressBook.email}</TableCell>
+                    <TableCell>{order.code}</TableCell>
+                    <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
+                    <TableCell>{formatCurrency(order.totalPrice)}</TableCell>
+                    <TableCell className="text-center">{generateStatus(order.status)}</TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button variant="outline" onClick={() => showOrderDetail(order)}>Xem chi tiết</Button>
+                        {order.status === "Chờ xác nhận" && (
+                          <Button variant="destructive" onClick={() => handleCancelOrder(order)}>
+                            Huỷ đơn hàng
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+
+          {orders.length > 0 && pagination.totalPages > 1 && (
+            <Pagination className="mt-4">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => pagination.page > 1 && handlePageChange(pagination.page - 1)}
+                    className={pagination.page === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                  />
+                </PaginationItem>
+
+                {getPageNumbers().map((pageNum, index) => (
+                  pageNum === 'ellipsis' ? (
+                    <PaginationItem key={`ellipsis-${index}`}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ) : (
+                    <PaginationItem key={pageNum}>
+                      <PaginationLink
+                        onClick={() => handlePageChange(pageNum as number)}
+                        isActive={pagination.page === pageNum}
+                        className="cursor-pointer"
+                      >
+                        {pageNum}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                ))}
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => pagination.page < pagination.totalPages && handlePageChange(pagination.page + 1)}
+                    className={pagination.page === pagination.totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </>
+      )}
     </div>
   );
 };

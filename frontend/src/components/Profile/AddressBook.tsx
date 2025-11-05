@@ -7,14 +7,12 @@ import {
   deleteAddressBook,
 } from "../../services/addressBookService";
 import AddressBookModal from "./components/AddressBookModal";
+import NiceModal from "@ebay/nice-modal-react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons"; // Import các icon
 import { useRouter } from "next/navigation"; // Import useRouter
 
 const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
   const [addressBooks, setAddressBooks] = useState<any[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [currentAddress, setCurrentAddress] = useState<any>(null);
   const router = useRouter(); // Sử dụng useRouter
 
   useEffect(() => {
@@ -33,9 +31,9 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
 
   const handleSaveAddress = async (values: any) => {
     try {
-      if (isEditMode && currentAddress) {
+      if (values._id) {
         await updateAddressBook(
-          currentAddress._id,
+          values._id,
           values.recipientName,
           values.phoneNumber,
           values.address,
@@ -59,7 +57,6 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
         toast.success("Thêm địa chỉ mới thành công!");
       }
       fetchAddressBooks();
-      setIsModalVisible(false);
     } catch (error) {
       toast.error("Lỗi khi lưu địa chỉ");
       console.error(error);
@@ -78,9 +75,11 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
   };
 
   const handleEditAddress = (address: any) => {
-    setIsEditMode(true);
-    setCurrentAddress(address);
-    setIsModalVisible(true);
+    NiceModal.show(AddressBookModal, {
+      isEditMode: true,
+      onSave: handleSaveAddress,
+      initialValues: address
+    });
   };
 
   const handleCheckoutNavigate = () => {
@@ -94,9 +93,11 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
         <button
           className="bg-primary text-white px-4 py-2 rounded hover:bg-red-700 transition-all duration-300"
           onClick={() => {
-            setIsEditMode(false);
-            setCurrentAddress(null);
-            setIsModalVisible(true);
+            NiceModal.show(AddressBookModal, {
+              isEditMode: false,
+              onSave: handleSaveAddress,
+              initialValues: null
+            });
           }}
         >
           Thêm địa chỉ mới
@@ -132,14 +133,6 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
           </div>
         )}
       </div>
-
-      <AddressBookModal
-        visible={isModalVisible}
-        isEditMode={isEditMode}
-        onCancel={() => setIsModalVisible(false)}
-        onSave={handleSaveAddress}
-        initialValues={currentAddress}
-      />
 
       {/* Button điều hướng sang trang checkout */}
       <div className="text-center mt-5">
