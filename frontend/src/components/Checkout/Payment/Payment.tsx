@@ -6,8 +6,7 @@ import { useRouter } from "next/navigation";
 import { HiArrowNarrowLeft } from "react-icons/hi";
 import { formatCurrency } from "@/utils/currencyFormatter";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "sonner";
 import { createOrder } from "../../../services/orderService";
 import {
   checkVoucher,
@@ -383,7 +382,6 @@ const Payment: React.FC<IProps> = (props) => {
           </div>
         </div>
       </div>
-      <ToastContainer />
       <div className="mt-6">
         <button
           type="button"

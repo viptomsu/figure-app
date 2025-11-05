@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 // @ts-ignore
 import { yupResolver } from "@hookform/resolvers/yup";
-import { toast } from "react-toastify";
+import { toast } from 'sonner';
 import { changePassword } from "../../services/userService"; // Import hàm changePassword
 
 const PasswordChange: React.FC<{ userId: number }> = ({ userId }) => {

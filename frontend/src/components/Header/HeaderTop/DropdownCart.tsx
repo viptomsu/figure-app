@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { useCartStore, useUIStore, useUserStore, useProductsStore, useWishlistStore, useCompareStore } from "@/stores";
-import { toast } from "react-toastify";
+import { toast } from 'sonner';
 import { formatCurrency } from "@/utils/currencyFormatter"; // Hàm format tiền tệ
 
 const DropdownCart: React.FC = () => {

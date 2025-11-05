@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { toast } from 'react-toastify'
+import { toast } from 'sonner'
 import { handleVNPayPaymentReturn } from '@/services/vnpayService'
 import { createOrder } from '@/services/orderService'
 import { markVoucherAsUsed } from '@/services/voucherService'

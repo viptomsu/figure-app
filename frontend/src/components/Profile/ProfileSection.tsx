@@ -3,15 +3,13 @@ import { useForm } from "react-hook-form";
 // @ts-ignore
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from 'sonner';
 import { updateProfile } from "../../services/userService";
 import { Tabs } from "antd";
 import PasswordChange from "./PasswordChange";
 import AddressBook from "./AddressBook";
 import { useUserStore } from "../../stores";
 
-toast.configure();
 
 const ProfileSection: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);

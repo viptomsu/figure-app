@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useCartStore, useCompareStore, useProductsStore } from "../../stores";
-import { toast } from "react-toastify";
+import { toast } from 'sonner';
 import Rating from "../Other/Rating";
 import { formatCurrency } from "../../utils/currencyFormatter"; // Import hàm format tiền tệ
 import {

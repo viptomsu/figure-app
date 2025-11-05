@@ -13,7 +13,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import Rating from "../Other/Rating";
 import { IProducts } from "../../types/types";
 import { useCartStore, useWishlistStore, useCompareStore } from "../../stores";
-import { toast } from "react-toastify";
+import { toast } from 'sonner';
 import { formatCurrency } from "../../utils/currencyFormatter"; // Import hàm formatCurrency
 
 interface IImage {

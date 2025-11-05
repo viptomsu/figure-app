@@ -1,7 +1,7 @@
 import React from "react";
 import { IProducts, ICartProps } from "../../types/types";
 import Link from "next/link";
-import { toast } from "react-toastify"; // Import toast để hiển thị thông báo
+import { toast } from 'sonner'; // Import toast để hiển thị thông báo
 import { formatCurrency } from "../../utils/currencyFormatter";
 import { useUserStore } from "../../stores";
 

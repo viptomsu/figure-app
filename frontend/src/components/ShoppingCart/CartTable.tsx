@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ICartProps } from "../../types/types";
 import Link from "next/link";
 import { formatCurrency } from "../../utils/currencyFormatter"; // Hàm format tiền tệ
-import { toast } from "react-toastify";
+import { toast } from 'sonner';
 import { useCartStore, useProductsStore, useWishlistStore, useCompareStore } from "../../stores";
 
 const CartTable: React.FC<ICartProps> = (props) => {

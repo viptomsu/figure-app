@@ -4,12 +4,10 @@ import {
   getReviewsByProduct,
   createReview,
 } from "../../../services/reviewService";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from 'sonner';
 import { useUserStore } from "../../../stores";
 import { checkProfanityWithHuggingFace } from "../../../services/profanityCheckService";
 
-toast.configure(); // Cấu hình toast cho toàn bộ ứng dụng
 
 const Reviews: React.FC<any> = ({ product }) => {
   const [rows] = useState<number>(7);

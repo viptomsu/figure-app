@@ -5,14 +5,12 @@ import { useForm } from "react-hook-form";
 // @ts-ignore
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from 'sonner';
 import { SocialMediaData } from "../Other/SocialMediaData";
 import { login } from "../../services/authService";
 import { useUserStore } from "../../stores";
 
 // Khởi tạo toast cho toàn bộ ứng dụng
-toast.configure();
 
 const LoginSection: React.FC = () => {
   const [loginLoading, setLoginLoading] = useState(false);

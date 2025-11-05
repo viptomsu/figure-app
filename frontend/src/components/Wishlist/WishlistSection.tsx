@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { HiArrowNarrowLeft } from "react-icons/hi";
 import { useCartStore, useWishlistStore, useProductsStore } from "../../stores";
-import { toast } from "react-toastify";
+import { toast } from 'sonner';
 import { formatCurrency } from "../../utils/currencyFormatter"; // Hàm format tiền tệ
 import {
   Dialog,
