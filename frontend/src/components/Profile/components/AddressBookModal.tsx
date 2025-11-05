@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Modal, Select } from "antd";
+import { Form, Modal, Select } from "antd";
+import { Input } from "@/components/ui/input";
 import {
   fetchProvinces,
   fetchDistrictsByProvince,

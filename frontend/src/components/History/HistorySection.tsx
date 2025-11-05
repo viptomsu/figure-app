@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Tag, Table, Avatar, message, Modal, Button } from "antd";
+import { Tag, Table, Avatar, message, Modal } from "antd";
+import { Button } from "@/components/ui/button";
 import {
   getOrdersByUserId,
   updateOrderStatus,
@@ -173,9 +174,9 @@ const HistorySection: React.FC = () => {
       key: "action",
       render: (_: any, record: any) => (
         <div className="flex gap-2">
-          <Button onClick={() => showOrderDetail(record)}>Xem chi tiết</Button>
+          <Button variant="outline" onClick={() => showOrderDetail(record)}>Xem chi tiết</Button>
           {record.status === "Chờ xác nhận" && (
-            <Button danger onClick={() => handleCancelOrder(record)}>
+            <Button variant="destructive" onClick={() => handleCancelOrder(record)}>
               Huỷ đơn hàng
             </Button>
           )}

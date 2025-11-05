@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "antd"; // Import Button từ Ant Design
+import { Button } from "@/components/ui/button"; // Import Button từ shadcn/ui
 import { HiArrowNarrowLeft } from "react-icons/hi";
 
 interface IProps {
@@ -137,8 +137,9 @@ const CheckoutInfo: React.FC<IProps> = (props) => {
         </div>
         <div className="w-full max-w-3xl mx-auto mt-6 flex justify-between">
           <Button
+            variant="outline"
             onClick={props.handlePrev}
-            className="flex items-center gap-2 px-4 py-2 border border-black bg-white text-black rounded hover:bg-gray-100"
+            className="flex items-center gap-2"
           >
             <HiArrowNarrowLeft /> Quay lại
           </Button>

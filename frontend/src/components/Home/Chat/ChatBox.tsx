@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Input, Button } from "antd";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { SendOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useUserStore } from "../../../stores";
@@ -115,7 +116,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ onClose }) => {
           />
           <span>ChatBot AI</span>
         </div>
-        <Button type="text" onClick={onClose} className="text-white">
+        <Button variant="ghost" onClick={onClose} className="text-white">
           X
         </Button>
       </div>
@@ -174,15 +175,15 @@ const ChatBox: React.FC<ChatBoxProps> = ({ onClose }) => {
           onChange={(e) => setInputMessage(e.target.value)}
           placeholder="Đặt câu hỏi"
           className="flex-1 mr-2.5 h-10 rounded-[20px]"
-          onPressEnter={handleSendMessage}
+          onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
         />
         <Button
-          type="primary"
-          className="text-white bg-[#0060c9] rounded-full w-10 h-10 p-0"
-          shape="circle"
-          icon={<SendOutlined />}
+          variant="default"
+          className="bg-[#0060c9] text-white rounded-full w-10 h-10"
           onClick={handleSendMessage}
-        />
+        >
+          <SendOutlined />
+        </Button>
       </div>
     </div>
   );
