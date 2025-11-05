@@ -105,47 +105,45 @@ const ChatBox: React.FC<ChatBoxProps> = ({ onClose }) => {
   };
 
   return (
-    <div style={styles.chatContainer}>
-      <div style={styles.header}>
-        <div>
+    <div className="fixed bottom-5 right-5 w-[550px] h-[500px] bg-white rounded-xl shadow-lg flex flex-col z-1000">
+      <div className="p-2.5 bg-[#0060c9] text-white flex justify-between items-center">
+        <div className="flex items-center">
           <img
             src="https://i.pinimg.com/originals/21/a1/aa/21a1aa2537400d0232efd93e108fd953.gif"
             alt="User Avatar"
-            style={styles.avatar}
+            className="rounded-full mr-2.5 w-10 h-10"
           />
           <span>ChatBot AI</span>
         </div>
-        <Button style={{ color: "#ffffff" }} type="text" onClick={onClose}>
+        <Button type="text" onClick={onClose} className="text-white">
           X
         </Button>
       </div>
-      <div style={styles.messageList}>
+      <div className="flex-1 p-2.5 overflow-y-auto">
         {msgList.map((msg, index) => (
           <div
             key={index}
-            style={{
-              ...styles.messageWrapper,
-              justifyContent:
-                msg.sender?.userId === user?.userId ? "flex-end" : "flex-start", // Căn trái hoặc phải
-            }}
+            className={`flex mb-2.5 items-start justify-${
+              msg.sender?.userId === user?.userId ? "end" : "start"
+            }`}
           >
             {msg.sender?.userId !== user?.userId && (
               <img
                 src={msg.sender.avatar}
                 alt="Avatar"
-                style={styles.avatarInMessage}
+                className="rounded-full w-7.5 h-7.5 mr-2.5"
               />
             )}
             <div
-              style={{
-                ...styles.message,
-                backgroundColor:
-                  msg.sender?.userId === user?.userId ? "#f8c2c4" : "#f1f1f1", // Màu nền khác nhau cho người gửi và nhận
-              }}
+              className={`p-2.5 rounded-xl max-w-[60%] wrap-break-word ${
+                msg.sender?.userId === user?.userId
+                  ? "bg-[#f8c2c4]"
+                  : "bg-gray-100"
+              }`}
             >
-              <div style={styles.messageHeader}>
-                <span style={styles.senderName}>{msg.sender.fullName} - </span>
-                <span style={styles.messageTimestamp}>
+              <div className="flex justify-between items-center mb-1.5 font-bold text-sm">
+                <span className="text-gray-800">{msg.sender.fullName} - </span>
+                <span className="text-xs text-gray-500">
                   {" "}
                   {new Date(msg.timestamp).toLocaleTimeString([], {
                     hour: "2-digit",
@@ -154,7 +152,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ onClose }) => {
                   })}
                 </span>
               </div>
-              <div style={styles.messageText}>
+              <div className="text-sm text-gray-800">
                 {msg.sender?.userId === "AI" ? (
                   <div
                     dangerouslySetInnerHTML={{
@@ -168,20 +166,19 @@ const ChatBox: React.FC<ChatBoxProps> = ({ onClose }) => {
             </div>
           </div>
         ))}
-        {/* Thêm ref vào phần tử cuối cùng của danh sách tin nhắn */}
         <div ref={messagesEndRef}></div>
       </div>
-      <div style={styles.inputContainer}>
+      <div className="p-5 flex items-center">
         <Input
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           placeholder="Đặt câu hỏi"
-          style={styles.input}
-          onPressEnter={handleSendMessage} // Thêm sự kiện gửi tin nhắn khi nhấn Enter
+          className="flex-1 mr-2.5 h-10 rounded-[20px]"
+          onPressEnter={handleSendMessage}
         />
         <Button
           type="primary"
-          style={{ color: "#ffffff", backgroundColor: "#0060c9" }}
+          className="text-white bg-[#0060c9] rounded-full w-10 h-10 p-0"
           shape="circle"
           icon={<SendOutlined />}
           onClick={handleSendMessage}
@@ -189,89 +186,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({ onClose }) => {
       </div>
     </div>
   );
-};
-
-const styles = {
-  chatContainer: {
-    position: "fixed" as "fixed",
-    bottom: "20px",
-    right: "20px",
-    width: "550px",
-    height: "500px",
-    backgroundColor: "#fff",
-    borderRadius: "10px",
-    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-    display: "flex",
-    flexDirection: "column" as "column",
-    zIndex: 1000,
-  },
-  header: {
-    padding: "10px",
-    backgroundColor: "#0060c9",
-    color: "white",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  avatar: {
-    borderRadius: "50%",
-    marginRight: "10px",
-    width: "40px",
-    height: "40px",
-  },
-  avatarInMessage: {
-    borderRadius: "50%",
-    width: "30px",
-    height: "30px",
-    marginRight: "10px",
-  },
-  messageList: {
-    flex: 1,
-    padding: "10px",
-    overflowY: "auto" as "auto",
-  },
-  messageWrapper: {
-    display: "flex",
-    marginBottom: "10px",
-    alignItems: "flex-start",
-  },
-  message: {
-    backgroundColor: "#f1f1f1",
-    padding: "10px",
-    borderRadius: "10px",
-    maxWidth: "60%",
-    wordWrap: "break-word" as "break-word",
-  },
-  messageHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "5px",
-    fontWeight: "bold" as "bold",
-    fontSize: "14px",
-  },
-  senderName: {
-    color: "#333",
-  },
-  messageTimestamp: {
-    fontSize: "12px",
-    color: "#888",
-  },
-  messageText: {
-    fontSize: "14px",
-    color: "#333",
-  },
-  inputContainer: {
-    padding: "20px",
-    display: "flex",
-    alignItems: "center",
-  },
-  input: {
-    flex: 1,
-    marginRight: "10px",
-    borderRadius: "20px",
-    height: "40px",
-  },
 };
 
 export default ChatBox;

@@ -53,35 +53,32 @@ const Brands: React.FC<BrandsProps> = ({ setSelectedBrand, selectedBrand }) => {
   };
 
   return (
-    <div className="brands">
-      <div className="brands-title">
-        <h5>Thương hiệu</h5>
+    <div className="bg-orange-50 p-6 rounded-lg mb-5">
+      <div className="mb-4.5">
+        <h5 className="text-lg font-semibold">Thương hiệu</h5>
       </div>
       <div className="brands-list">
         {loading ? (
           <p>Đang tải...</p>
         ) : (
-          <ul>
+          <ul className="list-none p-0 m-0">
             <li
               onClick={() => handleBrandClick(null)}
-              style={{
-                fontWeight: selectedBrand === null ? "bold" : "normal",
-                cursor: selectedBrand === null ? "default" : "pointer",
-                backgroundColor:
-                  selectedBrand === null ? "#f0f0f0" : "transparent",
-                padding: "8px 12px",
-                borderRadius: "5px",
-                marginBottom: "5px",
-                border:
-                  selectedBrand === null
-                    ? "2px solid #007bff"
-                    : "1px solid transparent",
-              }}
+              className={`font-${
+                selectedBrand === null ? "bold" : "normal"
+              } cursor-${
+                selectedBrand === null ? "default" : "pointer"
+              } ${
+                selectedBrand === null ? "bg-gray-100" : ""
+              } p-2 rounded border ${
+                selectedBrand === null
+                  ? "border-primary"
+                  : "border-transparent"
+              } mb-1.25`}
             >
               <label
-                className="d-flex align-items-center"
+                className="flex items-center cursor-pointer text-sm"
                 style={{
-                  cursor: selectedBrand === null ? "default" : "pointer",
                   color: selectedBrand === null ? "#007bff" : "inherit",
                   margin: 0,
                 }}
@@ -91,7 +88,7 @@ const Brands: React.FC<BrandsProps> = ({ setSelectedBrand, selectedBrand }) => {
                   name="brand"
                   checked={selectedBrand === null}
                   onChange={() => {}}
-                  style={{ marginRight: "8px" }}
+                  className="mr-2"
                 />
                 Tất cả thương hiệu
               </label>
@@ -100,25 +97,20 @@ const Brands: React.FC<BrandsProps> = ({ setSelectedBrand, selectedBrand }) => {
               <li
                 key={brand._id}
                 onClick={() => handleBrandClick(brand._id, brand.brandName)}
-                style={{
-                  fontWeight: selectedBrand === brand._id ? "bold" : "normal",
-                  cursor: selectedBrand === brand._id ? "default" : "pointer",
-                  backgroundColor:
-                    selectedBrand === brand._id ? "#f0f0f0" : "transparent",
-                  padding: "8px 12px",
-                  borderRadius: "5px",
-                  marginBottom: "5px",
-                  border:
-                    selectedBrand === brand._id
-                      ? "2px solid #007bff"
-                      : "1px solid transparent",
-                }}
+                className={`font-${
+                  selectedBrand === brand._id ? "bold" : "normal"
+                } cursor-${
+                  selectedBrand === brand._id ? "default" : "pointer"
+                } p-2 rounded border ${
+                  selectedBrand === brand._id
+                    ? "border-primary bg-gray-100"
+                    : "border-transparent"
+                } mb-1.25`}
               >
                 <label
                   htmlFor={`brand-${brand._id}`}
-                  className="d-flex align-items-center"
+                  className="flex items-center text-sm"
                   style={{
-                    cursor: selectedBrand === brand._id ? "default" : "pointer",
                     color: selectedBrand === brand._id ? "#007bff" : "inherit",
                     margin: 0,
                   }}
@@ -129,7 +121,7 @@ const Brands: React.FC<BrandsProps> = ({ setSelectedBrand, selectedBrand }) => {
                     name="brand"
                     checked={selectedBrand === brand._id}
                     onChange={() => {}}
-                    style={{ marginRight: "8px" }}
+                    className="mr-2"
                   />
                   {brand.brandName}
                 </label>

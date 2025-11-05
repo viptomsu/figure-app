@@ -73,16 +73,16 @@ const Shop = () => {
   };
 
   return (
-    <section className="shop-content">
+    <section className="shop-content py-10">
       <div className="container">
-        <div className="row">
-          <div className="col-lg-3">
-            <div className="shop-sidebar">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="lg:col-span-1">
+            <div className="shop-sidebar sticky top-4">
               <FilterSide setSelectedCategory={handleCategorySelect} selectedCategory={selectedCategory} />
               <Brands />
             </div>
           </div>
-          <div className="col-lg-9">
+          <div className="lg:col-span-3">
             <ProductsSide
               products={products}
               loading={loading}

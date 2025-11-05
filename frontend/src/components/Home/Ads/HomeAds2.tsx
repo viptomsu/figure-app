@@ -3,40 +3,28 @@ import Link from "next/link";
 
 const HomeAds2: React.FC = () => {
   return (
-    <section id="ads-2">
+    <section id="ads-2" className="bg-white">
       <div className="container">
-        <div className="row">
-          <div className="col-lg-8">
-            {/* ======= Bed img ======= */}
-            <div className="bed-img">
-              <Link href="/shop">
-                <img
-                  src={"/ads/ads-4.jpg"}
-                  alt="bed"
-                  style={{
-                    width: "856px",
-                    height: "193px",
-                    objectFit: "cover",
-                  }}
-                />
-              </Link>
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Bed img */}
+          <div className="lg:col-span-8 sm:mt-6">
+            <Link href="/shop">
+              <img
+                src={"/ads/ads-4.jpg"}
+                alt="bed"
+                className="w-[856px] h-[193px] object-cover sm:w-full sm:h-auto sm:max-w-[856px] sm:max-h-[193px]"
+              />
+            </Link>
           </div>
-          <div className="col-lg-4">
-            {/* ======= Iphone img ======= */}
-            <div className="iphone-img">
-              <Link href="/shop">
-                <img
-                  src={"/ads/ads-5.jpg"}
-                  alt="iphonex"
-                  style={{
-                    width: "416px",
-                    height: "193px",
-                    objectFit: "cover",
-                  }}
-                />
-              </Link>
-            </div>
+          {/* Iphone img */}
+          <div className="lg:col-span-4 sm:mt-7">
+            <Link href="/shop">
+              <img
+                src={"/ads/ads-5.jpg"}
+                alt="iphonex"
+                className="w-[416px] h-[193px] object-cover sm:w-full sm:h-auto sm:max-w-[416px] sm:max-h-[193px]"
+              />
+            </Link>
           </div>
         </div>
       </div>

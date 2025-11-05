@@ -40,19 +40,25 @@ const Advantages: React.FC = () => {
   ];
 
   return (
-    <section id="advantages">
+    <section id="advantages" className="bg-white pb-7.5">
       <div className="container">
-        <div className="advantages-items-wrapper">
-          <ul>
+        <div className="p-7.5 border border-gray-200">
+          <ul className="flex items-center justify-around m-0 p-0 md:flex-wrap md:justify-start sm:flex-col sm:gap-10">
             {AdvantagesData.map((item) => (
-              <li key={item.id}>
-                <div className="advantages-item">
-                  <div className="icon-wrapper">
-                    <span>{item.icon}</span>
+              <li key={item.id} className="sm:first:pt-5 sm:last:pb-10 sm:px-0 sm:w-full">
+                <div className="flex sm:items-center text-center sm:text-left">
+                  <div className="shrink-0 sm:mr-6 sm:mb-1.5 sm:w-auto">
+                    <div className="text-4xl sm:text-4.6xl text-primary mb-5 sm:mb-0 sm:inline-block">
+                      {item.icon}
+                    </div>
                   </div>
-                  <div className="text-wrapper">
-                    <h5>{item.title}</h5>
-                    <p>{item.paragraph}</p>
+                  <div className="flex-1">
+                    <h5 className="text-base font-medium text-gray-900 mb-1">
+                      {item.title}
+                    </h5>
+                    <p className="text-sm text-gray-600 m-0">
+                      {item.paragraph}
+                    </p>
                   </div>
                 </div>
               </li>

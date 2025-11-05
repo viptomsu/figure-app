@@ -17,10 +17,10 @@ const Rating: React.FC<IRatingProps> = ({ value, color = "#FFA41C" }) => {
   };
 
   return (
-    <div className="rating d-flex justify-content-between">
+    <div className="rating flex justify-between items-center">
       {[1, 2, 3, 4, 5].map((rate) => (
         <span key={rate}>
-          <i style={{ color }} className={getStarClass(rate)}></i>
+          <i style={{ color }} className={`${getStarClass(rate)}`}></i>
         </span>
       ))}
     </div>

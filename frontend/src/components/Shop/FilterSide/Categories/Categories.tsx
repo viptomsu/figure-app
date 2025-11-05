@@ -64,33 +64,30 @@ const Categories: React.FC<CategoriesProps> = ({
   };
 
   return (
-    <div className="categories">
-      <div className="categories-title">
-        <h5>Danh mục</h5>
+    <div className="bg-orange-50 p-6 rounded-lg mb-5">
+      <div className="mb-4.5">
+        <h5 className="text-lg font-semibold">Danh mục</h5>
       </div>
       <div className="categories-list">
         {loading ? (
           <p>Đang tải...</p>
         ) : (
-          <ul>
+          <ul className="space-y-1.25">
             <li
               onClick={() => handleCategoryClick(null)}
-              style={{
-                fontWeight: selectedCategory === null ? "bold" : "normal",
-                cursor: selectedCategory === null ? "default" : "pointer",
-                backgroundColor:
-                  selectedCategory === null ? "#f0f0f0" : "transparent",
-                padding: "5px 10px",
-                borderRadius: "5px",
-                marginBottom: "5px",
-              }}
+              className={`font-${
+                selectedCategory === null ? "bold" : "normal"
+              } cursor-${
+                selectedCategory === null ? "default" : "pointer"
+              } ${
+                selectedCategory === null ? "bg-gray-100" : ""
+              } p-1.25 rounded`}
             >
               <a
                 href="#/"
-                style={{
-                  textDecoration: "none",
-                  color: selectedCategory === null ? "#007bff" : "inherit",
-                }}
+                className={`no-underline ${
+                  selectedCategory === null ? "text-primary" : "text-inherit"
+                } flex items-center`}
                 onClick={(e) => e.preventDefault()}
               >
                 Tất cả sản phẩm
@@ -102,41 +99,25 @@ const Categories: React.FC<CategoriesProps> = ({
                 onClick={() =>
                   handleCategoryClick(category._id, category.categoryName)
                 }
-                style={{
-                  fontWeight:
-                    selectedCategory === category._id ? "bold" : "normal",
-                  cursor:
-                    selectedCategory === category._id ? "default" : "pointer",
-                  backgroundColor:
-                    selectedCategory === category._id
-                      ? "#f0f0f0"
-                      : "transparent",
-                  padding: "5px 10px",
-                  borderRadius: "5px",
-                  marginBottom: "5px",
-                }}
+                className={`font-${
+                  selectedCategory === category._id ? "bold" : "normal"
+                } cursor-${
+                  selectedCategory === category._id ? "default" : "pointer"
+                } p-1.25 rounded ${
+                  selectedCategory === category._id ? "bg-gray-100" : ""
+                }`}
               >
                 <a
                   href="#/"
-                  style={{
-                    textDecoration: "none",
-                    color:
-                      selectedCategory === category._id ? "#007bff" : "inherit",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
+                  className={`no-underline flex items-center ${
+                    selectedCategory === category._id ? "text-primary" : "text-inherit"
+                  }`}
                   onClick={(e) => e.preventDefault()}
                 >
                   <img
                     src={category.image}
                     alt={category.categoryName}
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      marginRight: "10px",
-                      borderRadius: "10px",
-                      objectFit: "cover",
-                    }}
+                    className="w-7.5 h-7.5 mr-2.5 rounded-lg object-cover"
                   />
                   {category.categoryName}
                 </a>

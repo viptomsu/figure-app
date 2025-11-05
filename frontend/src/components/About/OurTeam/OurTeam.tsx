@@ -1,91 +1,163 @@
-import React, { useEffect, useState } from "react";
-import { getAllNews } from "../../../services/newService"; // Đường dẫn tới API của bạn
+import React from "react";
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 
-interface NewsItem {
-  _id: number;
-  title: string;
-  content: string;
-  publishDate: string;
+interface TeamMember {
+  id: number;
+  name: string;
+  position: string;
   image: string;
+  bio: string;
+  social: {
+    facebook?: string;
+    twitter?: string;
+    instagram?: string;
+    linkedin?: string;
+  };
 }
 
-const NewsSection: React.FC = () => {
-  const [news, setNews] = useState<NewsItem[]>([]);
-
-  useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const data = await getAllNews(1, 5, "");
-        setNews(data.content);
-      } catch (error) {
-        console.error("Error fetching news:", error);
-      }
-    };
-
-    fetchNews();
-  }, []);
-
-  // Inline style cho các phần tử
-  const sectionStyle: React.CSSProperties = {
-    padding: "40px 0",
-  };
-
-  const newsItemStyle: React.CSSProperties = {
-    border: "1px solid #ddd",
-    padding: "15px",
-    borderRadius: "10px",
-    transition: "box-shadow 0.3s ease",
-  };
-
-  const imgStyle: React.CSSProperties = {
-    width: "100%",
-    height: "auto",
-    borderRadius: "5px",
-    marginBottom: "15px",
-  };
-
-  const titleStyle: React.CSSProperties = {
-    fontSize: "18px",
-    fontWeight: "bold",
-    marginBottom: "10px",
-  };
+const OurTeam: React.FC = () => {
+  const teamMembers: TeamMember[] = [
+    {
+      id: 1,
+      name: "John Doe",
+      position: "CEO & Founder",
+      image: "/team/team-1.jpg",
+      bio: "Leading the vision and strategy of the company with over 15 years of experience.",
+      social: {
+        facebook: "#",
+        twitter: "#",
+        linkedin: "#",
+      },
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      position: "Creative Director",
+      image: "/team/team-2.jpg",
+      bio: "Bringing creative ideas to life with her innovative design approach.",
+      social: {
+        instagram: "#",
+        twitter: "#",
+      },
+    },
+    {
+      id: 3,
+      name: "Mike Johnson",
+      position: "Marketing Manager",
+      image: "/team/team-3.jpg",
+      bio: "Driving growth through strategic marketing and brand development.",
+      social: {
+        facebook: "#",
+        linkedin: "#",
+      },
+    },
+    {
+      id: 4,
+      name: "Sarah Williams",
+      position: "Product Manager",
+      image: "/team/team-4.jpg",
+      bio: "Ensuring product excellence and user satisfaction in every release.",
+      social: {
+        twitter: "#",
+        instagram: "#",
+      },
+    },
+  ];
 
   return (
-    <section id="news-section" style={sectionStyle}>
+    <section id="our-team" className="py-25">
       <div className="container">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {news.map((item: any, index: number) => (
+        <div className="section-title text-center pb-12.5">
+          <h2 className="text-3xl font-normal">Our Team</h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {teamMembers.map((member) => (
             <div
-              key={index}
-              className="mb-4"
-              style={newsItemStyle}
+              key={member.id}
+              className="team-item relative h-[300px] w-full mb-7.5 group md:h-[220px] sm:h-[150px]"
             >
-              <div className="news-item" style={newsItemStyle}>
-                <div className="news-img">
-                  <img src={item.image} alt={item.title} style={imgStyle} />
+              {/* Front of card */}
+              <div className="item-front absolute h-full w-full px-1.25 overflow-hidden backface-hidden transition-transform duration-600 ease-linear">
+                <div className="h-full w-full">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="h-full w-full object-cover rounded-lg"
+                  />
                 </div>
-                <div className="news-content">
-                  <h5 style={titleStyle}>{item.title}</h5>
-                  {/* <p
-                    dangerouslySetInnerHTML={{
-                      __html: item.content.substring(0, 200) + "...",
-                    }}
-                  /> */}
-                  <p>
-                    <strong>Ngày đăng: </strong>
-                    {new Date(item.publishDate).toLocaleDateString()}
-                  </p>
-                  <a href={`/news/${item._id}`} className="btn btn-primary">
-                    Xem thêm
-                  </a>
+              </div>
+
+              {/* Back of card */}
+              <div className="item-back absolute inset-0 bg-primary flex flex-col justify-center items-center text-white p-5 transform rotate-y-180 transition-transform duration-600 ease-linear">
+                <div className="item-info flex flex-col justify-center items-center text-center">
+                  <h5 className="text-lg font-semibold mb-2">
+                    {member.name}
+                  </h5>
+                  <p className="text-sm mb-4">{member.position}</p>
+                  <p className="text-sm mb-4">{member.bio}</p>
+                  <ul className="flex gap-3 social-media">
+                    {member.social.facebook && (
+                      <li>
+                        <a href={member.social.facebook} className="text-black hover:text-white transition-colors duration-400">
+                          <FaFacebook size={18} />
+                        </a>
+                      </li>
+                    )}
+                    {member.social.twitter && (
+                      <li>
+                        <a href={member.social.twitter} className="text-black hover:text-white transition-colors duration-400">
+                          <FaTwitter size={18} />
+                        </a>
+                      </li>
+                    )}
+                    {member.social.instagram && (
+                      <li>
+                        <a href={member.social.instagram} className="text-black hover:text-white transition-colors duration-400">
+                          <FaInstagram size={18} />
+                        </a>
+                      </li>
+                    )}
+                    {member.social.linkedin && (
+                      <li>
+                        <a href={member.social.linkedin} className="text-black hover:text-white transition-colors duration-400">
+                          <FaLinkedin size={18} />
+                        </a>
+                      </li>
+                    )}
+                  </ul>
                 </div>
               </div>
             </div>
           ))}
         </div>
+
+        <div className="become-member-link flex flex-col justify-center items-center h-full pt-12.5">
+          <a
+            href="#"
+            className="font-bold uppercase text-lg mb-6.25 text-gray-700 hover:text-primary transition-colors duration-300"
+          >
+            Join Our Team
+          </a>
+        </div>
       </div>
+
+      <style jsx>{`
+        .team-item:hover .item-front {
+          transform: perspective(600px) rotateY(-180deg);
+        }
+        .team-item:hover .item-back {
+          transform: perspective(600px) rotateY(0deg);
+        }
+        .backface-hidden {
+          backface-visibility: hidden;
+        }
+        .transform {
+          transform-style: preserve-3d;
+        }
+      `}</style>
     </section>
   );
 };
 
-export default NewsSection;
+export default OurTeam;

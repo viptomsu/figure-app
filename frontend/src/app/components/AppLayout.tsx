@@ -13,23 +13,16 @@ interface AppLayoutProps {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
-    <div className="App">
-      <header>
-        <Header />
-      </header>
-
+    <>
+      <Header />
       <main>
         {children}
       </main>
-
-      <footer>
-        <Footer />
-      </footer>
-
+      <Footer />
       <BackToTopBtn />
       <NavigationList />
       <ToastContainer position="top-right" autoClose={4000} closeOnClick />
-    </div>
+    </>
   )
 }
 

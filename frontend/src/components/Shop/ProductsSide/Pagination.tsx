@@ -18,38 +18,48 @@ const Pagination: React.FC<any> = ({
   return (
     <nav
       aria-label="Page navigation example"
-      className="d-flex justify-content-center"
+      className="flex justify-center pt-10"
     >
-      <ul className="pagination">
-        <li className={currentPage === 1 ? "page-item disabled" : "page-item"}>
+      <ul className="flex gap-2.5">
+        <li
+          className={`${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+        >
           <button
-            className="page-link"
+            className="page-link min-w-8 h-8 text-sm text-gray-600 hover:text-white hover:bg-primary border border-gray-300 hover:border-primary rounded px-0 focus:shadow-none"
             onClick={() =>
               setCurrentPage(currentPage === 1 ? currentPage : currentPage - 1)
             }
+            disabled={currentPage === 1}
           >
-            <VscChevronLeft />
+            <VscChevronLeft className="text-lg w-8" />
           </button>
         </li>
         {numOfPages.map((page, index) => (
           <li
             key={index}
-            className={currentPage === page ? "page-item active" : "page-item"}
+            className={currentPage === page ? "active" : ""}
           >
-            <button className="page-link" onClick={() => setCurrentPage(page)}>
+            <button
+              className={`min-w-8 h-8 text-sm border rounded px-0 transition-colors ${
+                currentPage === page
+                  ? "text-white bg-primary border-primary"
+                  : "text-gray-600 border-gray-300 hover:text-white hover:bg-primary hover:border-primary"
+              }`}
+              onClick={() => setCurrentPage(page)}
+            >
               {page}
             </button>
           </li>
         ))}
         <li
-          className={
+          className={`${
             currentPage === numOfPages.length
-              ? "page-item disabled"
-              : "page-item"
-          }
+              ? "opacity-50 cursor-not-allowed"
+              : ""
+          }`}
         >
           <button
-            className="page-link"
+            className="page-link min-w-8 h-8 text-sm text-gray-600 hover:text-white hover:bg-primary border border-gray-300 hover:border-primary rounded px-0 focus:shadow-none"
             onClick={() =>
               setCurrentPage(
                 currentPage === numOfPages.length
@@ -57,8 +67,9 @@ const Pagination: React.FC<any> = ({
                   : currentPage + 1
               )
             }
+            disabled={currentPage === numOfPages.length}
           >
-            <VscChevronRight />
+            <VscChevronRight className="text-lg w-8" />
           </button>
         </li>
       </ul>

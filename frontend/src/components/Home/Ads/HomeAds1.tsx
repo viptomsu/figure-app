@@ -10,24 +10,18 @@ const HomeAds1: React.FC = () => {
 	];
 
 	return (
-		<section id="ads-1">
+		<section id="ads-1" className="bg-white">
 			<div className="container">
-				<div className="row">
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:pt-6">
 					{AdsData1.map((item) => (
-						<div key={item.id} className="col-lg-4">
-							<div className="ads-img">
-								<Link href="/shop">
-									<img
-										src={item.img}
-										alt="ads-img"
-										style={{
-											width: "416px",
-											height: "224px",
-											objectFit: "cover",
-										}}
-									/>
-								</Link>
-							</div>
+						<div key={item.id} className="w-full">
+							<Link href="/shop">
+								<img
+									src={item.img}
+									alt="ads-img"
+									className="w-[416px] h-[224px] object-cover sm:w-full sm:h-auto sm:max-w-[416px] sm:max-h-[224px]"
+								/>
+							</Link>
 						</div>
 					))}
 				</div>

@@ -8,7 +8,7 @@ interface FilterSideProps {
 
 const FilterSide: React.FC<FilterSideProps> = ({ setSelectedCategory, selectedCategory }) => {
   return (
-    <div className="filter-side">
+    <div>
       <Categories setSelectedCategory={setSelectedCategory} selectedCategory={selectedCategory} />
     </div>
   );

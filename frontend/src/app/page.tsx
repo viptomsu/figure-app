@@ -7,6 +7,7 @@ import Banner from "@/components/Home/Banner/Banner";
 import Categories from "@/components/Home/Categories/Categories";
 import ChatBox from "@/components/Home/Chat/ChatBox";
 import DealOfTheDay from "@/components/Home/DealOfTheDay/DealOfTheDay";
+import DownloadApp from "@/components/Home/DownloadApp/DownloadApp";
 import { MessageOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useState } from "react";
@@ -34,6 +35,7 @@ export default function HomePage() {
 				<HomeAds1 />
 				<Categories />
 				<HomeAds2 />
+				<DownloadApp />
 				<Button
 					type="primary"
 					shape="circle"

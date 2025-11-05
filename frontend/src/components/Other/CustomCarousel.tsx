@@ -15,13 +15,13 @@ interface CustomCarouselProps {
   showDots?: boolean
 }
 
-const CustomCarousel: React.FC<CustomCarouselProps> = ({ 
-  children, 
+const CustomCarousel: React.FC<CustomCarouselProps> = ({
+  children,
   className = "",
-  showDots = true 
+  showDots = true,
 }) => {
   return (
-    <div className={`custom-carousel ${className}`}>
+    <div className={className}>
       <Carousel
         opts={{
           align: "start",
@@ -31,7 +31,10 @@ const CustomCarousel: React.FC<CustomCarouselProps> = ({
       >
         <CarouselContent className="-ml-2 md:-ml-4">
           {React.Children.map(children, (child, index) => (
-            <CarouselItem key={index} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+            <CarouselItem
+              key={index}
+              className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
+            >
               {child}
             </CarouselItem>
           ))}
@@ -39,15 +42,12 @@ const CustomCarousel: React.FC<CustomCarouselProps> = ({
         <CarouselPrevious className="hidden md:flex" />
         <CarouselNext className="hidden md:flex" />
       </Carousel>
-      
-      {/* Custom dots indicator */}
+
       {showDots && (
-        <div className="flex justify-center mt-4 space-x-2">
-          {/* Dots will be added dynamically if needed */}
-        </div>
+        <div className="flex justify-center mt-4 space-x-2"></div>
       )}
     </div>
-  )
-}
+  );
+};
 
 export default CustomCarousel
