@@ -1,81 +1,45 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface UserState {
   user: any;
-  token: string | null;
-  isAuthenticated: boolean;
-  error: string | null;
 }
 
 interface UserActions {
-  loginSuccess: (userData: { user: any; token: string }) => void;
-  loginFailure: (errorMessage: string) => void;
+  loginSuccess: (user: any) => void;
   logout: () => void;
   updateUserProfile: (updatedData: any) => void;
-  clearError: () => void;
+  setUser: (user: any) => void;
 }
 
 type UserStore = UserState & UserActions;
 
 export const useUserStore = create<UserStore>()(
-  persist(
-    (set, get) => ({
-      // Initial state
-      user: null,
-      token: null,
-      isAuthenticated: false,
-      error: null,
+  (set, get) => ({
+    // Initial state
+    user: null,
 
-      // Actions
-      loginSuccess: (userData) => {
+    // Actions
+    loginSuccess: (user) => {
+      set({
+        user: user,
+      });
+    },
+
+    logout: () => {
+      set({
+        user: null,
+      });
+    },
+
+    updateUserProfile: (updatedData) => {
+      const currentUser = get().user;
+      if (currentUser) {
         set({
-          user: userData.user,
-          token: userData.token,
-          isAuthenticated: true,
-          error: null,
+          user: { ...currentUser, ...updatedData },
         });
-      },
+      }
+    },
 
-      loginFailure: (errorMessage) => {
-        set({
-          user: null,
-          token: null,
-          isAuthenticated: false,
-          error: errorMessage,
-        });
-      },
-
-      logout: () => {
-        set({
-          user: null,
-          token: null,
-          isAuthenticated: false,
-          error: null,
-        });
-      },
-
-      updateUserProfile: (updatedData) => {
-        const currentUser = get().user;
-        if (currentUser) {
-          set({
-            user: { ...currentUser, ...updatedData },
-          });
-        }
-      },
-
-      clearError: () => {
-        set({ error: null });
-      },
-    }),
-    {
-      name: 'user-storage', // name of the item in localStorage
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        user: state.user,
-        token: state.token,
-        isAuthenticated: state.isAuthenticated,
-      }),
-    }
-  )
+    setUser: (user) => set({ user }),
+  })
 );

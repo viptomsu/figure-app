@@ -1,6 +1,6 @@
 // Main API client and configuration exports
 export { default as apiClient } from './apiClient';
-export { API_CONFIG, getStoredToken, getStoredUser, getUserId } from './config';
+export { API_CONFIG } from './config';
 export * from './types';
 
 // Service exports

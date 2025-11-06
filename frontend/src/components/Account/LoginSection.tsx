@@ -37,15 +37,10 @@ const LoginSection: React.FC = () => {
     setLoginLoading(true);
     try {
       const result = await login(username, password);
-      const { jwtToken } = result.payload[0];
-      const user = result.payload[1];
+      const user = result.payload;
 
-      // Store user info and token in Zustand
-      loginSuccess({ user, token: jwtToken });
-
-      // Lưu jwtToken vào localStorage (tuỳ chọn nếu bạn muốn lưu trên localStorage)
-      localStorage.setItem("auth_token", jwtToken);
-      localStorage.setItem("user", JSON.stringify(user));
+      // Store user info in Zustand
+      loginSuccess(user);
 
       if (user.isDelete) {
         toast.warning("Tài khoản của bạn đã bị khóa!");

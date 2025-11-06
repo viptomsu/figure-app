@@ -23,9 +23,8 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import NiceModal from '@ebay/nice-modal-react';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import OrderDetailsModal from './OrderDetailsModal';
-import { getOrdersByUserId, updateOrderStatus } from '../../services/orderService';
+import { getOrdersForCurrentUser, updateOrderStatus } from '../../services/orderService';
 import { formatCurrency } from '../../utils/currencyFormatter';
-import { useUserStore } from '../../stores';
 import { getOrderStatusVariant } from '../../utils/orderStatusHelper';
 
 NiceModal.register('confirm-dialog', ConfirmDialog);
@@ -41,43 +40,35 @@ const HistorySection: React.FC = () => {
   });
   const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
 
-  // Lấy thông tin người dùng từ Zustand store
-  const { user } = useUserStore();
   const fetchUserOrders = async (currentPage = 1, limit = 5) => {
-    if (user && user.userId) {
-      const userId = user.userId;
-      setLoading(true);
-      try {
-        const { content, page, totalPages, totalElements } = await getOrdersByUserId(
-          userId,
-          currentPage,
-          limit
-        );
+    setLoading(true);
+    try {
+      const { content, page, totalPages, totalElements } = await getOrdersForCurrentUser(
+        currentPage,
+        limit
+      );
 
-        if (currentPage > totalPages && totalPages > 0) {
-          setPagination((prev) => ({ ...prev, page: totalPages }));
-          return;
-        }
-
-        setOrders(content);
-        setPagination({
-          page,
-          totalPages,
-          totalElements,
-          limit,
-        });
-      } catch (error: any) {
-        toast.error('Không thể lấy thông tin đơn hàng: ' + error.message);
-      } finally {
-        setLoading(false);
+      if (currentPage > totalPages && totalPages > 0) {
+        setPagination((prev) => ({ ...prev, page: totalPages }));
+        return;
       }
-    } else {
-      toast.warning('Không tìm thấy thông tin người dùng trong Redux');
+
+      setOrders(content);
+      setPagination({
+        page,
+        totalPages,
+        totalElements,
+        limit,
+      });
+    } catch (error: any) {
+      toast.error('Không thể lấy thông tin đơn hàng: ' + error.message);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
     fetchUserOrders(pagination.page, pagination.limit);
-  }, [pagination.page, pagination.limit, user]);
+  }, [pagination.page, pagination.limit]);
 
   const generateStatus = (status: string) => {
     const variant = getOrderStatusVariant(status);

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const HF_API_KEY = process.env.NEXT_PUBLIC_HF_API_KEY; // Make sure to replace with your actual API key
+const HF_API_KEY = process.env.NEXT_PUBLIC_HF_API_KEY;
 export const checkProfanityWithHuggingFace = async (text: string): Promise<boolean> => {
   try {
     const response = await axios.post(

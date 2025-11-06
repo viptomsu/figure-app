@@ -9,7 +9,7 @@ import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { toast } from 'sonner';
 import { createOrder } from '../../../services/orderService';
 import { checkVoucher, markVoucherAsUsed } from '../../../services/voucherService'; // Import checkVoucher API
-import { useCartStore } from '../../../stores';
+import { useCartStore, useUserStore } from '../../../stores';
 import { createVNPayPayment } from '../../../services/vnpayService'; // Import service của VNPay
 
 interface IProps {
@@ -22,6 +22,7 @@ interface IProps {
 
 const Payment: React.FC<IProps> = (props) => {
   const { clearCart } = useCartStore();
+  const { user } = useUserStore();
   const router = useRouter(); // Sử dụng useRouter cho Next.js
   const [showCodContent, setShowCodContent] = useState<boolean>(true);
   const [showPaypalContent, setShowPaypalContent] = useState<boolean>(false);
@@ -67,13 +68,19 @@ const Payment: React.FC<IProps> = (props) => {
 
   const handlePaymentSubmit = async (method: string) => {
     try {
+      if (!user?.userId) {
+        toast.error('Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.');
+        return;
+      }
+
       const orderCode = generateOrderCode();
       const response = await createOrder(
         cart,
         method,
         orderCode,
         props.selectedAddress._id,
-        discount
+        discount,
+        user.userId
       );
       props.setOrderCode(orderCode);
       toast.success('Đặt hàng thành công');
@@ -108,7 +115,7 @@ const Payment: React.FC<IProps> = (props) => {
               (totalPriceVND * discount) / 100
             )}!`
           );
-          setVoucherId(voucherId); // Lưu voucherId vào state
+          setVoucherId(_id); // Lưu voucherId vào state
 
           // Lưu toàn bộ response.payload vào localStorage với tên 'voucher'
           localStorage.setItem('voucher', JSON.stringify(response.payload));

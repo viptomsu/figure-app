@@ -5,6 +5,7 @@ import { BsHeart, BsBag } from "react-icons/bs";
 import { IoIosSearch } from "react-icons/io";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from 'sonner';
 import {
 	useCartStore,
 	useWishlistStore,
@@ -12,6 +13,7 @@ import {
 	useUIStore,
 	useUserStore,
 } from "../../../stores";
+import { logout as logoutService } from "../../../services/authService";
 import { IActionDataTypes } from "../../../types/types";
 
 const Actions: React.FC = () => {
@@ -20,7 +22,7 @@ const Actions: React.FC = () => {
 	const { compare } = useCompareStore();
 	const { showSearchArea, toggleDropdownCart, setShowSearchArea } =
 		useUIStore();
-	const { isAuthenticated, user, logout } = useUserStore();
+	const { user, logout } = useUserStore();
 	const router = useRouter();
 
 	const showOrHideDropCart = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -54,11 +56,17 @@ const Actions: React.FC = () => {
 	];
 
 	// Hàm xử lý đăng xuất
-	const handleLogout = () => {
-		logout();
-		localStorage.removeItem("auth_token");
-		localStorage.removeItem("user");
-		router.push("/login"); // Chuyển hướng về trang login sau khi đăng xuất
+	const handleLogout = async () => {
+		try {
+			await logoutService();
+			logout();
+			router.push("/login");
+		} catch (error) {
+			console.error('Logout error:', error);
+			logout();
+			router.push("/login");
+			toast.error('Đăng xuất thất bại');
+		}
 	};
 
 	return (
@@ -111,7 +119,7 @@ const Actions: React.FC = () => {
 							/>
 						</Link>
 					) : (
-						<Link href="/profile">
+						<Link href="/login">
 							<img
 								src={
 									"https://i.pinimg.com/originals/94/e4/cb/94e4cb5ae194975f6dc84d1495c3abcd.gif"

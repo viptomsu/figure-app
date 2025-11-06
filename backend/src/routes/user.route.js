@@ -3,12 +3,14 @@ import express from "express";
 import {
   getAllUsers,
   getUserById,
+  getCurrentUser,
   createUser,
   updateUser,
   deleteUser,
   changePassword,
 } from "../controllers/user.controller.js";
 import multer from "multer";
+import { checkAuth } from "../middlewares/auth.middleware.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -19,6 +21,8 @@ userRouter
   .route("/")
   .get(getAllUsers) // Lấy danh sách người dùng
   .post(upload.single("avatar"), createUser); // Tạo mới người dùng
+
+userRouter.get('/me', checkAuth, getCurrentUser); // Lấy thông tin người dùng hiện tại
 
 userRouter
   .route("/:id")

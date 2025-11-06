@@ -68,6 +68,28 @@ export const getUserById = async (req, res) => {
   }
 };
 
+// Lấy thông tin người dùng hiện tại
+export const getCurrentUser = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const user = await User.findById(userId).select('-password');
+    if (!user) {
+      return res
+        .status(404)
+        .json(new ApiResponse(404, null, "Không tìm thấy người dùng"));
+    }
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, user, "Lấy thông tin người dùng thành công"));
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json(new ApiResponse(500, null, "Lỗi khi lấy thông tin người dùng"));
+  }
+};
+
 // Tạo mới người dùng
 export const createUser = async (req, res) => {
   try {

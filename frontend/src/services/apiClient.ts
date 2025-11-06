@@ -5,13 +5,14 @@ import axios, {
 	AxiosError,
 } from "axios";
 import queryString from "query-string";
-import { API_CONFIG, getStoredToken } from "./config";
+import { API_CONFIG } from "./config";
 import { ApiError } from "./types";
 
 const apiClient: AxiosInstance = axios.create({
 	baseURL: API_CONFIG.BASE_URL,
 	timeout: API_CONFIG.TIMEOUT,
 	headers: API_CONFIG.DEFAULT_HEADERS,
+	withCredentials: true,
 	paramsSerializer: {
 		serialize: (params: Record<string, any>) => {
 			return queryString.stringify(params, {
@@ -25,14 +26,6 @@ const apiClient: AxiosInstance = axios.create({
 
 apiClient.interceptors.request.use(
 	(config: InternalAxiosRequestConfig) => {
-		const token = getStoredToken();
-		if (token && !config.headers?.skipAuth) {
-			config.headers = {
-				...config.headers,
-				Authorization: `Bearer ${token}`,
-			} as any;
-		}
-
 		if (config.headers?.skipAuth) {
 			delete config.headers.skipAuth;
 		}
@@ -75,8 +68,9 @@ apiClient.interceptors.response.use(
 
 			switch (httpStatus) {
 				case 401:
-					localStorage.removeItem(API_CONFIG.TOKEN_KEY);
-					localStorage.removeItem(API_CONFIG.USER_KEY);
+					if (typeof window !== "undefined") {
+						window.location.href = "/login";
+					}
 					apiError = ApiError.unauthorized(responseData?.message || "Unauthorized");
 					break;
 				case 403:

@@ -11,8 +11,7 @@ import { Label } from '@/components/ui/label'
 import ShippingInfo from '@/components/Checkout/ShippingInfo/ShippingInfo'
 import Payment from '@/components/Checkout/Payment/Payment'
 import { useCartStore, useUserStore } from '@/stores'
-import { getAddressBooksByUserId } from '@/services/addressBookService'
-import { useAuth } from '@/hooks/useAuth'
+import { getAddressBooksForCurrentUser } from '@/services/addressBookService'
 
 interface AddressBook {
   _id: string
@@ -28,7 +27,6 @@ interface AddressBook {
 const TOTAL_STEPS = 3
 
 export default function CheckoutPage() {
-  const { isAuthenticated } = useAuth({ required: true })
   const router = useRouter()
   const cart = useCartStore((state) => state.cart)
   const user = useUserStore((state) => state.user)
@@ -39,23 +37,15 @@ export default function CheckoutPage() {
   const [, setOrderCode] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      return
-    }
-
     if (cart.length === 0) {
       router.push('/cart')
     }
-  }, [cart, isAuthenticated, router])
+  }, [cart, router])
 
   useEffect(() => {
-    if (!isAuthenticated || !user?.userId) {
-      return
-    }
-
     const fetchAddresses = async () => {
       try {
-        const addressData = await getAddressBooksByUserId(user.userId)
+        const addressData = await getAddressBooksForCurrentUser()
         if (addressData && addressData.length > 0) {
           setAddressList(addressData)
           setSelectedAddress(addressData[0])
@@ -67,7 +57,7 @@ export default function CheckoutPage() {
     }
 
     fetchAddresses()
-  }, [isAuthenticated, user])
+  }, [])
 
   const handleAddressChange = useCallback(
     (value: string) => {
@@ -176,10 +166,6 @@ export default function CheckoutPage() {
     ],
     [addressList, cart, handleAddressChange, handleNext, handlePaymentComplete, handlePrev, router, selectedAddress]
   )
-
-  if (!isAuthenticated) {
-    return null
-  }
 
   return (
     <div className="checkout-content">

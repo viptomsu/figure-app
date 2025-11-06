@@ -8,6 +8,7 @@ export const API_CONFIG = {
   TIMEOUT: 30000,
 
   // Authentication
+  // Cookie names (no longer used for localStorage)
   TOKEN_KEY: 'auth_token',
   USER_KEY: 'user',
 
@@ -23,16 +24,21 @@ export const API_CONFIG = {
       REGISTER: '/auth/register',
       FORGOT_PASSWORD: '/auth/forgot-password',
       RESET_PASSWORD: '/auth/reset-password',
+      SESSION: '/auth/session',
     },
     PRODUCTS: '/products',
     CATEGORIES: '/categories',
     ORDERS: '/orders',
-    USERS: '/users',
+    USERS: {
+      BASE: '/users',
+      ME: '/users/me',
+    },
     VOUCHERS: '/vouchers',
     ADDRESS_BOOK: '/addressbook',
     REVIEWS: '/reviews',
     BRANDS: '/brands',
     VN_PAY: '/vnpay',
+    CHATROOMS: '/chatrooms',
   },
 
   // Response status codes
@@ -47,26 +53,3 @@ export const API_CONFIG = {
     INTERNAL_SERVER_ERROR: 500,
   },
 } as const;
-
-// Helper function to get stored token
-export const getStoredToken = (): string | null => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem(API_CONFIG.TOKEN_KEY);
-  }
-  return null;
-};
-
-// Helper function to get stored user
-export const getStoredUser = (): any | null => {
-  if (typeof window !== 'undefined') {
-    const user = localStorage.getItem(API_CONFIG.USER_KEY);
-    return user ? JSON.parse(user) : null;
-  }
-  return null;
-};
-
-// Helper function to get user ID
-export const getUserId = (): number | null => {
-  const user = getStoredUser();
-  return user ? user.userId : null;
-};

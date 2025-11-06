@@ -1,4 +1,4 @@
-import { API_CONFIG, getUserId } from "./config";
+import { API_CONFIG } from "./config";
 import apiClient from "./apiClient";
 
 // Hàm tạo mã đơn hàng ngẫu nhiên
@@ -19,10 +19,14 @@ export const createOrder = async (
 	paymentMethod: string,
 	orderCode: string,
 	addressBookId: string,
-	discount: number
+	discount: number,
+	userId: number
 ): Promise<any> => {
+	if (!userId) {
+		throw new Error('User ID is required to create an order');
+	}
+
 	const newDate = getVietnamTimeISO(); // Chuyển sang định dạng ISO 8601
-	const userId = getUserId(); // Lấy userId từ localStorage
 
 	// Tính tổng giá trước khi áp dụng giảm giá tổng thể
 	const totalPriceBeforeDiscount = cart.reduce(
@@ -131,6 +135,19 @@ export const getOrdersByUserId = async (
 	limit: number = 10
 ): Promise<any> => {
 	return apiClient.get(`${API_CONFIG.ENDPOINTS.ORDERS}/user/${userId}`, {
+		params: {
+			page,
+			limit,
+		},
+	});
+};
+
+// Hàm lấy đơn hàng cho người dùng hiện tại (sử dụng token)
+export const getOrdersForCurrentUser = async (
+	page: number = 1,
+	limit: number = 10
+): Promise<any> => {
+	return apiClient.get(`${API_CONFIG.ENDPOINTS.ORDERS}/me`, {
 		params: {
 			page,
 			limit,

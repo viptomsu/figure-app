@@ -9,7 +9,7 @@ const CartTotals: React.FC<ICartProps> = (props) => {
   const { cart } = props;
 
   // Lấy trạng thái người dùng từ Zustand
-  const { isAuthenticated } = useUserStore();
+  const { user } = useUserStore();
 
   // Tính tổng giá ban đầu và tổng số tiền giảm giá
   const { totalPrice, totalDiscount } = cart.reduce(
@@ -30,10 +30,9 @@ const CartTotals: React.FC<ICartProps> = (props) => {
   const handleCheckout = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
-    if (!isAuthenticated) {
-      // Kiểm tra trạng thái đăng nhập từ Redux
-      e.preventDefault(); // Ngăn điều hướng nếu chưa có user
-      toast.warning("Bạn cần đăng nhập tài khoản để mua hàng"); // Hiển thị cảnh báo nếu chưa đăng nhập
+    if (!user) {
+      // Show toast warning, but let navigation proceed and rely on proxy.ts
+      toast.warning("Bạn cần đăng nhập tài khoản để mua hàng");
     }
   };
 

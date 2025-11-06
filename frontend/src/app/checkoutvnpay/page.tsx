@@ -6,19 +6,30 @@ import { toast } from 'sonner'
 import { handleVNPayPaymentReturn } from '@/services/vnpayService'
 import { createOrder } from '@/services/orderService'
 import { markVoucherAsUsed } from '@/services/voucherService'
-import { useCartStore } from '@/stores'
-import { useAuth } from '@/hooks/useAuth'
+import { fetchCurrentUser } from '@/services/authService'
+import { useCartStore, useUserStore } from '@/stores'
 
 export default function CheckoutVNPayPage() {
-  const { isAuthenticated } = useAuth({ required: true })
   const router = useRouter()
   const searchParams = useSearchParams()
   const cart = useCartStore((state) => state.cart)
   const clearCart = useCartStore((state) => state.clearCart)
+  const { user } = useUserStore()
 
   const handlePaymentSubmit = useCallback(
     async (method: string, orderCode: string) => {
       try {
+        let currentUser = user
+        if (!currentUser?.userId) {
+          try {
+            currentUser = await fetchCurrentUser()
+          } catch (error) {
+            toast.error('Không thể xác thực người dùng. Vui lòng đăng nhập lại.')
+            router.push('/')
+            return
+          }
+        }
+
         const selectedAddressBookId = localStorage.getItem('selectedAddressBookId')
 
         if (!selectedAddressBookId) {
@@ -35,7 +46,7 @@ export default function CheckoutVNPayPage() {
           discount = voucher.discount
         }
 
-        await createOrder(cart, method, orderCode, selectedAddressBookId, discount)
+        await createOrder(cart, method, orderCode, selectedAddressBookId, discount, currentUser.userId)
         toast.success('Đặt hàng thành công')
 
         if (voucherId) {
@@ -55,14 +66,10 @@ export default function CheckoutVNPayPage() {
         router.push('/')
       }
     },
-    [cart, clearCart, router]
+    [cart, clearCart, router, user]
   )
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      return
-    }
-
     const queryParams = new URLSearchParams(searchParams.toString())
 
     if (queryParams.toString().length === 0) {
@@ -100,11 +107,7 @@ export default function CheckoutVNPayPage() {
         toast.error('Lỗi xử lý thanh toán VNPay.')
         router.push('/')
       })
-  }, [handlePaymentSubmit, isAuthenticated, router, searchParams])
-
-  if (!isAuthenticated) {
-    return null
-  }
+  }, [handlePaymentSubmit, router, searchParams])
 
   return <div>Đang xử lý thanh toán...</div>
 }

@@ -7,6 +7,11 @@ export const getAddressBooksByUserId = async (userId: any): Promise<any> => {
 	return apiClient.get(`${API_CONFIG.ENDPOINTS.ADDRESS_BOOK}/user/${userId}`);
 };
 
+// Hàm lấy tất cả AddressBook cho người dùng hiện tại (sử dụng token)
+export const getAddressBooksForCurrentUser = async (): Promise<any> => {
+	return apiClient.get(`${API_CONFIG.ENDPOINTS.ADDRESS_BOOK}/me`);
+};
+
 // Hàm tạo mới AddressBook
 export const createAddressBook = async (
 	userId: any,

@@ -3,15 +3,8 @@
 import Link from 'next/link'
 import React from 'react'
 import ProfileSection from '@/components/Profile/ProfileSection'
-import { useAuth } from '@/hooks/useAuth'
 
 export default function ProfilePage() {
-  const { isAuthenticated } = useAuth({ required: true })
-
-  if (!isAuthenticated) {
-    return null
-  }
-
   return (
     <div className="login-content">
       <div className="main">

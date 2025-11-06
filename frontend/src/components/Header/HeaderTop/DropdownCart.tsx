@@ -7,7 +7,7 @@ import { formatCurrency } from "@/utils/currencyFormatter"; // Hàm format tiề
 const DropdownCart: React.FC = () => {
   const { cart, removeFromCart } = useCartStore();
   const { showOrHideDropdownCart, toggleDropdownCart } = useUIStore();
-  const { isAuthenticated } = useUserStore();
+  const { user } = useUserStore();
   const { makeIsInCartFalse } = useProductsStore();
   const { makeWishlistProductIsInCartFalse } = useWishlistStore();
   const { makeCompareProductIsInCartFalse } = useCompareStore();
@@ -35,10 +35,9 @@ const DropdownCart: React.FC = () => {
 
   // Hàm xử lý khi nhấn nút "Thanh toán"
   const handleCheckout = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!isAuthenticated) {
-      // Kiểm tra trạng thái đăng nhập từ Zustand
-      e.preventDefault(); // Ngăn điều hướng nếu chưa đăng nhập
-      toast.warning("Bạn cần đăng nhập tài khoản để mua hàng"); // Hiển thị cảnh báo nếu chưa đăng nhập
+    if (!user) {
+      // Show toast warning, but let navigation proceed and rely on proxy.ts
+      toast.warning("Bạn cần đăng nhập tài khoản để mua hàng");
     }
   };
 

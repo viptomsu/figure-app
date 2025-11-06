@@ -11,7 +11,7 @@ const CheckOutSuccess: React.FC = () => {
   const searchParams = useSearchParams();
 
   // Lấy trạng thái người dùng từ Zustand
-  const { user, isAuthenticated: isUserLoggedIn } = useUserStore();
+  const { user } = useUserStore();
 
   // Lấy orderCode từ query parameter
   const orderCode = searchParams.get("orderCode");
@@ -274,7 +274,7 @@ const CheckOutSuccess: React.FC = () => {
           </p>
         </div>
 
-        {isUserLoggedIn && (
+        {user && (
           <div style={{ marginTop: "24px", textAlign: "center" }}>
             <button
               onClick={() => router.push("/history")}

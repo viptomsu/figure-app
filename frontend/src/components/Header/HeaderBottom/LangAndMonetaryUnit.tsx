@@ -6,10 +6,10 @@ const LangAndMonetaryUnit: React.FC = () => {
   const router = useRouter();
 
   // Lấy trạng thái người dùng từ Zustand
-  const { isAuthenticated: isUserLoggedIn } = useUserStore();
+  const { user } = useUserStore();
 
   const handleClick = () => {
-    if (isUserLoggedIn) {
+    if (user) {
       router.push("/history"); // Điều hướng tới trang lịch sử đặt hàng
     }
   };
@@ -18,7 +18,7 @@ const LangAndMonetaryUnit: React.FC = () => {
     <div className="lang-and-monetary-unit">
       <ul className="flex items-center justify-between list-none p-0 m-0">
         {/* Hiển thị mục Lịch sử đặt hàng nếu user đã đăng nhập */}
-        {isUserLoggedIn && (
+        {user && (
           <li onClick={handleClick} className="cursor-pointer">
             <p className="m-0 text-white text-sm">Lịch sử đặt hàng</p>
           </li>

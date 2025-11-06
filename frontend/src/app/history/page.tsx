@@ -3,15 +3,8 @@
 import Link from 'next/link'
 import React from 'react'
 import HistorySection from '@/components/History/HistorySection'
-import { useAuth } from '@/hooks/useAuth'
 
 export default function HistoryPage() {
-  const { isAuthenticated } = useAuth({ required: true })
-
-  if (!isAuthenticated) {
-    return null
-  }
-
   return (
     <div className="login-content">
       <div className="main">

@@ -55,8 +55,13 @@ const ProfileSection: React.FC = () => {
     setIsLoading(true);
 
     try {
+      if (!userData.username || !userData.role) {
+        toast.error('Thiếu thông tin người dùng. Vui lòng đăng nhập lại.');
+        return;
+      }
+
       // Gọi API để cập nhật thông tin người dùng (bao gồm avatar nếu có)
-      await updateProfile(userData.userId, data, selectedImage);
+      await updateProfile(userData.userId, data, selectedImage, userData.username, userData.role);
 
       // Hiển thị thông báo thành công
       toast.success(
