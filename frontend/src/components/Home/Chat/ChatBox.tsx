@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SendOutlined } from "@ant-design/icons";
+import { Send } from "lucide-react";
 import axios from "axios";
 import { useUserStore } from "../../../stores";
 
@@ -182,7 +182,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ onClose }) => {
           className="bg-[#0060c9] text-white rounded-full w-10 h-10"
           onClick={handleSendMessage}
         >
-          <SendOutlined />
+          <Send className="h-4 w-4" />
         </Button>
       </div>
     </div>

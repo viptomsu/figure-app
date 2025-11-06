@@ -62,7 +62,7 @@ export const updateAddressBook = async (
 };
 
 // Hàm xóa AddressBook theo ID
-export const deleteAddressBook = async (addressBookId: any): Promise<any> => {
+export const deleteAddressBook = async (addressBookId: string): Promise<any> => {
 	return apiClient.delete(
 		`${API_CONFIG.ENDPOINTS.ADDRESS_BOOK}/${addressBookId}`
 	);

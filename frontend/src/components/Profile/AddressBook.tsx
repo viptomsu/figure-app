@@ -8,8 +8,8 @@ import {
 } from "../../services/addressBookService";
 import AddressBookModal from "./components/AddressBookModal";
 import NiceModal from "@ebay/nice-modal-react";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons"; // Import các icon
-import { useRouter } from "next/navigation"; // Import useRouter
+import { Edit, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
   const [addressBooks, setAddressBooks] = useState<any[]>([]);
@@ -63,7 +63,7 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
     }
   };
 
-  const handleDeleteAddress = async (addressBookId: number) => {
+  const handleDeleteAddress = async (addressBookId: string) => {
     try {
       await deleteAddressBook(addressBookId);
       fetchAddressBooks();
@@ -122,7 +122,13 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
                   className="text-primary hover:text-red-700 transition-all duration-300"
                   onClick={() => handleEditAddress(address)}
                 >
-                  <EditOutlined />
+                  <Edit className="h-4 w-4" />
+                </button>
+                <button
+                  className="text-red-600 hover:text-red-700 transition-all duration-300"
+                  onClick={() => handleDeleteAddress(address._id)}
+                >
+                  <Trash2 className="h-4 w-4" />
                 </button>
               </div>
             </div>
