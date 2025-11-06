@@ -1,19 +1,16 @@
-"use client"
+'use client';
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { HiArrowNarrowLeft } from "react-icons/hi";
-import { formatCurrency } from "@/utils/currencyFormatter";
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { toast } from "sonner";
-import { createOrder } from "../../../services/orderService";
-import {
-  checkVoucher,
-  markVoucherAsUsed,
-} from "../../../services/voucherService"; // Import checkVoucher API
-import { useCartStore } from "../../../stores";
-import { createVNPayPayment } from "../../../services/vnpayService"; // Import service của VNPay
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { HiArrowNarrowLeft } from 'react-icons/hi';
+import { formatCurrency } from '@/utils/currencyFormatter';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
+import { toast } from 'sonner';
+import { createOrder } from '../../../services/orderService';
+import { checkVoucher, markVoucherAsUsed } from '../../../services/voucherService'; // Import checkVoucher API
+import { useCartStore } from '../../../stores';
+import { createVNPayPayment } from '../../../services/vnpayService'; // Import service của VNPay
 
 interface IProps {
   cart: any;
@@ -29,9 +26,9 @@ const Payment: React.FC<IProps> = (props) => {
   const [showCodContent, setShowCodContent] = useState<boolean>(true);
   const [showPaypalContent, setShowPaypalContent] = useState<boolean>(false);
   const [showVNPayContent, setShowVNPayContent] = useState<boolean>(false); // Thêm state cho VNPay
-  const [voucherCode, setVoucherCode] = useState<string>(""); // State để lưu mã voucher
+  const [voucherCode, setVoucherCode] = useState<string>(''); // State để lưu mã voucher
   const [discount, setDiscount] = useState<number>(0); // State để lưu giá trị giảm giá
-  const [voucherMessage, setVoucherMessage] = useState<string>(""); // State để lưu thông báo mã voucher
+  const [voucherMessage, setVoucherMessage] = useState<string>(''); // State để lưu thông báo mã voucher
   const [voucherId, setVoucherId] = useState<number | null>(null); // Thêm state để lưu voucherId
   const { cart } = props;
 
@@ -42,9 +39,7 @@ const Payment: React.FC<IProps> = (props) => {
     return `ORD${randomNumber}`;
   };
   const calculateDiscountedPrice = (product: any) => {
-    const priceToUse = product.selectedPrice
-      ? product.selectedPrice
-      : product.price;
+    const priceToUse = product.selectedPrice ? product.selectedPrice : product.price;
     const discountedPrice = product.discount
       ? priceToUse - (priceToUse * product.discount) / 100
       : priceToUse;
@@ -54,24 +49,19 @@ const Payment: React.FC<IProps> = (props) => {
   const handleVNPayPayment = async () => {
     try {
       const orderCode = generateOrderCode();
-      const REACT_APP_URL = process.env.REACT_APP_URL || "";
       const finalPrice = discount ? discountedPrice : totalPriceVND;
       // Gọi API tạo thanh toán VNPay
-      const response = await createVNPayPayment(
-        finalPrice,
-        orderCode,
-        REACT_APP_URL
-      );
+      const response = await createVNPayPayment(finalPrice, orderCode, document.location.origin);
 
       if (response) {
         // Điều hướng tới URL thanh toán VNPay trả về
         window.location.href = response; // Điều hướng người dùng tới trang thanh toán
       } else {
-        toast.error("Lỗi tạo thanh toán VNPay");
+        toast.error('Lỗi tạo thanh toán VNPay');
       }
     } catch (error) {
-      console.error("Error creating VNPay payment:", error);
-      toast.error("Lỗi khi tạo thanh toán VNPay.");
+      console.error('Error creating VNPay payment:', error);
+      toast.error('Lỗi khi tạo thanh toán VNPay.');
     }
   };
 
@@ -86,21 +76,20 @@ const Payment: React.FC<IProps> = (props) => {
         discount
       );
       props.setOrderCode(orderCode);
-      toast.success("Đặt hàng thành công");
+      toast.success('Đặt hàng thành công');
 
       // Nếu có voucher, gọi API đánh dấu mã đã sử dụng
       if (voucherId) {
         await markVoucherAsUsed(voucherId);
-        toast.success("Mã giảm giá đã được sử dụng");
-        localStorage.removeItem("voucher");
+        toast.success('Mã giảm giá đã được sử dụng');
+        localStorage.removeItem('voucher');
       }
 
-      router.push("/checkoutsuccess?orderCode=" + orderCode);
+      router.push('/checkoutsuccess?orderCode=' + orderCode);
       clearCart();
     } catch (error: any) {
-      console.error("Error creating order:", error);
-      const errorMessage =
-        error?.response?.data?.message || "Đã xảy ra lỗi khi đặt hàng.";
+      console.error('Error creating order:', error);
+      const errorMessage = error?.response?.data?.message || 'Đã xảy ra lỗi khi đặt hàng.';
       toast.error(errorMessage);
     }
   };
@@ -111,7 +100,7 @@ const Payment: React.FC<IProps> = (props) => {
         const { discount, isUsed, _id } = response.payload; // Lưu voucherId
 
         if (isUsed) {
-          setVoucherMessage("Mã giảm giá đã được sử dụng.");
+          setVoucherMessage('Mã giảm giá đã được sử dụng.');
         } else {
           setDiscount(discount);
           setVoucherMessage(
@@ -122,26 +111,25 @@ const Payment: React.FC<IProps> = (props) => {
           setVoucherId(voucherId); // Lưu voucherId vào state
 
           // Lưu toàn bộ response.payload vào localStorage với tên 'voucher'
-          localStorage.setItem("voucher", JSON.stringify(response.payload));
+          localStorage.setItem('voucher', JSON.stringify(response.payload));
         }
       }
     } catch (error) {
-      setVoucherMessage("Mã giảm giá không hợp lệ.");
-      console.error("Error applying voucher:", error);
+      setVoucherMessage('Mã giảm giá không hợp lệ.');
+      console.error('Error applying voucher:', error);
     }
   };
 
   const handleRemoveVoucher = () => {
     setDiscount(0);
     setVoucherId(null);
-    setVoucherCode("");
-    localStorage.removeItem("voucher");
-    setVoucherMessage("Voucher đã được loại bỏ.");
+    setVoucherCode('');
+    localStorage.removeItem('voucher');
+    setVoucherMessage('Voucher đã được loại bỏ.');
   };
 
   const totalPriceVND = cart.reduce(
-    (total: number, product: any) =>
-      total + calculateDiscountedPrice(product) * product.count,
+    (total: number, product: any) => total + calculateDiscountedPrice(product) * product.count,
     0
   );
 
@@ -184,7 +172,7 @@ const Payment: React.FC<IProps> = (props) => {
                 </button>
               )}
             </div>
-            <p className={`mt-2.5 ${discount > 0 ? "text-green-600" : "text-red-600"}`}>
+            <p className={`mt-2.5 ${discount > 0 ? 'text-green-600' : 'text-red-600'}`}>
               {voucherMessage}
             </p>
           </div>
@@ -251,7 +239,7 @@ const Payment: React.FC<IProps> = (props) => {
                       <button
                         type="button"
                         className="h-12.5 px-7.5 bg-primary text-white font-semibold text-base rounded transition-all duration-300 hover:bg-red-700"
-                        onClick={() => handlePaymentSubmit("COD")}
+                        onClick={() => handlePaymentSubmit('COD')}
                       >
                         Thanh toán khi nhận hàng
                       </button>
@@ -262,56 +250,45 @@ const Payment: React.FC<IProps> = (props) => {
                   {showPaypalContent && (
                     <PayPalScriptProvider
                       options={{
-                        clientId: process.env.REACT_APP_PAYPAL_CLIENT_ID!,
+                        clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
                       }}
                     >
                       <PayPalButtons
-                        style={{ layout: "vertical" }}
+                        style={{ layout: 'vertical' }}
                         createOrder={(data, actions) => {
                           if (actions && actions.order) {
                             return actions.order.create({
-                              intent: "CAPTURE",
+                              intent: 'CAPTURE',
                               purchase_units: [
                                 {
                                   amount: {
-                                    currency_code: "USD",
+                                    currency_code: 'USD',
                                     value: totalPriceUSD.toFixed(2),
                                   },
                                 },
                               ],
                             });
                           }
-                          return Promise.reject(
-                            new Error("Order creation failed")
-                          );
+                          return Promise.reject(new Error('Order creation failed'));
                         }}
                         onApprove={async (data, actions) => {
                           if (actions && actions.order) {
                             try {
                               const details = await actions.order.capture();
-                              const givenName =
-                                details?.payer?.name?.given_name ||
-                                "Khách hàng";
-                              handlePaymentSubmit("Paypal");
-                              toast.success(
-                                `Giao dịch thành công! Xin chào, ${givenName}`
-                              );
+                              const givenName = details?.payer?.name?.given_name || 'Khách hàng';
+                              handlePaymentSubmit('Paypal');
+                              toast.success(`Giao dịch thành công! Xin chào, ${givenName}`);
                             } catch (error) {
-                              console.error(
-                                "Lỗi khi hoàn thành thanh toán:",
-                                error
-                              );
-                              toast.error("Lỗi khi hoàn thành thanh toán.");
+                              console.error('Lỗi khi hoàn thành thanh toán:', error);
+                              toast.error('Lỗi khi hoàn thành thanh toán.');
                             }
                           } else {
-                            return Promise.reject(
-                              new Error("Order capture failed")
-                            );
+                            return Promise.reject(new Error('Order capture failed'));
                           }
                         }}
                         onError={(err) => {
-                          console.error("Lỗi khi thanh toán PayPal:", err);
-                          toast.error("Lỗi khi thanh toán PayPal.");
+                          console.error('Lỗi khi thanh toán PayPal:', err);
+                          toast.error('Lỗi khi thanh toán PayPal.');
                         }}
                       />
                     </PayPalScriptProvider>
@@ -352,9 +329,7 @@ const Payment: React.FC<IProps> = (props) => {
                     </div>
                     <div>
                       <p className="font-medium">
-                        {formatCurrency(
-                          calculateDiscountedPrice(product) * product.count
-                        )}
+                        {formatCurrency(calculateDiscountedPrice(product) * product.count)}
                       </p>
                     </div>
                   </li>
@@ -374,9 +349,7 @@ const Payment: React.FC<IProps> = (props) => {
               )}
               <div className="flex justify-between border-t border-gray-200 pt-2">
                 <h6 className="text-lg font-bold">TỔNG</h6>
-                <p className="text-primary font-bold text-lg">
-                  {formatCurrency(discountedPrice)}
-                </p>
+                <p className="text-primary font-bold text-lg">{formatCurrency(discountedPrice)}</p>
               </div>
             </div>
           </div>

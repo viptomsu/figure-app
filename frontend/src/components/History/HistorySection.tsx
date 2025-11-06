@@ -1,20 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@/components/ui/pagination";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import NiceModal from "@ebay/nice-modal-react";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import OrderDetailsModal from "./OrderDetailsModal";
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
-  getOrdersByUserId,
-  updateOrderStatus,
-} from "../../services/orderService";
-import { formatCurrency } from "../../utils/currencyFormatter";
-import { useUserStore } from "../../stores";
-import { getOrderStatusVariant } from "../../utils/orderStatusHelper";
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from '@/components/ui/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from '@/components/ui/pagination';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import NiceModal from '@ebay/nice-modal-react';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import OrderDetailsModal from './OrderDetailsModal';
+import { getOrdersByUserId, updateOrderStatus } from '../../services/orderService';
+import { formatCurrency } from '../../utils/currencyFormatter';
+import { useUserStore } from '../../stores';
+import { getOrderStatusVariant } from '../../utils/orderStatusHelper';
 
 NiceModal.register('confirm-dialog', ConfirmDialog);
 
@@ -36,8 +48,11 @@ const HistorySection: React.FC = () => {
       const userId = user.userId;
       setLoading(true);
       try {
-        const { content, page, totalPages, totalElements } =
-          await getOrdersByUserId(userId, currentPage, limit);
+        const { content, page, totalPages, totalElements } = await getOrdersByUserId(
+          userId,
+          currentPage,
+          limit
+        );
 
         if (currentPage > totalPages && totalPages > 0) {
           setPagination((prev) => ({ ...prev, page: totalPages }));
@@ -52,12 +67,12 @@ const HistorySection: React.FC = () => {
           limit,
         });
       } catch (error: any) {
-        toast.error("Không thể lấy thông tin đơn hàng: " + error.message);
+        toast.error('Không thể lấy thông tin đơn hàng: ' + error.message);
       } finally {
         setLoading(false);
       }
     } else {
-      toast.warning("Không tìm thấy thông tin người dùng trong Redux");
+      toast.warning('Không tìm thấy thông tin người dùng trong Redux');
     }
   };
   useEffect(() => {
@@ -73,15 +88,15 @@ const HistorySection: React.FC = () => {
 
     setIsConfirmDialogVisible(true);
     NiceModal.show('confirm-dialog', {
-      title: "Xác nhận huỷ đơn hàng",
+      title: 'Xác nhận huỷ đơn hàng',
       description: `Bạn có chắc chắn muốn huỷ đơn hàng ${order.code}?`,
       onConfirm: async () => {
         try {
-          await updateOrderStatus(order._id, "Đã hủy");
-          toast.success("Đơn hàng đã được huỷ thành công");
+          await updateOrderStatus(order._id, 'Đã hủy');
+          toast.success('Đơn hàng đã được huỷ thành công');
           fetchUserOrders(pagination.page, pagination.limit);
         } catch (error) {
-          toast.error("Không thể huỷ đơn hàng");
+          toast.error('Không thể huỷ đơn hàng');
           throw error;
         } finally {
           setIsConfirmDialogVisible(false);
@@ -90,9 +105,9 @@ const HistorySection: React.FC = () => {
       onCancel: () => {
         setIsConfirmDialogVisible(false);
       },
-      confirmText: "Xác nhận",
-      cancelText: "Hủy",
-      variant: "destructive"
+      confirmText: 'Xác nhận',
+      cancelText: 'Hủy',
+      variant: 'destructive',
     });
   };
 
@@ -117,7 +132,15 @@ const HistorySection: React.FC = () => {
     }
 
     if (currentPage >= totalPages - 3) {
-      return [1, 'ellipsis', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+      return [
+        1,
+        'ellipsis',
+        totalPages - 4,
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
     }
 
     return [1, 'ellipsis', currentPage - 1, currentPage, currentPage + 1, 'ellipsis', totalPages];
@@ -165,8 +188,10 @@ const HistorySection: React.FC = () => {
                     <TableCell className="text-center">{generateStatus(order.status)}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Button variant="outline" onClick={() => showOrderDetail(order)}>Xem chi tiết</Button>
-                        {order.status === "Chờ xác nhận" && (
+                        <Button variant="outline" onClick={() => showOrderDetail(order)}>
+                          Xem chi tiết
+                        </Button>
+                        {order.status === 'Chờ xác nhận' && (
                           <Button variant="destructive" onClick={() => handleCancelOrder(order)}>
                             Huỷ đơn hàng
                           </Button>
@@ -185,11 +210,13 @@ const HistorySection: React.FC = () => {
                 <PaginationItem>
                   <PaginationPrevious
                     onClick={() => pagination.page > 1 && handlePageChange(pagination.page - 1)}
-                    className={pagination.page === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    className={
+                      pagination.page === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                    }
                   />
                 </PaginationItem>
 
-                {getPageNumbers().map((pageNum, index) => (
+                {getPageNumbers().map((pageNum, index) =>
                   pageNum === 'ellipsis' ? (
                     <PaginationItem key={`ellipsis-${index}`}>
                       <PaginationEllipsis />
@@ -205,12 +232,19 @@ const HistorySection: React.FC = () => {
                       </PaginationLink>
                     </PaginationItem>
                   )
-                ))}
+                )}
 
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() => pagination.page < pagination.totalPages && handlePageChange(pagination.page + 1)}
-                    className={pagination.page === pagination.totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    onClick={() =>
+                      pagination.page < pagination.totalPages &&
+                      handlePageChange(pagination.page + 1)
+                    }
+                    className={
+                      pagination.page === pagination.totalPages
+                        ? 'pointer-events-none opacity-50'
+                        : 'cursor-pointer'
+                    }
                   />
                 </PaginationItem>
               </PaginationContent>
