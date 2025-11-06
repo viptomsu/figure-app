@@ -70,6 +70,20 @@ export const register = async (req, res) => {
       "-password -__v"
     );
 
+    // Only set auth cookie if account is active (non-STAFF)
+    if (createdUser.active && createdUser.role !== 'STAFF') {
+      const jwtToken = createdUser.generateAccessToken();
+
+      // Set HTTP-only cookie
+      res.cookie('auth_token', jwtToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: '/'
+      });
+    }
+
     res
       .status(201)
       .send(
@@ -140,33 +154,22 @@ export const login = async (req, res) => {
     // Tạo token truy cập với payload chứa thông tin user
     const jwtToken = user.generateAccessToken();
 
-    // Tạo đối tượng userResponse với các trường cần thiết
-    const userResponse = {
-      userId: user._id,
-      username: user.username,
-      password: user.password,
-      email: user.email,
-      phoneNumber: user.phoneNumber,
-      fullName: user.fullName,
-      avatar: user.avatar,
-      resetPasswordToken: user.resetPasswordToken,
-      role: user.role,
-      address: user.address,
-      isDelete: user.isDelete,
-      enabled: !user.isDelete,
-      authorities: [], // Mảng quyền hạn, nếu cần
-      accountNonLocked: true,
-      accountNonExpired: true,
-      credentialsNonExpired: true,
-    };
+    // Set HTTP-only cookie
+    res.cookie('auth_token', jwtToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/'
+    });
+
+    // Re-query user to exclude sensitive fields
+    const userResponse = await User.findById(user._id).select('-password -__v -resetPasswordToken');
 
     // Trả về phản hồi theo định dạng yêu cầu
-    res.status(200).send({
-      statusCode: 200,
-      payload: [{ jwtToken }, userResponse],
-      message: "Đăng nhập thành công",
-      success: true,
-    });
+    res
+      .status(200)
+      .send(new ApiResponse(200, [userResponse], "Đăng nhập thành công"));
   } catch (error) {
     console.log(error);
     res.status(500).send(new ApiResponse(500, error, "Đăng nhập thất bại"));

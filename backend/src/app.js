@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import { indexRouter } from "./routes/index.route.js";
 import { ApiResponse } from "./utils/ApiResponse.js";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -12,6 +13,7 @@ const app = express();
 app.use(
   cors({
     origin: ["https://we-shine.vercel.app", "https://we-shine-admin.vercel.app", "http://localhost:3000", "http://localhost:3001"],
+    credentials: true,
     methods: "GET,POST,PUT,PATCH,DELETE",
     allowedHeaders: "Content-Type,Authorization",
   })
@@ -19,6 +21,7 @@ app.use(
 
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
