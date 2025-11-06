@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { message } from "antd";
+import { toast } from 'sonner';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
@@ -52,12 +52,12 @@ const HistorySection: React.FC = () => {
           limit,
         });
       } catch (error: any) {
-        message.error("Không thể lấy thông tin đơn hàng: " + error.message);
+        toast.error("Không thể lấy thông tin đơn hàng: " + error.message);
       } finally {
         setLoading(false);
       }
     } else {
-      message.warning("Không tìm thấy thông tin người dùng trong Redux");
+      toast.warning("Không tìm thấy thông tin người dùng trong Redux");
     }
   };
   useEffect(() => {
@@ -78,10 +78,10 @@ const HistorySection: React.FC = () => {
       onConfirm: async () => {
         try {
           await updateOrderStatus(order._id, "Đã hủy");
-          message.success("Đơn hàng đã được huỷ thành công");
+          toast.success("Đơn hàng đã được huỷ thành công");
           fetchUserOrders(pagination.page, pagination.limit);
         } catch (error) {
-          message.error("Không thể huỷ đơn hàng");
+          toast.error("Không thể huỷ đơn hàng");
           throw error;
         } finally {
           setIsConfirmDialogVisible(false);
