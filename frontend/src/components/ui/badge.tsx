@@ -17,6 +17,20 @@ const badgeVariants = cva(
           "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
           "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
+        pending:
+          "border-orange-500 bg-orange-50 text-orange-500",
+        confirmed:
+          "border-blue-600 bg-blue-50 text-blue-600",
+        packed:
+          "border-purple-600 bg-purple-50 text-purple-600",
+        shipping:
+          "border-green-600 bg-green-50 text-green-600",
+        cancelled:
+          "border-red-600 bg-red-50 text-red-600",
+        delivered:
+          "border-teal-600 bg-teal-50 text-teal-600",
+        unknown:
+          "border-gray-500 bg-gray-50 text-gray-500",
       },
     },
     defaultVariants: {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Tag, message } from "antd";
+import { message } from "antd";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@/components/ui/pagination";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -13,6 +14,7 @@ import {
 } from "../../services/orderService";
 import { formatCurrency } from "../../utils/currencyFormatter";
 import { useUserStore } from "../../stores";
+import { getOrderStatusVariant } from "../../utils/orderStatusHelper";
 
 NiceModal.register('confirm-dialog', ConfirmDialog);
 
@@ -63,52 +65,8 @@ const HistorySection: React.FC = () => {
   }, [pagination.page, pagination.limit, user]);
 
   const generateStatus = (status: string) => {
-    let colorClass = "";
-    let borderClass = "";
-    let bgClass = "";
-    switch (status) {
-      case "Chờ xác nhận":
-        colorClass = "text-orange-500";
-        borderClass = "border-orange-500";
-        bgClass = "bg-orange-50";
-        break;
-      case "Đã xác nhận":
-        colorClass = "text-blue-600";
-        borderClass = "border-blue-600";
-        bgClass = "bg-blue-50";
-        break;
-      case "Đã đóng gói":
-        colorClass = "text-purple-600";
-        borderClass = "border-purple-600";
-        bgClass = "bg-purple-50";
-        break;
-      case "Đang vận chuyển":
-        colorClass = "text-green-600";
-        borderClass = "border-green-600";
-        bgClass = "bg-green-50";
-        break;
-      case "Đã hủy":
-        colorClass = "text-red-600";
-        borderClass = "border-red-600";
-        bgClass = "bg-red-50";
-        break;
-      case "Đã giao hàng":
-        colorClass = "text-teal-600";
-        borderClass = "border-teal-600";
-        bgClass = "bg-teal-50";
-        break;
-      default:
-        colorClass = "text-gray-500";
-        borderClass = "border-gray-500";
-        bgClass = "bg-gray-50";
-    }
-    return (
-      <span
-        className={`inline-block text-center px-2 py-1 rounded ${colorClass} ${borderClass} ${bgClass} border`}
-      >
-        {status}
-      </span>
-    );
+    const variant = getOrderStatusVariant(status);
+    return <Badge variant={variant}>{status}</Badge>;
   };
   const handleCancelOrder = async (order: any) => {
     if (isConfirmDialogVisible) return;

@@ -1,8 +1,9 @@
 import React from 'react';
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Tag } from 'antd';
+import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '../../utils/currencyFormatter';
+import { getOrderStatusVariant } from '../../utils/orderStatusHelper';
 
 const OrderDetailsModal = NiceModal.create<{ order: any }>(({ order }) => {
   const modal = useModal();
@@ -18,7 +19,7 @@ const OrderDetailsModal = NiceModal.create<{ order: any }>(({ order }) => {
             Mã đơn hàng: {order.code}
           </h2>
           <div className="flex items-center gap-4">
-            <Tag color="orange">{order.status}</Tag>
+            <Badge variant={getOrderStatusVariant(order.status)}>{order.status}</Badge>
           </div>
         </div>
         <p className="text-gray-600">
