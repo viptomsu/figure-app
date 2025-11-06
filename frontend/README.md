@@ -7,7 +7,7 @@ Next.js 16 TypeScript e-commerce store for the Figure platform.
 - **Framework**: Next.js 16 with App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS with ShadCN UI components
-- **UI Library**: Ant Design 5
+- **UI Components**: shadcn/ui (Radix UI primitives)
 - **State Management**: Zustand
 - **HTTP Client**: Axios
 - **Form Handling**: React Hook Form with Yup validation
@@ -122,9 +122,11 @@ frontend/
 - `Sidebar`: Category sidebar (optional)
 
 ### UI Components
-- ShadCN UI components in `src/components/ui/`
+- shadcn/ui components in `src/components/ui/`
 - Custom components built with Tailwind CSS
-- Ant Design components for complex UI elements
+- Icons from lucide-react
+- Modal management with nice-modal
+- Toast notifications with sonner
 
 ### Page Components
 - `Home`: Landing page
@@ -224,10 +226,6 @@ The app uses Next.js App Router with route groups:
 - Pre-built component library
 - Located in `src/components/ui/`
 - Customizable themes
-
-### Ant Design
-- Used for complex components like tables, forms, modals
-- Custom theme configuration possible
 
 ## Form Handling
 

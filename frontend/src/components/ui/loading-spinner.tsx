@@ -26,11 +26,16 @@ function LoadingSpinner({
   const sizeStyle = isNumeric ? { width: size, height: size } : undefined
 
   return (
-    <Loader2
-      className={cn("animate-spin", sizeClass, className)}
-      style={{ ...sizeStyle, ...style }}
+    <div
+      className={cn("flex items-center justify-center", className)}
+      style={style}
       {...props}
-    />
+    >
+      <Loader2
+        className={cn("animate-spin", sizeClass)}
+        style={sizeStyle}
+      />
+    </div>
   )
 }
 

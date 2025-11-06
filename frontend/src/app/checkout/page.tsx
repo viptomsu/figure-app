@@ -3,14 +3,28 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Button, Col, Divider, List, Radio, Row, Steps, Typography } from 'antd'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { Steps } from '@/components/ui/steps'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Label } from '@/components/ui/label'
 import ShippingInfo from '@/components/Checkout/ShippingInfo/ShippingInfo'
 import Payment from '@/components/Checkout/Payment/Payment'
 import { useCartStore, useUserStore } from '@/stores'
 import { getAddressBooksByUserId } from '@/services/addressBookService'
 import { useAuth } from '@/hooks/useAuth'
 
-const { Text } = Typography
+interface AddressBook {
+  _id: string
+  recipientName: string
+  email: string
+  phoneNumber: string
+  address: string
+  ward: string
+  district: string
+  city: string
+}
+
 const TOTAL_STEPS = 3
 
 export default function CheckoutPage() {
@@ -20,8 +34,8 @@ export default function CheckoutPage() {
   const user = useUserStore((state) => state.user)
 
   const [currentStep, setCurrentStep] = useState(0)
-  const [addressList, setAddressList] = useState<any[]>([])
-  const [selectedAddress, setSelectedAddress] = useState<any>(null)
+  const [addressList, setAddressList] = useState<AddressBook[]>([])
+  const [selectedAddress, setSelectedAddress] = useState<AddressBook | null>(null)
   const [, setOrderCode] = useState<string | null>(null)
 
   useEffect(() => {
@@ -84,77 +98,52 @@ export default function CheckoutPage() {
         title: 'Địa chỉ giao hàng',
         content: (
           <>
-            <div className="address-select-wrapper" style={{ marginBottom: '20px' }}>
+            <div className="address-select-wrapper mb-5">
               <div className="row">
                 <div className="col-12">
-                  <div className="title text-center" style={{ marginTop: '20px' }}>
-                    <h1 style={{ marginTop: '20px' }}>Địa chỉ giao hàng</h1>
+                  <div className="title text-center mt-5">
+                    <h1 className="mt-5">Địa chỉ giao hàng</h1>
                   </div>
                 </div>
               </div>
               {addressList.length > 0 ? (
-                <List
-                  bordered
-                  dataSource={addressList}
-                  renderItem={(address) => (
-                    <List.Item
-                      style={{
-                        padding: '16px 24px',
-                        backgroundColor: '#f9f9f9',
-                        borderRadius: '8px',
-                        marginBottom: '16px',
-                      }}
-                    >
-                      <Row style={{ width: '100%' }} align="middle">
-                        <Col span={20}>
-                          <Radio
-                            value={address._id}
-                            checked={selectedAddress?._id === address._id}
-                            onChange={() => handleAddressChange(address._id)}
-                          >
-                            <Text strong>{address.recipientName}</Text>
-                          </Radio>
-                          <Divider type="vertical" />
-                          <Text>{address.email}</Text>
-                          <Divider type="vertical" />
-                          <Text>{address.phoneNumber}</Text>
-                          <Divider type="vertical" />
-                          <Text>
-                            {address.address}, {address.ward}, {address.district}, {address.city}
-                          </Text>
-                        </Col>
-                      </Row>
-                    </List.Item>
-                  )}
-                />
+                <RadioGroup value={selectedAddress?._id} onValueChange={handleAddressChange}>
+                  <div className="space-y-4">
+                    {addressList.map((address) => (
+                      <div
+                        key={address._id}
+                        className="p-4 bg-gray-50 rounded-lg border border-gray-200"
+                      >
+                        <div className="flex items-start gap-3">
+                          <RadioGroupItem value={address._id} id={address._id} />
+                          <Label htmlFor={address._id} className="flex-1 cursor-pointer">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="font-semibold">{address.recipientName}</span>
+                              <Separator orientation="vertical" className="h-4" />
+                              <span>{address.email}</span>
+                              <Separator orientation="vertical" className="h-4" />
+                              <span>{address.phoneNumber}</span>
+                              <Separator orientation="vertical" className="h-4" />
+                              <span>
+                                {address.address}, {address.ward}, {address.district}, {address.city}
+                              </span>
+                            </div>
+                          </Label>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </RadioGroup>
               ) : (
-                <p>Không có địa chỉ nào.</p>
+                <p className="text-center text-muted-foreground py-8">Không có địa chỉ nào.</p>
               )}
-              <div style={{ marginTop: '20px' }}>
-                <input
-                  type="button"
-                  disabled={!selectedAddress}
-                  style={{
-                    backgroundColor: '#0060c9',
-                    color: 'white',
-                    padding: '10px 20px',
-                    borderRadius: '5px',
-                    border: 'none',
-                    cursor: selectedAddress ? 'pointer' : 'not-allowed',
-                    fontSize: '16px',
-                  }}
-                  value="Tiếp tục"
-                  onClick={handleNext}
-                />
+              <div className="mt-5">
+                <Button disabled={!selectedAddress} onClick={handleNext}>
+                  Tiếp tục
+                </Button>
               </div>
             </div>
-            <Button
-              type="primary"
-              style={{ backgroundColor: '#0060c9', borderColor: '#0060c9' }}
-              onClick={() => router.push('/profile')}
-            >
-              Thêm địa chỉ giao hàng
-            </Button>
+            <Button onClick={() => router.push('/profile')}>Thêm địa chỉ giao hàng</Button>
           </>
         ),
       },

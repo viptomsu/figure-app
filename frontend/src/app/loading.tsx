@@ -1,17 +1,10 @@
-import { Spin } from 'antd'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 export default function Loading() {
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: '100vh',
-      flexDirection: 'column',
-      gap: '20px'
-    }}>
-      <Spin size="large" />
-      <p>Loading Figure Store...</p>
+    <div className="flex justify-center items-center min-h-screen flex-col gap-5">
+      <LoadingSpinner size="xl" />
+      <p className="text-lg text-muted-foreground">Loading Figure Store...</p>
     </div>
   )
 }
