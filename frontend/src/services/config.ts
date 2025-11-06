@@ -2,20 +2,20 @@
 
 export const API_CONFIG = {
   // Base URL for the API backend
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
-  
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
+
   // Request timeout in milliseconds
   TIMEOUT: 30000,
-  
+
   // Authentication
   TOKEN_KEY: 'auth_token',
   USER_KEY: 'user',
-  
+
   // Default headers
   DEFAULT_HEADERS: {
     'Content-Type': 'application/json',
   },
-  
+
   // API endpoints
   ENDPOINTS: {
     AUTH: {
@@ -34,7 +34,7 @@ export const API_CONFIG = {
     BRANDS: '/brands',
     VN_PAY: '/vnpay',
   },
-  
+
   // Response status codes
   STATUS_CODES: {
     OK: 200,
