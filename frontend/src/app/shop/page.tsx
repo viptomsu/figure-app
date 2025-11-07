@@ -1,36 +1,18 @@
-import Link from "next/link"
-import Shop from "@/components/Shop"
-import { getAllProductsServer } from "@/services/productService"
+import Link from 'next/link';
+import Shop from '@/components/Shop';
+import { getAllProductsServer } from '@/services/productService';
+import { shopSearchParamsSchema } from '@/schema/searchParams';
+import { parseSearchParams } from '@/utils/searchParamsParser';
 
 interface ShopPageProps {
-  searchParams: {
-    category?: string
-    page?: string
-    sort?: string
-    direction?: string
-  }
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
-  const categoryRaw = searchParams.category ? parseInt(searchParams.category) : null
-  const pageNum = searchParams.page ? parseInt(searchParams.page) : 1
-  const sort = searchParams.sort || 'productName'
-  const direction = searchParams.direction || 'asc'
-  const limit = 12
+  const params = await parseSearchParams(searchParams, shopSearchParamsSchema);
+  const { page, limit, sort, direction, categoryId } = params;
 
-  // Validate and fallback NaN values
-  const category = Number.isNaN(categoryRaw) ? null : categoryRaw
-  const page = Number.isNaN(pageNum) ? 1 : pageNum
-
-  const products = await getAllProductsServer(
-    '',
-    category,
-    null,
-    page,
-    limit,
-    sort,
-    direction
-  )
+  const products = await getAllProductsServer('', categoryId, null, page, limit, sort, direction);
 
   return (
     <div className="shop-content">
@@ -48,14 +30,14 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           </div>
         </section>
         <Shop
-          initialProducts={products.content || []}
+          initialProducts={products.content || products.payload || []}
           initialPage={page}
           initialSort={sort}
           initialDirection={direction}
-          initialCategory={category}
+          initialCategory={categoryId}
           totalPages={products.totalPages}
         />
       </div>
     </div>
-  )
+  );
 }

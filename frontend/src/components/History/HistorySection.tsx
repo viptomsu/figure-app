@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -29,24 +31,30 @@ import { getOrderStatusVariant } from '../../utils/orderStatusHelper';
 
 NiceModal.register('confirm-dialog', ConfirmDialog);
 
-const HistorySection: React.FC = () => {
-  const [orders, setOrders] = useState<any[]>([]);
+interface HistorySectionProps {
+  initialOrders: any[];
+  initialPagination: {
+    page: number;
+    totalPages: number;
+    totalElements: number;
+    limit: number;
+  };
+}
+
+const HistorySection: React.FC<HistorySectionProps> = ({ initialOrders, initialPagination }) => {
+  const [orders, setOrders] = useState<any[]>(initialOrders);
   const [loading, setLoading] = useState(false);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    totalPages: 1,
-    totalElements: 0,
-    limit: 5,
-  });
+  const [pagination, setPagination] = useState(initialPagination);
   const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
 
   const fetchUserOrders = async (currentPage = 1, limit = 5) => {
     setLoading(true);
     try {
-      const { content, page, totalPages, totalElements } = await getOrdersForCurrentUser(
-        currentPage,
-        limit
-      );
+      const response = await getOrdersForCurrentUser(currentPage, limit);
+      const content = response.content || response.payload || [];
+      const page = response.page || response.currentPage;
+      const totalPages = response.totalPages;
+      const totalElements = response.totalElements || response.totalItems;
 
       if (currentPage > totalPages && totalPages > 0) {
         setPagination((prev) => ({ ...prev, page: totalPages }));
@@ -67,8 +75,10 @@ const HistorySection: React.FC = () => {
     }
   };
   useEffect(() => {
-    fetchUserOrders(pagination.page, pagination.limit);
-  }, [pagination.page, pagination.limit]);
+    if (pagination.page !== initialPagination.page || pagination.limit !== initialPagination.limit) {
+      fetchUserOrders(pagination.page, pagination.limit);
+    }
+  }, [pagination.page, pagination.limit, initialPagination.page, initialPagination.limit]);
 
   const generateStatus = (status: string) => {
     const variant = getOrderStatusVariant(status);

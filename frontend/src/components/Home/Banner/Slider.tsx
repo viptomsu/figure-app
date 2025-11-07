@@ -1,24 +1,26 @@
-import React, { useState } from "react";
-import { FaChevronRight, FaChevronLeft } from "react-icons/fa";
-import Link from "next/link";
-import { ISliderDataTypes } from "@/types/types";
+'use client';
 
-const Slider: React.FC = () => {
-  const SliderData: ISliderDataTypes[] = [
-    {
-      id: 1,
-      img: "/banner/banner-1.png",
-    },
-    {
-      id: 2,
-      img: "/banner/banner-2.jpg",
-    },
-    {
-      id: 3,
-      img: "/banner/banner-3.png",
-    },
-  ];
+import { ISliderDataTypes } from '@/types/types';
+import Link from 'next/link';
+import { useState } from 'react';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
+const SliderData: ISliderDataTypes[] = [
+  {
+    id: 1,
+    img: '/banner/banner-1.png',
+  },
+  {
+    id: 2,
+    img: '/banner/banner-2.jpg',
+  },
+  {
+    id: 3,
+    img: '/banner/banner-3.png',
+  },
+];
+
+const Slider = () => {
   const [tabIndex, setTabIndex] = useState<number>(1);
 
   const handleRightBtnClick = (): void => {
@@ -35,16 +37,9 @@ const Slider: React.FC = () => {
     <div className="relative w-full h-full">
       {/* ======= Slide item ======= */}
       {SliderData.map((item) => (
-        <div
-          key={item.id}
-          className={item.id === tabIndex ? "block w-full h-full" : "hidden"}
-        >
+        <div key={item.id} className={item.id === tabIndex ? 'block w-full h-full' : 'hidden'}>
           <Link href="/shop" className="block w-full h-full">
-            <img
-              src={item.img}
-              alt="slide-img"
-              className="w-full h-full object-cover"
-            />
+            <img src={item.img} alt="slide-img" className="w-full h-full object-cover" />
           </Link>
         </div>
       ))}

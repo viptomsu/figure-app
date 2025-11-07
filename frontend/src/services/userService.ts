@@ -30,3 +30,21 @@ export const updateProfile = async (
     },
   });
 };
+
+export const changePassword = async (
+  userId: number,
+  currentPassword: string,
+  newPassword: string
+): Promise<any> => {
+  if (!userId || !currentPassword || !newPassword) {
+    throw new Error('User ID, current password, and new password are required');
+  }
+
+  return apiClient.put(
+    `${API_CONFIG.ENDPOINTS.USERS.BASE}/${userId}/change-password`,
+    {
+      currentPassword,
+      newPassword,
+    }
+  );
+};

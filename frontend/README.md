@@ -10,9 +10,10 @@ Next.js 16 TypeScript e-commerce store for the Figure platform.
 - **UI Components**: shadcn/ui (Radix UI primitives)
 - **State Management**: Zustand
 - **HTTP Client**: Axios
-- **Form Handling**: React Hook Form with Yup validation
+- **Form Handling**: React Hook Form with Zod validation
+- **Validation**: Zod schemas with type-safe form validation
 - **Payment**: PayPal integration
-- **Notifications**: React Toastify
+- **Notifications**: Sonner toast notifications
 - **Image Optimization**: Next.js Image component
 
 ## Prerequisites
@@ -32,7 +33,7 @@ npm install
 Create a `.env.local` file in the root directory:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:5001
+NEXT_PUBLIC_API_URL=http://localhost:8080
 NEXT_PUBLIC_PAYPAL_CLIENT_ID=your_paypal_client_id
 ```
 
@@ -73,6 +74,9 @@ frontend/
 │   │   └── ...             # Other component groups
 │   ├── hooks/              # Custom React hooks
 │   ├── lib/                # Utility libraries
+│   ├── schema/             # Zod validation schemas
+│   │   ├── validation.ts   # Form validation schemas
+│   │   └── searchParams.ts # Search params schemas
 │   ├── services/           # API service functions
 │   ├── stores/             # Zustand stores
 │   ├── types/              # TypeScript type definitions
@@ -86,6 +90,7 @@ frontend/
 ## Key Features
 
 ### Product Catalog
+
 - Product browsing with pagination
 - Category and brand filtering
 - Product search functionality
@@ -94,6 +99,7 @@ frontend/
 - Product reviews and ratings
 
 ### Shopping Cart
+
 - Add/remove products from cart
 - Update product quantities
 - Calculate totals with tax and shipping
@@ -101,6 +107,7 @@ frontend/
 - Persistent cart using local storage
 
 ### User Account
+
 - User registration and login
 - Profile management
 - Order history
@@ -108,6 +115,7 @@ frontend/
 - Wishlist functionality
 
 ### Checkout Process
+
 - Multi-step checkout flow
 - Multiple payment methods (PayPal)
 - Order confirmation
@@ -116,12 +124,14 @@ frontend/
 ## Component Architecture
 
 ### Layout Components
+
 - `AppLayout`: Root layout wrapper
 - `Header`: Main navigation header
 - `Footer`: Site footer
 - `Sidebar`: Category sidebar (optional)
 
 ### UI Components
+
 - shadcn/ui components in `src/components/ui/`
 - Custom components built with Tailwind CSS
 - Icons from lucide-react
@@ -129,6 +139,7 @@ frontend/
 - Toast notifications with sonner
 
 ### Page Components
+
 - `Home`: Landing page
 - `Products`: Product listing page
 - `ProductDetail`: Individual product page
@@ -142,6 +153,7 @@ frontend/
 ### Zustand Stores
 
 #### Auth Store
+
 ```typescript
 interface AuthState {
   user: User | null;
@@ -154,6 +166,7 @@ interface AuthState {
 ```
 
 #### Cart Store
+
 ```typescript
 interface CartState {
   items: CartItem[];
@@ -166,6 +179,7 @@ interface CartState {
 ```
 
 #### Product Store
+
 ```typescript
 interface ProductState {
   products: Product[];
@@ -181,21 +195,6 @@ interface ProductState {
 ## API Services
 
 API service functions are organized in `src/services/`:
-
-```typescript
-// Example service function
-export const productService = {
-  getProducts: async (params?: ProductParams) => {
-    const response = await api.get('/products', { params });
-    return response.data;
-  },
-  
-  getProductById: async (id: string) => {
-    const response = await api.get(`/products/${id}`);
-    return response.data;
-  }
-};
-```
 
 ## Routing
 
@@ -218,32 +217,55 @@ The app uses Next.js App Router with route groups:
 ## Styling
 
 ### Tailwind CSS
-- Primary configuration in `tailwind.config.js`
+
+- Primary configuration in `globals.css`
 - Custom colors and spacing defined
 - Responsive design utilities
 
 ### ShadCN UI
+
 - Pre-built component library
 - Located in `src/components/ui/`
 - Customizable themes
 
 ## Form Handling
 
-Forms use React Hook Form with Yup validation:
+Forms use React Hook Form with Zod validation and TypeScript type safety:
 
 ```typescript
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+
+// Define validation schema
+const validationSchema = z.object({
+  email: z.string().min(1, 'Email là bắt buộc').email('Email không hợp lệ'),
+  password: z.string().min(1, 'Mật khẩu là bắt buộc').min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
+});
+
+// Infer TypeScript type from schema
+type FormValues = z.infer<typeof validationSchema>;
+
+// Use with React Hook Form
 const {
   register,
   handleSubmit,
-  formState: { errors }
-} = useForm({
-  resolver: yupResolver(loginSchema)
+  formState: { errors },
+} = useForm<FormValues>({
+  resolver: zodResolver(validationSchema),
 });
 
-const onSubmit = async (data) => {
-  // Handle form submission
+const onSubmit = async (data: FormValues) => {
+  // Handle form submission with type-safe data
 };
 ```
+
+### Validation Schemas
+
+Reusable Zod schemas are organized in `src/schema/`:
+
+- **`validation.ts`**: Form validation schemas (email, password, phone, etc.)
+- **`searchParams.ts`**: Search parameter schemas with type coercion
 
 ## Image Optimization
 
@@ -298,6 +320,7 @@ Images use Next.js Image component for optimization:
 ### Build Configuration
 
 Next.js configuration in `next.config.ts`:
+
 - Image optimization settings
 - Experimental features
 - Bundle optimization
@@ -305,6 +328,7 @@ Next.js configuration in `next.config.ts`:
 ## Testing
 
 Recommended testing setup:
+
 - Jest for unit testing
 - React Testing Library for component testing
 - Cypress for end-to-end testing
@@ -319,5 +343,6 @@ Recommended testing setup:
 ## Support
 
 For issues and questions:
+
 - Create an issue in the repository
 - Contact the development team

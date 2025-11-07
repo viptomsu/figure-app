@@ -92,7 +92,7 @@ const Department: React.FC = () => {
           ) : (
             <li key={item._id} className="relative w-full transition-(--transition-normal)">
               <Link
-                href={`/shop?categoryId=${item._id}`}
+                href={`/shop?category=${item.categoryId}`}
                 onClick={handleCloseCategories}
                 className="text-black block w-full py-2.5 no-underline"
               >

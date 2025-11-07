@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-// @ts-ignore
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { toast } from 'sonner';
 import { forgotPassword } from "../../services/authService"; // Import hàm forgotPassword
+import { emailSchema } from "@/schema/validation";
 
 // Khởi tạo toast cho toàn bộ ứng dụng
 
@@ -14,22 +14,20 @@ const ForgotPasswordSection: React.FC = () => {
   const router = useRouter(); // Dùng để chuyển hướng trang sau khi gửi yêu cầu thành công
 
   // Schema xác thực đầu vào
-  const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .required("Email là bắt buộc")
-      .email("Email không hợp lệ"),
+  const validationSchema = z.object({
+    email: emailSchema,
   });
 
-  const formOptions = { resolver: yupResolver(validationSchema) };
+  type FormValues = z.infer<typeof validationSchema>;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm(formOptions);
+  } = useForm<FormValues>({ resolver: zodResolver(validationSchema) });
 
   // Hàm xử lý khi submit form
-  const handleForgotPassword = async (data: any) => {
+  const handleForgotPassword = async (data: FormValues) => {
     const { email } = data;
 
     setLoading(true); // Bật trạng thái loading cho nút gửi yêu cầu

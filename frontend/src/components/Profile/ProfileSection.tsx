@@ -1,75 +1,85 @@
+'use client'
+
 import React, { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
-// @ts-ignore
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { toast } from 'sonner';
 import { updateProfile } from "../../services/userService";
 import { CustomTabs } from "@/components/ui/custom-tabs";
 import PasswordChange from "./PasswordChange";
 import AddressBook from "./AddressBook";
 import { useUserStore } from "../../stores";
+import { emailSchema, phoneSchema, requiredStringSchema } from "@/schema/validation";
 
+interface ProfileSectionProps {
+  initialUser: any;
+}
 
-const ProfileSection: React.FC = () => {
+const ProfileSection: React.FC<ProfileSectionProps> = ({ initialUser }) => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { user: userData, updateUserProfile } = useUserStore();
+  const [localUserData, setLocalUserData] = useState(initialUser);
 
   // Validation schema
-  const validationSchema = Yup.object().shape({
-    fullName: Yup.string().required("Họ và tên là bắt buộc"),
-    email: Yup.string()
-      .email("Email không hợp lệ")
-      .required("Email là bắt buộc"),
-    phoneNumber: Yup.string().required("Số điện thoại là bắt buộc"),
-    address: Yup.string().required("Địa chỉ là bắt buộc"),
+  const validationSchema = z.object({
+    fullName: requiredStringSchema('Họ và tên là bắt buộc'),
+    email: emailSchema,
+    phoneNumber: phoneSchema,
+    address: requiredStringSchema('Địa chỉ là bắt buộc'),
   });
+
+  type FormValues = z.infer<typeof validationSchema>;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({
-    resolver: yupResolver(validationSchema),
+  } = useForm<FormValues>({
+    resolver: zodResolver(validationSchema),
   });
 
-  // Reset form với thông tin từ Redux khi component mount
+  // Reset form với thông tin từ server hoặc Redux khi component mount
   useEffect(() => {
-    if (userData) {
-      setImagePreview(userData.avatar);
+    const currentUser = localUserData || userData;
+    if (currentUser) {
+      setImagePreview(currentUser.avatar);
       reset({
-        username: userData.username,
-        fullName: userData.fullName,
-        email: userData.email,
-        phoneNumber: userData.phoneNumber,
-        address: userData.address,
+        username: currentUser.username,
+        fullName: currentUser.fullName,
+        email: currentUser.email,
+        phoneNumber: currentUser.phoneNumber,
+        address: currentUser.address,
       });
     }
-  }, [userData, reset]);
+  }, [localUserData, userData, reset]);
 
-  const handleUpdateProfile = async (data: any) => {
-    if (!userData) return;
+  const handleUpdateProfile = async (data: FormValues) => {
+    const currentUser = localUserData || userData;
+    if (!currentUser) return;
     setIsLoading(true);
 
     try {
-      if (!userData.username || !userData.role) {
+      if (!currentUser.username || !currentUser.role) {
         toast.error('Thiếu thông tin người dùng. Vui lòng đăng nhập lại.');
         return;
       }
 
       // Gọi API để cập nhật thông tin người dùng (bao gồm avatar nếu có)
-      await updateProfile(userData.userId, data, selectedImage, userData.username, userData.role);
+      await updateProfile(currentUser.userId, data, selectedImage, currentUser.username, currentUser.role);
 
       // Hiển thị thông báo thành công
       toast.success(
         "Cập nhật thông tin thành công! Vui lòng đăng nhập lại để làm mới thông tin"
       );
 
-      // Cập nhật thông tin người dùng trong Zustand
-      updateUserProfile({ ...userData, ...data });
+      // Cập nhật thông tin người dùng trong local state và Zustand
+      const updatedUserData = { ...currentUser, ...data };
+      setLocalUserData(updatedUserData);
+      updateUserProfile(updatedUserData);
     } catch (error) {
       // Hiển thị thông báo lỗi nếu có lỗi xảy ra
       toast.error("Cập nhật thông tin không thành công. Vui lòng thử lại.");
@@ -88,6 +98,8 @@ const ProfileSection: React.FC = () => {
       setImagePreview(URL.createObjectURL(file));
     }
   };
+
+  const currentUser = localUserData || userData;
 
   const tabs = useMemo(() => [
     {
@@ -189,14 +201,14 @@ const ProfileSection: React.FC = () => {
     {
       key: '2',
       label: 'Đổi mật khẩu',
-      content: <PasswordChange userId={userData?.userId} />
+      content: <PasswordChange userId={currentUser?.userId} />
     },
     {
       key: '3',
       label: 'Quản lý địa chỉ',
-      content: <AddressBook userId={userData?.userId} />
+      content: <AddressBook userId={currentUser?.userId} />
     }
-  ], [userData?.userId, imagePreview, isLoading]);
+  ], [currentUser?.userId, imagePreview, isLoading]);
 
   return (
     <section id="profile" className="py-5 max-w-[700px] mx-auto">

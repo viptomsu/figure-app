@@ -1,13 +1,11 @@
-import React, { useRef, useState, useEffect } from "react";
+'use client';
 
-const Countdown: React.FC = () => {
-  const [countdownHours, setCountdownHours] = useState<number | string>("00");
-  const [countdownMinutes, setCountdownMinutes] = useState<number | string>(
-    "00"
-  );
-  const [countdownSeconds, setCountdownSeconds] = useState<number | string>(
-    "00"
-  );
+import React, { useRef, useState, useEffect } from 'react';
+
+const Countdown = () => {
+  const [countdownHours, setCountdownHours] = useState<number | string>('00');
+  const [countdownMinutes, setCountdownMinutes] = useState<number | string>('00');
+  const [countdownSeconds, setCountdownSeconds] = useState<number | string>('00');
 
   let interval: any = useRef(null);
 
@@ -24,23 +22,19 @@ const Countdown: React.FC = () => {
         (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
       )
         .toString()
-        .padStart(2, "0");
-      const minutes: number | string = Math.floor(
-        (distance % (1000 * 60 * 60)) / (1000 * 60)
-      )
+        .padStart(2, '0');
+      const minutes: number | string = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
         .toString()
-        .padStart(2, "0");
-      const seconds: number | string = Math.floor(
-        (distance % (1000 * 60)) / 1000
-      )
+        .padStart(2, '0');
+      const seconds: number | string = Math.floor((distance % (1000 * 60)) / 1000)
         .toString()
-        .padStart(2, "0");
+        .padStart(2, '0');
 
       if (distance < 0) {
         clearInterval(interval.current);
-        setCountdownHours("00");
-        setCountdownMinutes("00");
-        setCountdownSeconds("00");
+        setCountdownHours('00');
+        setCountdownMinutes('00');
+        setCountdownSeconds('00');
       } else {
         setCountdownHours(hours);
         setCountdownMinutes(minutes);

@@ -3,12 +3,14 @@ import HistorySection from '@/components/History/HistorySection'
 import { getCurrentUserServer } from '@/services/authService'
 import { getOrdersForCurrentUserServer } from '@/services/orderService'
 import { redirect } from 'next/navigation'
+import { parseSearchParams } from '@/utils/searchParamsParser'
+import { historySearchParamsSchema } from '@/schema/searchParams'
 
 interface HistoryPageProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string
     limit?: string
-  }
+  }>
 }
 
 export default async function HistoryPage({ searchParams }: HistoryPageProps) {
@@ -18,12 +20,8 @@ export default async function HistoryPage({ searchParams }: HistoryPageProps) {
     redirect('/login')
   }
 
-  const pageNum = searchParams.page ? parseInt(searchParams.page) : 1
-  const limitNum = searchParams.limit ? parseInt(searchParams.limit) : 5
-
-  // Validate and fallback NaN values
-  const page = Number.isNaN(pageNum) ? 1 : pageNum
-  const limit = Number.isNaN(limitNum) ? 5 : limitNum
+  const params = await parseSearchParams(searchParams, historySearchParamsSchema)
+  const { page, limit } = params
 
   const ordersData = await getOrdersForCurrentUserServer(page, limit)
 
@@ -43,11 +41,11 @@ export default async function HistoryPage({ searchParams }: HistoryPageProps) {
           </div>
         </section>
         <HistorySection
-          initialOrders={ordersData.content || []}
+          initialOrders={ordersData.content || ordersData.payload || []}
           initialPagination={{
-            page: ordersData.page,
+            page: ordersData.page || ordersData.currentPage,
             totalPages: ordersData.totalPages,
-            totalElements: ordersData.totalElements,
+            totalElements: ordersData.totalElements || ordersData.totalItems,
             limit,
           }}
         />

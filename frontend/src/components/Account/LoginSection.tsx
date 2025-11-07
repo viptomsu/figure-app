@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-// @ts-ignore
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { toast } from 'sonner';
 import { SocialMediaData } from "../Other/SocialMediaData";
 import { login } from "../../services/authService";
 import { useUserStore } from "../../stores";
+import { passwordSchema, requiredStringSchema } from "@/schema/validation";
 
 // Khởi tạo toast cho toàn bộ ứng dụng
 
@@ -17,22 +17,20 @@ const LoginSection: React.FC = () => {
   const router = useRouter();
   const { loginSuccess } = useUserStore(); // Use Zustand store
 
-  const validationSchema = Yup.object().shape({
-    username: Yup.string().required("Tên đăng nhập là bắt buộc"),
-    password: Yup.string()
-      .required("Mật khẩu là bắt buộc")
-      .min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+  const validationSchema = z.object({
+    username: requiredStringSchema('Tên đăng nhập là bắt buộc'),
+    password: passwordSchema,
   });
 
-  const formOptions = { resolver: yupResolver(validationSchema) };
+  type FormValues = z.infer<typeof validationSchema>;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm(formOptions);
+  } = useForm<FormValues>({ resolver: zodResolver(validationSchema) });
 
-  const handleLogin = async (data: any) => {
+  const handleLogin = async (data: FormValues) => {
     const { username, password } = data;
     setLoginLoading(true);
     try {

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import NiceModal, { useModal } from '@ebay/nice-modal-react';
 import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { emailSchema, phoneSchema, requiredStringSchema } from '@/schema/validation';
 import { Input } from '@/components/ui/input';
 import {
   Form,
@@ -48,14 +49,14 @@ interface Ward {
   name: string;
 }
 
-const validationSchema = Yup.object({
-  recipientName: Yup.string().required('Vui lòng nhập tên người nhận!'),
-  phoneNumber: Yup.string().required('Vui lòng nhập số điện thoại!'),
-  email: Yup.string().required('Vui lòng nhập email hợp lệ!').email('Vui lòng nhập email hợp lệ!'),
-  address: Yup.string().required('Vui lòng nhập địa chỉ!'),
-  city: Yup.string().required('Vui lòng chọn tỉnh/thành phố!'),
-  district: Yup.string().required('Vui lòng chọn quận/huyện!'),
-  ward: Yup.string().required('Vui lòng chọn phường/xã!'),
+const validationSchema = z.object({
+  recipientName: requiredStringSchema('Vui lòng nhập tên người nhận!'),
+  phoneNumber: phoneSchema,
+  email: emailSchema,
+  address: requiredStringSchema('Vui lòng nhập địa chỉ!'),
+  city: requiredStringSchema('Vui lòng chọn tỉnh/thành phố!'),
+  district: requiredStringSchema('Vui lòng chọn quận/huyện!'),
+  ward: requiredStringSchema('Vui lòng chọn phường/xã!'),
 });
 
 const AddressBookModal = NiceModal.create<{
@@ -66,7 +67,7 @@ const AddressBookModal = NiceModal.create<{
   const modal = useModal();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm({
-    resolver: yupResolver(validationSchema),
+    resolver: zodResolver(validationSchema),
     defaultValues: {
       recipientName: '',
       phoneNumber: '',

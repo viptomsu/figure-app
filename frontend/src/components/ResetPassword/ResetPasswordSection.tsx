@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
-// @ts-ignore
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { toast } from 'sonner';
 import { resetPassword } from "../../services/authService"; // Import hàm resetPassword
+import { passwordSchema, requiredStringSchema, passwordConfirmationSchema } from "@/schema/validation";
 
 // Khởi tạo toast cho toàn bộ ứng dụng
 
@@ -18,25 +18,21 @@ const ResetPasswordSection: React.FC = () => {
   const token = searchParams.get("token");
 
   // Schema xác thực đầu vào
-  const validationSchema = Yup.object().shape({
-    newPassword: Yup.string()
-      .required("Mật khẩu mới là bắt buộc")
-      .min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
-    confirmNewPassword: Yup.string()
-      .oneOf([Yup.ref("newPassword")], "Mật khẩu xác nhận không khớp")
-      .required("Xác nhận mật khẩu là bắt buộc"),
+  const validationSchema = z.object({
+    newPassword: passwordSchema,
+    confirmNewPassword: passwordConfirmationSchema('newPassword', 'confirmNewPassword'),
   });
 
-  const formOptions = { resolver: yupResolver(validationSchema) };
+  type FormValues = z.infer<typeof validationSchema>;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm(formOptions);
+  } = useForm<FormValues>({ resolver: zodResolver(validationSchema) });
 
   // Hàm xử lý khi submit form
-  const handleResetPassword = async (data: any) => {
+  const handleResetPassword = async (data: FormValues) => {
     const { newPassword } = data;
 
     if (!token) {

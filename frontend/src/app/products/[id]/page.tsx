@@ -11,7 +11,8 @@ interface ProductDetailsPageProps {
 }
 
 export default async function ProductDetailsPage({ params }: ProductDetailsPageProps) {
-  const id = parseInt(params.id)
+  const resolvedParams = await params
+  const id = parseInt(resolvedParams.id)
 
   // Validate id is not NaN
   if (Number.isNaN(id)) {

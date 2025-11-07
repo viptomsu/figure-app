@@ -2,38 +2,34 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-// @ts-ignore
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { toast } from 'sonner';
 import { signup } from "../../services/authService";
+import { emailSchema, passwordSchema, phoneSchema, requiredStringSchema } from "@/schema/validation";
 
 const RegisterSection: React.FC = () => {
   const [signupLoading, setSignupLoading] = useState(false); // Trạng thái loading cho nút đăng ký
   const router = useRouter();
   // Schema xác thực đầu vào
-  const validationSchema = Yup.object().shape({
-    fullName: Yup.string().required("Tên đầy đủ là bắt buộc"),
-    username: Yup.string().required("Tên đăng nhập là bắt buộc"),
-    password: Yup.string()
-      .required("Mật khẩu là bắt buộc")
-      .min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
-    email: Yup.string()
-      .required("Email là bắt buộc")
-      .email("Email không hợp lệ"),
-    phoneNumber: Yup.string().required("Số điện thoại là bắt buộc"),
+  const validationSchema = z.object({
+    fullName: requiredStringSchema('Tên đầy đủ là bắt buộc'),
+    username: requiredStringSchema('Tên đăng nhập là bắt buộc'),
+    password: passwordSchema,
+    email: emailSchema,
+    phoneNumber: phoneSchema,
   });
 
-  const formOptions = { resolver: yupResolver(validationSchema) };
+  type FormValues = z.infer<typeof validationSchema>;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm(formOptions);
+  } = useForm<FormValues>({ resolver: zodResolver(validationSchema) });
 
   // Hàm xử lý đăng ký
-  const handleSignup = async (data: any) => {
+  const handleSignup = async (data: FormValues) => {
     const { fullName, username, password, email, phoneNumber } = data;
     const userInfo = {
       username,

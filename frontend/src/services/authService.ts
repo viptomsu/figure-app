@@ -4,7 +4,7 @@ import { API_CONFIG } from './config';
 import { cache } from 'react';
 import { serverFetch } from './serverFetch';
 
-export const fetchSession = async (): Promise<ApiResponse<{ authenticated: boolean }>> => {
+export const fetchSession = async (): Promise<{ authenticated: boolean }> => {
   try {
     const response = await fetch('/api/auth/session', {
       method: 'GET',

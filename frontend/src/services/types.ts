@@ -62,11 +62,16 @@ export class ApiError extends Error {
 
 // Paginated response
 export interface PaginatedResponse<T = any> {
-	payload: T[];
-	currentPage: number;
+	content: T[];
+	payload?: T[];
+	data?: T[];
+	page: number;
+	currentPage?: number;
 	totalPages: number;
-	totalItems: number;
+	totalElements: number;
+	totalItems?: number;
 	pageSize: number;
+	limit: number;
 	hasNext: boolean;
 	hasPrev: boolean;
 }
