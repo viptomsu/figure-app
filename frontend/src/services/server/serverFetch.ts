@@ -69,4 +69,3 @@ export const serverFetch = async <T = any>(
     throw handleNetworkError(error);
   }
 };
-

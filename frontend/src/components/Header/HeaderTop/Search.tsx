@@ -1,19 +1,18 @@
-"use client"
+'use client';
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import { getAllProducts } from "@/services/productService"; // Import hàm gọi API
-import { formatCurrency } from "@/utils/currencyFormatter"; // Import hàm formatCurrency
-import Rating from "@/components/Other/Rating";
-import { useIsClient } from "@/hooks/useIsClient";
+import Rating from '@/components/Other/Rating';
+import { getAllProducts } from '@/services/client';
+import { formatCurrency } from '@/utils/currencyFormatter'; // Import hàm formatCurrency
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 
 const Search: React.FC = () => {
-    const [isClient, setIsClient] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
-  const [searchValue, setSearchValue] = useState<string>("");
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  const [searchValue, setSearchValue] = useState<string>('');
   const [products, setProducts] = useState<any[]>([]); // Lưu danh sách sản phẩm tìm được
   const [showSearchResult, setShowSearchResult] = useState<boolean>(false);
   const [showCloseBtn, setShowCloseBtn] = useState<boolean>(false);
@@ -37,11 +36,11 @@ const Search: React.FC = () => {
 
     try {
       const response = await getAllProducts(value, null, null, 1, 10); // Gọi API tìm kiếm sản phẩm
-      setProducts(response.payload.content); // Lưu kết quả tìm kiếm vào state
+      setProducts(response.content || (response.payload as any).content); // Lưu kết quả tìm kiếm vào state
       setShowSearchResult(true);
       setShowCloseBtn(true);
     } catch (error) {
-      console.error("Error fetching products", error);
+      console.error('Error fetching products', error);
     } finally {
       setShowSpinner(false);
     }
@@ -49,7 +48,7 @@ const Search: React.FC = () => {
 
   const handleCloseBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setShowSearchResult(false);
-    setSearchValue("");
+    setSearchValue('');
     setShowCloseBtn(false);
   };
 
@@ -62,10 +61,7 @@ const Search: React.FC = () => {
   return (
     <div className="relative">
       {/* ======= search-form ======= */}
-      <form
-        className="flex"
-        onSubmit={(e: React.FormEvent<HTMLFormElement>) => e.preventDefault()}
-      >
+      <form className="flex" onSubmit={(e: React.FormEvent<HTMLFormElement>) => e.preventDefault()}>
         <input
           type="text"
           value={searchValue}
@@ -73,7 +69,11 @@ const Search: React.FC = () => {
           onChange={handleChange}
           className="bg-white rounded-l-[4px] w-full text-black h-10.5 border-none"
         />
-        <button style={{ width: "180px" }} type="submit" className="max-w-32.5 px-6 text-sm text-white border-none font-bold rounded-r-[4px] bg-red-800">
+        <button
+          style={{ width: '180px' }}
+          type="submit"
+          className="max-w-32.5 px-6 text-sm text-white border-none font-bold rounded-r-[4px] bg-red-800"
+        >
           Tìm kiếm
         </button>
         <button
@@ -85,21 +85,25 @@ const Search: React.FC = () => {
         </button>
         <button
           type="button"
-          className={showCloseBtn ? "absolute right-28 top-2.5" : "hidden"}
+          className={showCloseBtn ? 'absolute right-28 top-2.5' : 'hidden'}
           onClick={handleCloseBtnClick}
         >
           ✕
         </button>
-        <div className={showSpinner ? "absolute right-28 top-3 inline-block" : "hidden"}></div>
+        <div className={showSpinner ? 'absolute right-28 top-3 inline-block' : 'hidden'}></div>
       </form>
       {/* ======= search-result ======= */}
-      <div className={showSearchResult ? "absolute w-full p-5 bg-white border border-primary z-dropdown" : "hidden"}>
+      <div
+        className={
+          showSearchResult
+            ? 'absolute w-full p-5 bg-white border border-primary z-dropdown'
+            : 'hidden'
+        }
+      >
         {products.length > 0 ? (
           <div className="max-h-400px min-h-30 overflow-y-auto">
             {products.map((product: any, index: number) => {
-              const defaultImage = product.images.find(
-                (image: any) => image.isDefault
-              )?.imageUrl;
+              const defaultImage = product.images.find((image: any) => image.isDefault)?.imageUrl;
 
               // Tính giá sau khi giảm nếu có discount
               const discountPrice =
@@ -118,7 +122,7 @@ const Search: React.FC = () => {
                       onClick={() => {
                         setShowSearchResult(false);
                         setShowCloseBtn(false);
-                        setSearchValue("");
+                        setSearchValue('');
                         closeSearchUnder992();
                       }}
                       className="no-underline transition-all duration-300 ease hover:text-primary"
@@ -142,9 +146,7 @@ const Search: React.FC = () => {
                           </p>
                         </div>
                       ) : (
-                        <p className="m-0 font-bold">
-                          {formatCurrency(product.price)}
-                        </p>
+                        <p className="m-0 font-bold">{formatCurrency(product.price)}</p>
                       )}
                     </div>
                   </div>

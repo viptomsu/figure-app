@@ -1,11 +1,11 @@
-"use client"
+'use client';
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { VscChevronRight } from "react-icons/vsc";
-import { useUIStore } from "@/stores";
-import { getAllCategories } from "@/services/categoryService"; // Import hàm gọi API
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { VscChevronRight } from 'react-icons/vsc';
+import { useUIStore } from '@/stores';
+import { getAllCategories } from '@/services/client'; // Import hàm gọi API
 
 const Department: React.FC = () => {
   const { setShowSidebarCategories } = useUIStore();
@@ -18,7 +18,7 @@ const Department: React.FC = () => {
         const data = await getAllCategories(1, 1000); // Gọi API với page=1, size=1000
         setCategories(data.content); // Cập nhật state với dữ liệu danh mục
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error('Error fetching categories:', error);
       } finally {
         setLoading(false); // Kết thúc loading dù thành công hay lỗi
       }
@@ -45,10 +45,10 @@ const Department: React.FC = () => {
         </span>
       </div>
 
-      <div className="text pl-3" style={{ color: "#ffffff" }}>
+      <div className="text pl-3" style={{ color: '#ffffff' }}>
         <h6 className="font-semibold m-0">Danh mục sản phẩm</h6>
       </div>
-      <div className="title" style={{ color: "#ffffff" }}>
+      <div className="title" style={{ color: '#ffffff' }}>
         <h6>Danh mục sản phẩm</h6>
         <button type="button" onClick={handleCloseCategories}>
           ✕
@@ -58,10 +58,10 @@ const Department: React.FC = () => {
       <ul
         className="departments"
         style={{
-          maxHeight: "400px",
-          overflowY: "auto",
-          scrollbarWidth: "thin", // Dành cho Firefox
-          scrollbarColor: "#cccccc transparent",
+          maxHeight: '400px',
+          overflowY: 'auto',
+          scrollbarWidth: 'thin', // Dành cho Firefox
+          scrollbarColor: '#cccccc transparent',
         }}
       >
         {categories.map((item: any) =>
@@ -75,12 +75,8 @@ const Department: React.FC = () => {
                 <p className="m-0 p-0">
                   <span>
                     {/* Nếu cần, hiển thị biểu tượng hoặc hình ảnh tại đây */}
-                    <img
-                      src={item.image}
-                      alt={item.categoryName}
-                      className="w-6 h-6"
-                    />
-                  </span>{" "}
+                    <img src={item.image} alt={item.categoryName} className="w-6 h-6" />
+                  </span>{' '}
                   {item.categoryName}
                 </p>
                 <span className="right-arrow">
@@ -98,12 +94,8 @@ const Department: React.FC = () => {
               >
                 <span>
                   {/* Hiển thị hình ảnh danh mục */}
-                  <img
-                    src={item.image}
-                    alt={item.categoryName}
-                    className="w-6 h-6"
-                  />
-                </span>{" "}
+                  <img src={item.image} alt={item.categoryName} className="w-6 h-6" />
+                </span>{' '}
                 {item.categoryName}
               </Link>
             </li>
