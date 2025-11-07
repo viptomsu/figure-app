@@ -1,12 +1,15 @@
 import { API_CONFIG } from "./config";
 import apiClient from "./apiClient";
+import { cache } from 'react';
+import { serverFetch } from './serverFetch';
+import { Category, PaginatedResponse } from './types';
 
 // Hàm lấy tất cả danh mục với phân trang, tìm kiếm và sắp xếp
 export const getAllCategories = async (
 	page: number = 1,
 	limit: number = 1000,
 	keyword: string = ""
-): Promise<any> => {
+): Promise<PaginatedResponse<Category>> => {
 	return apiClient.get(`${API_CONFIG.ENDPOINTS.CATEGORIES}`, {
 		params: {
 			keyword,
@@ -16,8 +19,26 @@ export const getAllCategories = async (
 	});
 };
 
+// Server-side cached version
+export const getAllCategoriesServer = cache(async (
+	page: number = 1,
+	limit: number = 1000,
+	keyword: string = ""
+): Promise<PaginatedResponse<Category>> => {
+	return serverFetch<PaginatedResponse<Category>>(API_CONFIG.ENDPOINTS.CATEGORIES, {
+		params: {
+			keyword,
+			page,
+			limit,
+		},
+		next: {
+			revalidate: 600,
+		},
+	});
+});
+
 // Hàm lấy danh mục theo ID
-export const getCategoryById = async (id: any): Promise<any> => {
+export const getCategoryById = async (id: number): Promise<Category> => {
 	return apiClient.get(`${API_CONFIG.ENDPOINTS.CATEGORIES}/${id}`);
 };
 

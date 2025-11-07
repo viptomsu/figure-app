@@ -1,37 +1,33 @@
-'use client'
-
-import React, { useState, useEffect } from "react"
 import Link from "next/link"
-import { useParams } from 'next/navigation'
 import ProductDetailsContent from "@/components/ProductDetails/ProductDetailsContent"
 import RelatedProducts from "@/components/ProductDetails/RelatedProducts/RelatedProducts"
-import { getProductById } from "@/services/productService"
+import { getProductByIdServer } from "@/services/productService"
+import { notFound } from "next/navigation"
 
-export default function ProductDetailsPage() {
-  const params = useParams()
-  const propsId = params.id as string
-  const [loading, setLoading] = useState<boolean>(true)
-  const [theProduct, setTheProduct] = useState<any>(null)
+interface ProductDetailsPageProps {
+  params: {
+    id: string
+  }
+}
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const product = await getProductById(parseInt(propsId))
-        setTheProduct(product)
-      } catch (error) {
-        console.error("Error fetching product:", error)
-      } finally {
-        setLoading(false)
-      }
+export default async function ProductDetailsPage({ params }: ProductDetailsPageProps) {
+  const id = parseInt(params.id)
+
+  // Validate id is not NaN
+  if (Number.isNaN(id)) {
+    notFound()
+  }
+
+  try {
+    const product = await getProductByIdServer(id)
+
+    if (!product) {
+      notFound()
     }
-
-    fetchProduct()
-  }, [propsId])
 
   return (
     <div className="product-details-content">
       <div className="main">
-        {/* ===== breadcrumb ===== */}
         <section id="breadcrumb">
           <div className="container">
             <ul className="breadcrumb-content d-flex m-0 p-0">
@@ -48,10 +44,16 @@ export default function ProductDetailsPage() {
           </div>
         </section>
 
-        {/* ===== content ===== */}
-        <ProductDetailsContent theProduct={theProduct} loading={loading} />
-        <RelatedProducts />
+        <ProductDetailsContent theProduct={product} loading={false} />
+        <RelatedProducts product={product} />
       </div>
     </div>
-  )
+  ) catch (error: any) {
+    // If 404 error, call notFound
+    if (error?.status === 404) {
+      notFound()
+    }
+    // Re-throw other errors to allow route error boundary to handle
+    throw error
+  }
 }

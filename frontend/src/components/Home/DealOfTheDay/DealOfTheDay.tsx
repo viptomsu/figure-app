@@ -1,32 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Countdown from "./Countdown";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard/ProductCard";
 import CustomCarousel from "@/components/Other/CustomCarousel";
-import { getFilteredProducts } from "@/services/productService";
+import { getFilteredProductsServer } from "@/services/productService";
 
-const DealOfTheDay: React.FC = () => {
-	const [products, setProducts] = useState<any[]>([]);
-	const [loading, setLoading] = useState<boolean>(true);
-
-	useEffect(() => {
-		const fetchProducts = async () => {
-			try {
-				const filteredProducts = await getFilteredProducts(false, false, true);
-				setProducts(filteredProducts.payload.content); // Cập nhật state
-				setLoading(false);
-			} catch (error) {
-				console.error("Lỗi khi lấy sản phẩm Deal trong ngày", error);
-				setLoading(false);
-			}
-		};
-
-		fetchProducts();
-	}, []);
-
-	if (loading) {
-		return <div>Đang tải...</div>;
-	}
+async function DealOfTheDay() {
+	const productsData = await getFilteredProductsServer(false, false, true);
+	const products = productsData.content;
 
 	if (products.length === 0) {
 		return <div>Không có sản phẩm nào</div>;
@@ -55,6 +36,6 @@ const DealOfTheDay: React.FC = () => {
 			</div>
 		</section>
 	);
-};
+}
 
 export default DealOfTheDay;

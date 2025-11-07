@@ -17,7 +17,7 @@ const TopCategoriesList: React.FC<TopCategoriesListProps> = ({
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
         {categories.map((item) => (
           <div key={item.id}>
-            <Link href={`/shop?categoryId=${item.id}`}>
+            <Link href={`/shop?category=${item.id}`}>
               <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer">
                 <div className="w-[168px] h-[168px] mx-auto mb-3">
                   <img

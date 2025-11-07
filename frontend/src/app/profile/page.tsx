@@ -1,10 +1,15 @@
-'use client'
-
 import Link from 'next/link'
-import React from 'react'
 import ProfileSection from '@/components/Profile/ProfileSection'
+import { getCurrentUserServer } from '@/services/authService'
+import { redirect } from 'next/navigation'
 
-export default function ProfilePage() {
+export default async function ProfilePage() {
+  const user = await getCurrentUserServer()
+
+  if (!user) {
+    redirect('/login')
+  }
+
   return (
     <div className="login-content">
       <div className="main">
@@ -20,7 +25,7 @@ export default function ProfilePage() {
             </ul>
           </div>
         </section>
-        <ProfileSection />
+        <ProfileSection initialUser={user} />
       </div>
     </div>
   )

@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState } from "react";
 import { BsHeart } from "react-icons/bs";
 import { FiBarChart2 } from "react-icons/fi";

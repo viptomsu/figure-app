@@ -1,4 +1,7 @@
+'use client'
+
 import React from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import ProductCard from "../../ProductCard/ProductCard";
 import Pagination from "./Pagination";
 import { RiEqualizerLine } from "react-icons/ri";
@@ -8,17 +11,23 @@ const ProductsSide: React.FC<any> = ({
   products,
   totalPagesNum,
   currentPage,
-  setCurrentPage,
   sortField,
   sortDirection,
-  setSortField,
-  setSortDirection,
 }) => {
-  const productsPerPage = 12;
   const { setShowSidebarFilter } = useUIStore();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const handleFilterBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setShowSidebarFilter(true);
+  };
+
+  const handleSortChange = (field: string, direction: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("sort", field);
+    params.set("direction", direction);
+    params.set("page", "1");
+    router.push(`/shop?${params.toString()}`);
   };
 
   return (
@@ -35,7 +44,7 @@ const ProductsSide: React.FC<any> = ({
           <label className="text-sm font-normal">Sắp xếp theo:</label>
           <select
             value={sortField}
-            onChange={(e) => setSortField(e.target.value)}
+            onChange={(e) => handleSortChange(e.target.value, sortDirection)}
             className="bg-white ml-2.5 text-sm outline-none border border-gray-300 h-9 px-1.25 cursor-pointer transition-colors"
           >
             <option value="productName">Tên sản phẩm (A-Z)</option>
@@ -43,7 +52,7 @@ const ProductsSide: React.FC<any> = ({
           </select>
           <select
             value={sortDirection}
-            onChange={(e) => setSortDirection(e.target.value)}
+            onChange={(e) => handleSortChange(sortField, e.target.value)}
             className="bg-white ml-2.5 text-sm outline-none border border-gray-300 h-9 px-1.25 cursor-pointer transition-colors"
           >
             <option value="asc">Tăng dần</option>
@@ -74,8 +83,7 @@ const ProductsSide: React.FC<any> = ({
       </div>
 
       <Pagination
-        pages={totalPagesNum}
-        setCurrentPage={setCurrentPage}
+        totalPages={totalPagesNum}
         currentPage={currentPage}
       />
     </div>

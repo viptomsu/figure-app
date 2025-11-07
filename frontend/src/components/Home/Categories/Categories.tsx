@@ -1,100 +1,52 @@
-import React, { useEffect, useState } from "react";
-import { getAllCategories } from "../../../services/categoryService"; // Import hàm API
+import React from "react";
+import { getAllCategoriesServer } from "../../../services/categoryService";
 import { ITopCategoriesData } from "../../../types/types";
 import ConsumerElectronics from "./ConsumerElectronics/ConsumerElectronics";
 import TopCategoriesList from "./TopCategoriesList/TopCategoriesList";
 
-const Categories: React.FC = () => {
-	const [categories, setCategories] = useState<ITopCategoriesData[]>([]);
-	const [loading, setLoading] = useState<boolean>(true);
+async function Categories() {
+	const categoriesData = await getAllCategoriesServer(1, 12);
+	const formattedCategories = categoriesData.content.map((category: any) => ({
+		id: category._id,
+		title: category.categoryName,
+		img: category.image,
+	}));
 
-	const [mouseCategoryId, setMouseCategoryId] = useState<number | null>(null);
-	const [keyboardCategoryId, setKeyboardCategoryId] = useState<number | null>(
-		null
+	const mouseCategory = formattedCategories.find(
+		(category: { title: string }) => category.title === "Mô hình Gundam"
 	);
-	const [headphonesCategoryId, setHeadphonesCategoryId] = useState<
-		number | null
-	>(null);
-
-	useEffect(() => {
-		const fetchCategories = async () => {
-			try {
-				const data = await getAllCategories(1, 12); // Gọi API lấy 6 danh mục
-				const formattedCategories = data.content.map((category: any) => ({
-					id: category._id,
-					title: category.categoryName,
-					img: category.image,
-				}));
-
-				setCategories(formattedCategories);
-
-				// Tìm danh mục có title là "Chuột" và lấy id
-				const mouseCategory = formattedCategories.find(
-					(category: { title: string }) => category.title === "Mô hình Gundam"
-				);
-				if (mouseCategory) {
-					setMouseCategoryId(mouseCategory.id); // Lưu id của danh mục "Chuột"
-				}
-
-				// Tìm danh mục có title là "Bàn phím" và lấy id
-				const keyboardCategory = formattedCategories.find(
-					(category: { title: string }) =>
-						category.title === "Mô hình Dragon Ball"
-				);
-				if (keyboardCategory) {
-					setKeyboardCategoryId(keyboardCategory.id); // Lưu id của danh mục "Bàn phím"
-				}
-
-				// Tìm danh mục có title là "Tai nghe" và lấy id
-				const headphonesCategory = formattedCategories.find(
-					(category: { title: string }) =>
-						category.title === "Mô hình One Piece"
-				);
-				if (headphonesCategory) {
-					setHeadphonesCategoryId(headphonesCategory.id); // Lưu id của danh mục "Tai nghe"
-				}
-			} catch (error) {
-				console.error("Error fetching categories:", error);
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		fetchCategories();
-	}, []);
-
-	if (loading) {
-		return <div>Đang tải...</div>; // Hoặc hiển thị spinner
-	}
+	const keyboardCategory = formattedCategories.find(
+		(category: { title: string }) => category.title === "Mô hình Dragon Ball"
+	);
+	const headphonesCategory = formattedCategories.find(
+		(category: { title: string }) => category.title === "Mô hình One Piece"
+	);
 
 	return (
 		<section id="categories">
 			<div className="container">
-				<TopCategoriesList categories={categories} />{" "}
-				{/* Truyền categories qua props */}
-				{mouseCategoryId && (
+				<TopCategoriesList categories={formattedCategories} />
+				{mouseCategory && (
 					<ConsumerElectronics
 						title={"Mô hình Figure"}
-						categoryId={mouseCategoryId}
+						categoryId={mouseCategory.id}
 					/>
-				)}{" "}
-				{/* Truyền id của danh mục "Chuột" vào ConsumerElectronics */}
-				{keyboardCategoryId && (
+				)}
+				{keyboardCategory && (
 					<ConsumerElectronics
 						title={"Mô hình Dragon Ball"}
-						categoryId={keyboardCategoryId}
+						categoryId={keyboardCategory.id}
 					/>
-				)}{" "}
-				{/* Truyền id của danh mục "Bàn phím" vào ConsumerElectronics */}
-				{headphonesCategoryId && (
+				)}
+				{headphonesCategory && (
 					<ConsumerElectronics
 						title={"Mô hình One Piece"}
-						categoryId={headphonesCategoryId}
+						categoryId={headphonesCategory.id}
 					/>
-				)}{" "}
+				)}
 			</div>
 		</section>
 	);
-};
+}
 
 export default Categories;

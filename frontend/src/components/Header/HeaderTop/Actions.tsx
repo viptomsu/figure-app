@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import DropdownCart from "./DropdownCart";
 import { FiBarChart2 } from "react-icons/fi";

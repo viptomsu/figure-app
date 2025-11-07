@@ -1,6 +1,3 @@
-'use client'
-
-import React from 'react'
 import Header from '@/components/Header/Header'
 import Footer from '@/components/Footer/Footer'
 import BackToTopBtn from '@/components/Other/BackToTopBtn'

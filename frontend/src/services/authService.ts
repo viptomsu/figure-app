@@ -1,6 +1,8 @@
 import { RegisterRequest, ApiResponse, User } from './types';
 import apiClient from './apiClient';
 import { API_CONFIG } from './config';
+import { cache } from 'react';
+import { serverFetch } from './serverFetch';
 
 export const fetchSession = async (): Promise<ApiResponse<{ authenticated: boolean }>> => {
   try {
@@ -25,6 +27,23 @@ export const fetchCurrentUser = async (): Promise<User> => {
   const response = await apiClient.get(API_CONFIG.ENDPOINTS.USERS.ME);
   return response.payload;
 };
+
+// Server-side cached version
+export const getCurrentUserServer = cache(async (): Promise<User | null> => {
+  try {
+    const user = await serverFetch<User>(API_CONFIG.ENDPOINTS.USERS.ME, {
+      cache: 'no-store',
+    });
+    return user;
+  } catch (error: any) {
+    // Return null for 401 errors (user not logged in)
+    if (error?.status === 401) {
+      return null;
+    }
+    // Re-throw other errors
+    throw error;
+  }
+});
 
 export const login = async (username: string, password: string): Promise<ApiResponse<User>> => {
   const response = await fetch('/api/auth/login', {

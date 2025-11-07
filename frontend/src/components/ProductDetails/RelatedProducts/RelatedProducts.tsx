@@ -1,50 +1,17 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
-import { getAllProducts } from "../../../services/productService"; // Import API
+import React from "react";
+import { getAllProductsServer } from "../../../services/productService";
 import CustomCarousel from "../../Other/CustomCarousel";
 import ProductCard from "../../ProductCard/ProductCard";
 
-const RelatedProducts: React.FC<any> = ({ product }) => {
-	const [relatedProducts, setRelatedProducts] = useState<any[]>([]); // State để lưu danh sách sản phẩm liên quan
-	const [loading, setLoading] = useState<boolean>(true); // State để xử lý loading
-
-	// Lấy categoryId từ product
+async function RelatedProducts({ product }: { product: any }) {
 	const categoryId = product?.category?._id;
 
-	// Hàm gọi API lấy sản phẩm liên quan
-	const fetchRelatedProducts = async () => {
-		try {
-			setLoading(true);
-			const response = await getAllProducts(
-				"",
-				categoryId,
-				null,
-				1,
-				10,
-				"productName",
-				"asc"
-			);
-			const filteredProducts = response.payload.content.filter(
-				(relatedProduct: any) => relatedProduct._id !== product._id
-			);
-			setRelatedProducts(filteredProducts);
-		} catch (error) {
-			console.error("Error fetching related products", error);
-		} finally {
-			setLoading(false);
-		}
-	};
-
-	useEffect(() => {
-		if (categoryId) {
-			fetchRelatedProducts(); // Gọi API khi component được render
-		}
-	}, [categoryId]);
+	const response = await getAllProductsServer("", categoryId, null, 1, 10, "productName", "asc");
+	const relatedProducts = response.content.filter((relatedProduct: any) => relatedProduct._id !== product._id);
 
 	return (
 		<>
-			{!loading && relatedProducts.length !== 0 ? (
+			{relatedProducts.length !== 0 ? (
 				<section id="related-products" className="pb-15">
 					<div className="container">
 						<div className="text-center mb-4">
@@ -66,6 +33,6 @@ const RelatedProducts: React.FC<any> = ({ product }) => {
 			)}
 		</>
 	);
-};
+}
 
 export default RelatedProducts;

@@ -1,5 +1,8 @@
 import { API_CONFIG } from "./config";
 import apiClient from "./apiClient";
+import { cache } from 'react';
+import { serverFetch } from './serverFetch';
+import { Order, PaginatedResponse } from './types';
 
 // Hàm tạo mã đơn hàng ngẫu nhiên
 
@@ -95,7 +98,7 @@ export const getAllOrders = async (
 	code?: string, // Thêm code làm tùy chọn
 	status?: string, // Thêm status làm tùy chọn
 	method?: string // Thêm method làm tùy chọn
-): Promise<any> => {
+): Promise<PaginatedResponse<Order>> => {
 	const params: any = { page, limit };
 
 	// Kiểm tra xem các tham số lọc có tồn tại không, nếu có thì thêm vào params
@@ -133,7 +136,7 @@ export const getOrdersByUserId = async (
 	userId: number,
 	page: number = 1,
 	limit: number = 10
-): Promise<any> => {
+): Promise<PaginatedResponse<Order>> => {
 	return apiClient.get(`${API_CONFIG.ENDPOINTS.ORDERS}/user/${userId}`, {
 		params: {
 			page,
@@ -146,7 +149,7 @@ export const getOrdersByUserId = async (
 export const getOrdersForCurrentUser = async (
 	page: number = 1,
 	limit: number = 10
-): Promise<any> => {
+): Promise<PaginatedResponse<Order>> => {
 	return apiClient.get(`${API_CONFIG.ENDPOINTS.ORDERS}/me`, {
 		params: {
 			page,
@@ -154,3 +157,17 @@ export const getOrdersForCurrentUser = async (
 		},
 	});
 };
+
+// Server-side cached version
+export const getOrdersForCurrentUserServer = cache(async (
+	page: number = 1,
+	limit: number = 5
+): Promise<PaginatedResponse<Order>> => {
+	return serverFetch<PaginatedResponse<Order>>(`${API_CONFIG.ENDPOINTS.ORDERS}/me`, {
+		params: {
+			page,
+			limit,
+		},
+		cache: 'no-store',
+	});
+});

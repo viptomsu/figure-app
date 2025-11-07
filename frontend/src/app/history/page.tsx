@@ -1,10 +1,32 @@
-'use client'
-
 import Link from 'next/link'
-import React from 'react'
 import HistorySection from '@/components/History/HistorySection'
+import { getCurrentUserServer } from '@/services/authService'
+import { getOrdersForCurrentUserServer } from '@/services/orderService'
+import { redirect } from 'next/navigation'
 
-export default function HistoryPage() {
+interface HistoryPageProps {
+  searchParams: {
+    page?: string
+    limit?: string
+  }
+}
+
+export default async function HistoryPage({ searchParams }: HistoryPageProps) {
+  const user = await getCurrentUserServer()
+
+  if (!user) {
+    redirect('/login')
+  }
+
+  const pageNum = searchParams.page ? parseInt(searchParams.page) : 1
+  const limitNum = searchParams.limit ? parseInt(searchParams.limit) : 5
+
+  // Validate and fallback NaN values
+  const page = Number.isNaN(pageNum) ? 1 : pageNum
+  const limit = Number.isNaN(limitNum) ? 5 : limitNum
+
+  const ordersData = await getOrdersForCurrentUserServer(page, limit)
+
   return (
     <div className="login-content">
       <div className="main">
@@ -20,7 +42,15 @@ export default function HistoryPage() {
             </ul>
           </div>
         </section>
-        <HistorySection />
+        <HistorySection
+          initialOrders={ordersData.content || []}
+          initialPagination={{
+            page: ordersData.page,
+            totalPages: ordersData.totalPages,
+            totalElements: ordersData.totalElements,
+            limit,
+          }}
+        />
       </div>
     </div>
   )

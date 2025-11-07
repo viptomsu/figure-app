@@ -1,19 +1,26 @@
+'use client'
+
 import React from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { VscChevronRight, VscChevronLeft } from "react-icons/vsc";
 
 const Pagination: React.FC<any> = ({
-  pages,
-  setCurrentPage,
+  totalPages,
   currentPage,
 }) => {
-  const numOfPages = [];
+  const searchParams = useSearchParams();
 
-  // getting number of the pages
-  for (let i = 1; i <= pages; i++) {
+  const buildPageUrl = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", page.toString());
+    return `/shop?${params.toString()}`;
+  };
+
+  const numOfPages = [];
+  for (let i = 1; i <= totalPages; i++) {
     numOfPages.push(i);
   }
-
-  
 
   return (
     <nav
@@ -24,31 +31,28 @@ const Pagination: React.FC<any> = ({
         <li
           className={`${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
         >
-          <button
-            className="page-link min-w-8 h-8 text-sm text-gray-600 hover:text-white hover:bg-primary border border-gray-300 hover:border-primary rounded px-0 focus:shadow-none"
-            onClick={() =>
-              setCurrentPage(currentPage === 1 ? currentPage : currentPage - 1)
-            }
-            disabled={currentPage === 1}
+          <Link
+            href={buildPageUrl(currentPage === 1 ? 1 : currentPage - 1)}
+            className="page-link min-w-8 h-8 text-sm text-gray-600 hover:text-white hover:bg-primary border border-gray-300 hover:border-primary rounded px-0 focus:shadow-none inline-flex items-center justify-center"
           >
             <VscChevronLeft className="text-lg w-8" />
-          </button>
+          </Link>
         </li>
         {numOfPages.map((page, index) => (
           <li
             key={index}
             className={currentPage === page ? "active" : ""}
           >
-            <button
-              className={`min-w-8 h-8 text-sm border rounded px-0 transition-colors ${
+            <Link
+              href={buildPageUrl(page)}
+              className={`min-w-8 h-8 text-sm border rounded px-0 transition-colors inline-flex items-center justify-center ${
                 currentPage === page
                   ? "text-white bg-primary border-primary"
                   : "text-gray-600 border-gray-300 hover:text-white hover:bg-primary hover:border-primary"
               }`}
-              onClick={() => setCurrentPage(page)}
             >
               {page}
-            </button>
+            </Link>
           </li>
         ))}
         <li
@@ -58,19 +62,16 @@ const Pagination: React.FC<any> = ({
               : ""
           }`}
         >
-          <button
-            className="page-link min-w-8 h-8 text-sm text-gray-600 hover:text-white hover:bg-primary border border-gray-300 hover:border-primary rounded px-0 focus:shadow-none"
-            onClick={() =>
-              setCurrentPage(
-                currentPage === numOfPages.length
-                  ? currentPage
-                  : currentPage + 1
-              )
-            }
-            disabled={currentPage === numOfPages.length}
+          <Link
+            href={buildPageUrl(
+              currentPage === numOfPages.length
+                ? currentPage
+                : currentPage + 1
+            )}
+            className="page-link min-w-8 h-8 text-sm text-gray-600 hover:text-white hover:bg-primary border border-gray-300 hover:border-primary rounded px-0 focus:shadow-none inline-flex items-center justify-center"
           >
             <VscChevronRight className="text-lg w-8" />
-          </button>
+          </Link>
         </li>
       </ul>
     </nav>
