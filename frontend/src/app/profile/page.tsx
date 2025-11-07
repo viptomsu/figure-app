@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import ProfileSection from '@/components/Profile/ProfileSection'
-import { getCurrentUserServer } from '@/services/authService'
+import { getCurrentUserServer } from '@/services/server'
 import { redirect } from 'next/navigation'
 
 export default async function ProfilePage() {

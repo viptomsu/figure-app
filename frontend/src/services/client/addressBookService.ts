@@ -1,18 +1,15 @@
 import axios from "axios";
-import { API_CONFIG } from "./config";
+import { API_CONFIG } from "../config";
 import apiClient from "./apiClient";
 
-// Hàm lấy tất cả AddressBook theo User ID
 export const getAddressBooksByUserId = async (userId: any): Promise<any> => {
 	return apiClient.get(`${API_CONFIG.ENDPOINTS.ADDRESS_BOOK}/user/${userId}`);
 };
 
-// Hàm lấy tất cả AddressBook cho người dùng hiện tại (sử dụng token)
 export const getAddressBooksForCurrentUser = async (): Promise<any> => {
 	return apiClient.get(`${API_CONFIG.ENDPOINTS.ADDRESS_BOOK}/me`);
 };
 
-// Hàm tạo mới AddressBook
 export const createAddressBook = async (
 	userId: any,
 	recipientName: string,
@@ -21,7 +18,7 @@ export const createAddressBook = async (
 	ward: string,
 	district: string,
 	city: string,
-	email: string // Thêm trường email
+	email: string
 ): Promise<any> => {
 	const addressData = {
 		recipientName,
@@ -30,7 +27,7 @@ export const createAddressBook = async (
 		ward,
 		district,
 		city,
-		email, // Thêm email vào dữ liệu tạo mới
+		email,
 	};
 
 	return apiClient.post(
@@ -39,7 +36,6 @@ export const createAddressBook = async (
 	);
 };
 
-// Hàm cập nhật AddressBook theo ID
 export const updateAddressBook = async (
 	addressBookId: any,
 	recipientName: string,
@@ -48,7 +44,7 @@ export const updateAddressBook = async (
 	ward: string,
 	district: string,
 	city: string,
-	email: string // Thêm trường email
+	email: string
 ): Promise<any> => {
 	const addressData = {
 		recipientName,
@@ -57,7 +53,7 @@ export const updateAddressBook = async (
 		ward,
 		district,
 		city,
-		email, // Thêm email vào dữ liệu cập nhật
+		email,
 	};
 
 	return apiClient.put(
@@ -66,14 +62,12 @@ export const updateAddressBook = async (
 	);
 };
 
-// Hàm xóa AddressBook theo ID
 export const deleteAddressBook = async (addressBookId: string): Promise<any> => {
 	return apiClient.delete(
 		`${API_CONFIG.ENDPOINTS.ADDRESS_BOOK}/${addressBookId}`
 	);
 };
 
-// API URL cho Tỉnh, Quận, Phường
 const PROVINCE_API_URL = "https://provinces.open-api.vn/api/p/";
 
 export const fetchProvinces = async () => {

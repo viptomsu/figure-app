@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { AiFillStar } from "react-icons/ai";
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { AiFillStar } from 'react-icons/ai';
 import {
   getReviewsByProduct,
   createReview,
-} from "../../../services/reviewService";
+  checkProfanityWithHuggingFace,
+} from '@/services/client';
 import { toast } from 'sonner';
-import { useUserStore } from "../../../stores";
-import { checkProfanityWithHuggingFace } from "../../../services/profanityCheckService";
-
+import { useUserStore } from '@/stores';
 
 const Reviews: React.FC<any> = ({ product }) => {
   const [rows] = useState<number>(7);
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [rating, setRating] = useState<number>(0);
-  const [reviewText, setReviewText] = useState<string>("");
+  const [reviewText, setReviewText] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // Phân trang
@@ -29,7 +30,7 @@ const Reviews: React.FC<any> = ({ product }) => {
       setReviews(response.content);
       setTotalPages(response.totalPages); // Lưu tổng số trang
     } catch (error) {
-      console.error("Error fetching reviews: ", error);
+      console.error('Error fetching reviews: ', error);
     } finally {
       setLoading(false);
     }
@@ -40,7 +41,7 @@ const Reviews: React.FC<any> = ({ product }) => {
 
   // Hàm để ẩn 5 chữ số giữa của số điện thoại
   const maskPhoneNumber = (phoneNumber: string) => {
-    return phoneNumber.replace(/(\d{3})\d{5}(\d{2})/, "$1*****$2");
+    return phoneNumber.replace(/(\d{3})\d{5}(\d{2})/, '$1*****$2');
   };
 
   // Hàm xử lý gửi review
@@ -48,12 +49,12 @@ const Reviews: React.FC<any> = ({ product }) => {
     e.preventDefault();
 
     if (!user || !user.userId) {
-      toast.warning("Vui lòng đăng nhập để đánh giá.");
+      toast.warning('Vui lòng đăng nhập để đánh giá.');
       return;
     }
 
     if (!reviewText || rating === 0) {
-      toast.error("Vui lòng điền đầy đủ thông tin đánh giá.");
+      toast.error('Vui lòng điền đầy đủ thông tin đánh giá.');
       return;
     }
 
@@ -63,22 +64,22 @@ const Reviews: React.FC<any> = ({ product }) => {
       // Kiểm tra nội dung bằng Hugging Face AI
       const isProfane = await checkProfanityWithHuggingFace(reviewText);
       if (isProfane) {
-        toast.error("Đánh giá của bạn có chứa từ ngữ không phù hợp.");
+        toast.error('Đánh giá của bạn có chứa từ ngữ không phù hợp.');
         setIsSubmitting(false); // Tắt loading nếu đánh giá không hợp lệ
         return;
       }
 
       // Gửi đánh giá nếu hợp lệ
       await createReview(product._id, user.userId, reviewText, rating);
-      toast.success("Đánh giá của bạn đã được gửi thành công!");
+      toast.success('Đánh giá của bạn đã được gửi thành công!');
 
       // Xóa nội dung sau khi gửi
-      setReviewText("");
+      setReviewText('');
       setRating(0);
       fetchReviews(currentPage);
     } catch (error) {
-      toast.error("Lỗi khi đánh giá.");
-      console.error("Error submitting review: ", error);
+      toast.error('Lỗi khi đánh giá.');
+      console.error('Error submitting review: ', error);
     } finally {
       setIsSubmitting(false); // Tắt loading sau khi hoàn tất
     }
@@ -109,7 +110,7 @@ const Reviews: React.FC<any> = ({ product }) => {
                 <AiFillStar
                   className="text-2xl cursor-pointer"
                   style={{
-                    color: i + 1 <= rating ? "gold" : "#dfdbdb",
+                    color: i + 1 <= rating ? 'gold' : '#dfdbdb',
                   }}
                 />
               </label>
@@ -129,12 +130,10 @@ const Reviews: React.FC<any> = ({ product }) => {
           <div className="pt-6">
             <input
               type="submit"
-              value={isSubmitting ? "Đang gửi..." : "Gửi đánh giá"}
+              value={isSubmitting ? 'Đang gửi...' : 'Gửi đánh giá'}
               disabled={isSubmitting}
               className={`px-5 py-2.5 text-white rounded border-none cursor-pointer ${
-                isSubmitting
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-primary hover:bg-red-700"
+                isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary hover:bg-red-700'
               } transition-all duration-300`}
             />
           </div>
@@ -148,20 +147,16 @@ const Reviews: React.FC<any> = ({ product }) => {
           <p>Đang tải đánh giá...</p>
         ) : reviews.length > 0 ? (
           reviews.map((review: any, index: number) => (
-            <div
-              key={index}
-              className="p-2.5 border-b border-gray-200 mb-2.5"
-            >
+            <div key={index} className="p-2.5 border-b border-gray-200 mb-2.5">
               <div className="flex justify-between items-center font-semibold mb-2">
                 <strong>
-                  {review.user.fullName} (
-                  {maskPhoneNumber(review.user.phoneNumber)})
+                  {review.user.fullName} ({maskPhoneNumber(review.user.phoneNumber)})
                 </strong>
                 <span className="text-sm text-gray-600">
-                  {new Date(review.reviewDate).toLocaleDateString("vi-VN", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
+                  {new Date(review.reviewDate).toLocaleDateString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
                   })}
                 </span>
               </div>
@@ -186,8 +181,8 @@ const Reviews: React.FC<any> = ({ product }) => {
                 onClick={() => handlePageChange(i + 1)}
                 className={`px-3 py-1.5 rounded border ${
                   currentPage === i + 1
-                    ? "bg-black text-white"
-                    : "bg-white text-black border-gray-200 hover:bg-gray-100"
+                    ? 'bg-black text-white'
+                    : 'bg-white text-black border-gray-200 hover:bg-gray-100'
                 } transition-all duration-300`}
               >
                 {i + 1}

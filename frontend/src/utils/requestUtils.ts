@@ -4,10 +4,12 @@ import { API_CONFIG } from '../services/config';
 /**
  * Builds a URL with base URL and endpoint
  * @param endpoint - API endpoint path
+ * @param useServerUrl - Whether to use server-side base URL
  * @returns Full URL string
  */
-export const buildUrl = (endpoint: string): string => {
-  return API_CONFIG.BASE_URL + endpoint;
+export const buildUrl = (endpoint: string, useServerUrl: boolean = false): string => {
+  const baseUrl = useServerUrl ? process.env.API_BASE_URL : API_CONFIG.BASE_URL;
+  return baseUrl + endpoint;
 };
 
 /**

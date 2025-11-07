@@ -1,16 +1,7 @@
-// Main API client and configuration exports
-export { default as apiClient } from './apiClient';
+// Services are now organized into client/ and server/ subdirectories
+// Import from '@/services/client' for Client Components
+// Import from '@/services/server' for Server Components
+
+// Shared exports (safe for both client and server)
 export { API_CONFIG } from './config';
 export * from './types';
-
-// Service exports
-export * from './authService';
-export * from './productService';
-export * from './orderService';
-export * from './userService';
-export * from './categoryService';
-export * from './voucherService';
-export * from './addressBookService';
-export * from './brandService';
-export * from './reviewService';
-export * from './vnpayService';

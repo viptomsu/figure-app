@@ -1,10 +1,6 @@
-import { API_CONFIG } from "./config";
+import { API_CONFIG } from "../config";
 import apiClient from "./apiClient";
-import { cache } from 'react';
-import { serverFetch } from './serverFetch';
-import { Order, PaginatedResponse } from './types';
-
-// Hàm tạo mã đơn hàng ngẫu nhiên
+import { Order, PaginatedResponse } from '../types';
 
 const getVietnamTimeISO = () => {
 	const date = new Date();
@@ -17,6 +13,7 @@ const getVietnamTimeISO = () => {
 	const newDate = vietnamTime.toISOString().slice(0, 19); // Cắt bỏ phần mili giây và Z
 	return newDate; // Thêm phần chênh lệch múi giờ +07:00
 };
+
 export const createOrder = async (
 	cart: any[],
 	paymentMethod: string,
@@ -91,7 +88,6 @@ export const createOrder = async (
 	return apiClient.post(`${API_CONFIG.ENDPOINTS.ORDERS}/create`, orderData);
 };
 
-// Hàm lấy tất cả đơn hàng với phân trang
 export const getAllOrders = async (
 	page: number = 1,
 	limit: number = 10,
@@ -117,7 +113,6 @@ export const getAllOrders = async (
 	});
 };
 
-// Hàm cập nhật trạng thái đơn hàng
 export const updateOrderStatus = async (
 	orderId: number,
 	status: string
@@ -131,7 +126,6 @@ export const updateOrderStatus = async (
 	);
 };
 
-// Hàm lấy đơn hàng theo ID người dùng với phân trang
 export const getOrdersByUserId = async (
 	userId: number,
 	page: number = 1,
@@ -145,7 +139,6 @@ export const getOrdersByUserId = async (
 	});
 };
 
-// Hàm lấy đơn hàng cho người dùng hiện tại (sử dụng token)
 export const getOrdersForCurrentUser = async (
 	page: number = 1,
 	limit: number = 10
@@ -157,17 +150,3 @@ export const getOrdersForCurrentUser = async (
 		},
 	});
 };
-
-// Server-side cached version
-export const getOrdersForCurrentUserServer = cache(async (
-	page: number = 1,
-	limit: number = 5
-): Promise<PaginatedResponse<Order>> => {
-	return serverFetch<PaginatedResponse<Order>>(`${API_CONFIG.ENDPOINTS.ORDERS}/me`, {
-		params: {
-			page,
-			limit,
-		},
-		cache: 'no-store',
-	});
-});

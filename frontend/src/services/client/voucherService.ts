@@ -1,4 +1,4 @@
-import { API_CONFIG } from './config';
+import { API_CONFIG } from '../config';
 import apiClient from './apiClient';
 
 export const deleteVoucher = async (id: any): Promise<any> => {

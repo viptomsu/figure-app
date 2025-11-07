@@ -28,11 +28,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import {
-  fetchProvinces,
-  fetchDistrictsByProvince,
-  fetchWardsByDistrict,
-} from '../../../services/addressBookService';
+import { fetchProvinces, fetchDistrictsByProvince, fetchWardsByDistrict } from '@/services/client';
 
 interface Province {
   code: string;
@@ -182,178 +178,190 @@ const AddressBookModal = NiceModal.create<{
   };
 
   return (
-    <Dialog open={modal.visible} onOpenChange={(isOpen) => { if (!isOpen) { modal.hide(); setTimeout(() => modal.remove(), 300); } }}>
+    <Dialog
+      open={modal.visible}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          modal.hide();
+          setTimeout(() => modal.remove(), 300);
+        }
+      }}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{isEditMode ? 'Cập nhật địa chỉ' : 'Thêm địa chỉ mới'}</DialogTitle>
         </DialogHeader>
-      <Form {...form}>
-        <form id="address-book-form" onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="recipientName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tên người nhận</FormLabel>
-                <FormControl>
-                  <Input placeholder="Tên người nhận" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="phoneNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Số điện thoại</FormLabel>
-                <FormControl>
-                  <Input placeholder="Số điện thoại" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="Email" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Địa chỉ</FormLabel>
-                <FormControl>
-                  <Input placeholder="Địa chỉ" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="city"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tỉnh/Thành phố</FormLabel>
-                <Select
-                  value={field.value ? provinces.find((p) => p.name === field.value)?.code || '' : ''}
-                  onValueChange={(value) => {
-                    const province = provinces.find((p) => p.code === value);
-                    if (province) {
-                      field.onChange(province.name);
-                      form.resetField('district');
-                      form.resetField('ward');
-                      handleProvinceChange(value);
+        <Form {...form}>
+          <form id="address-book-form" onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="recipientName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tên người nhận</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Tên người nhận" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Số điện thoại</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Số điện thoại" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Địa chỉ</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Địa chỉ" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tỉnh/Thành phố</FormLabel>
+                  <Select
+                    value={
+                      field.value ? provinces.find((p) => p.name === field.value)?.code || '' : ''
                     }
-                  }}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn Tỉnh/Thành phố" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {provinces.map((province) => (
-                      <SelectItem key={province.code} value={province.code}>
-                        {province.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="district"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Quận/Huyện</FormLabel>
-                <Select
-                  value={field.value ? districts.find((d) => d.name === field.value)?.code || '' : ''}
-                  onValueChange={(value) => {
-                    const district = districts.find((d) => d.code === value);
-                    if (district) {
-                      field.onChange(district.name);
-                      form.resetField('ward');
-                      handleDistrictChange(value);
+                    onValueChange={(value) => {
+                      const province = provinces.find((p) => p.code === value);
+                      if (province) {
+                        field.onChange(province.name);
+                        form.resetField('district');
+                        form.resetField('ward');
+                        handleProvinceChange(value);
+                      }
+                    }}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Chọn Tỉnh/Thành phố" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {provinces.map((province) => (
+                        <SelectItem key={province.code} value={province.code}>
+                          {province.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="district"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Quận/Huyện</FormLabel>
+                  <Select
+                    value={
+                      field.value ? districts.find((d) => d.name === field.value)?.code || '' : ''
                     }
-                  }}
-                  disabled={districts.length === 0}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn Quận/Huyện" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {districts.map((district) => (
-                      <SelectItem key={district.code} value={district.code}>
-                        {district.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="ward"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phường/Xã</FormLabel>
-                <Select
-                  value={field.value ? wards.find((w) => w.name === field.value)?.code || '' : ''}
-                  onValueChange={(value) => {
-                    const wardName = wards.find((w) => w.code === value)?.name || '';
-                    field.onChange(wardName);
-                  }}
-                  disabled={wards.length === 0}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn Phường/Xã" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {wards.map((ward) => (
-                      <SelectItem key={ward.code} value={ward.code}>
-                        {ward.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </form>
-      </Form>
-      <DialogFooter>
-        <Button variant="outline" onClick={() => modal.hide()} disabled={isSubmitting}>
-          Hủy
-        </Button>
-        <Button type="submit" form="address-book-form" disabled={isSubmitting}>
-          {isSubmitting ? "Đang lưu..." : "Lưu"}
-        </Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
+                    onValueChange={(value) => {
+                      const district = districts.find((d) => d.code === value);
+                      if (district) {
+                        field.onChange(district.name);
+                        form.resetField('ward');
+                        handleDistrictChange(value);
+                      }
+                    }}
+                    disabled={districts.length === 0}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Chọn Quận/Huyện" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {districts.map((district) => (
+                        <SelectItem key={district.code} value={district.code}>
+                          {district.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="ward"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phường/Xã</FormLabel>
+                  <Select
+                    value={field.value ? wards.find((w) => w.name === field.value)?.code || '' : ''}
+                    onValueChange={(value) => {
+                      const wardName = wards.find((w) => w.code === value)?.name || '';
+                      field.onChange(wardName);
+                    }}
+                    disabled={wards.length === 0}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Chọn Phường/Xã" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {wards.map((ward) => (
+                        <SelectItem key={ward.code} value={ward.code}>
+                          {ward.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => modal.hide()} disabled={isSubmitting}>
+            Hủy
+          </Button>
+          <Button type="submit" form="address-book-form" disabled={isSubmitting}>
+            {isSubmitting ? 'Đang lưu...' : 'Lưu'}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 });
 

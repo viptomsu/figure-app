@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { toast } from 'sonner';
-import { SocialMediaData } from "../Other/SocialMediaData";
-import { login } from "../../services/authService";
-import { useUserStore } from "../../stores";
-import { passwordSchema, requiredStringSchema } from "@/schema/validation";
+import { SocialMediaData } from '../Other/SocialMediaData';
+import { login } from '@/services/client';
+import { useUserStore } from '@/stores';
+import { passwordSchema, requiredStringSchema } from '@/schema/validation';
 
 // Khởi tạo toast cho toàn bộ ứng dụng
 
@@ -41,16 +41,14 @@ const LoginSection: React.FC = () => {
       loginSuccess(user);
 
       if (user.isDelete) {
-        toast.warning("Tài khoản của bạn đã bị khóa!");
+        toast.warning('Tài khoản của bạn đã bị khóa!');
         return;
       }
 
-      toast.success("Đăng nhập thành công");
-      router.push("/");
+      toast.success('Đăng nhập thành công');
+      router.push('/');
     } catch (error) {
-      toast.error(
-        "Đăng nhập không thành công. Vui lòng kiểm tra lại thông tin."
-      );
+      toast.error('Đăng nhập không thành công. Vui lòng kiểm tra lại thông tin.');
     } finally {
       setLoginLoading(false);
     }
@@ -76,30 +74,26 @@ const LoginSection: React.FC = () => {
                   <input
                     type="text"
                     className={`w-full p-3 border rounded ${
-                      errors.username ? "border-red-500" : "border-gray-300"
+                      errors.username ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Tên đăng nhập"
-                    {...register("username")}
+                    {...register('username')}
                   />
                   {errors.username && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.username.message as string}
-                    </p>
+                    <p className="text-red-500 text-sm mt-1">{errors.username.message as string}</p>
                   )}
                 </div>
                 <div className="mb-4">
                   <input
                     type="password"
                     className={`w-full p-3 border rounded ${
-                      errors.password ? "border-red-500" : "border-gray-300"
+                      errors.password ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Mật khẩu"
-                    {...register("password")}
+                    {...register('password')}
                   />
                   {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.password.message as string}
-                    </p>
+                    <p className="text-red-500 text-sm mt-1">{errors.password.message as string}</p>
                   )}
                 </div>
                 <div className="flex justify-between items-center mb-6">
@@ -120,7 +114,7 @@ const LoginSection: React.FC = () => {
                   <input
                     type="submit"
                     className="w-full bg-primary text-white py-3 rounded font-semibold hover:bg-red-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                    value={loginLoading ? "Đang xử lý..." : "Đăng nhập"}
+                    value={loginLoading ? 'Đang xử lý...' : 'Đăng nhập'}
                     disabled={loginLoading}
                   />
                 </div>

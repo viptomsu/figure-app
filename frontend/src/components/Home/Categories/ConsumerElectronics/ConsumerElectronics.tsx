@@ -1,8 +1,8 @@
-import React from "react";
-import ProductCard from "../../../ProductCard/ProductCard";
-import SectionHeader from "../../Other/SectionHeader";
-import CustomCarousel from "../../../Other/CustomCarousel";
-import { getAllProductsServer } from "../../../../services/productService";
+import React from 'react';
+import ProductCard from '../../../ProductCard/ProductCard';
+import SectionHeader from '../../Other/SectionHeader';
+import CustomCarousel from '../../../Other/CustomCarousel';
+import { getAllProductsServer } from '@/services/server';
 
 interface ConsumerElectronicsProps {
   categoryId: number;
@@ -10,8 +10,8 @@ interface ConsumerElectronicsProps {
 }
 
 async function ConsumerElectronics({ categoryId, title }: ConsumerElectronicsProps) {
-  const productsData = await getAllProductsServer("", categoryId, null, 1, 10);
-  const products = productsData.payload.content;
+  const productsData = await getAllProductsServer('', categoryId, null, 1, 10);
+  const products = productsData.content || (productsData as any)?.payload?.content || [];
 
   return (
     <div className="mb-12">

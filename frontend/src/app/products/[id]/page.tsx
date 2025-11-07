@@ -1,7 +1,7 @@
 import Link from "next/link"
 import ProductDetailsContent from "@/components/ProductDetails/ProductDetailsContent"
 import RelatedProducts from "@/components/ProductDetails/RelatedProducts/RelatedProducts"
-import { getProductByIdServer } from "@/services/productService"
+import { getProductByIdServer } from "@/services/server"
 import { notFound } from "next/navigation"
 
 interface ProductDetailsPageProps {

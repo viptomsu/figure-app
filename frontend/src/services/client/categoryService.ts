@@ -1,15 +1,12 @@
-import { API_CONFIG } from "./config";
+import { API_CONFIG } from "../config";
 import apiClient from "./apiClient";
-import { cache } from 'react';
-import { serverFetch } from './serverFetch';
-import { Category, PaginatedResponse } from './types';
+import { Category } from '../types';
 
-// Hàm lấy tất cả danh mục với phân trang, tìm kiếm và sắp xếp
 export const getAllCategories = async (
 	page: number = 1,
 	limit: number = 1000,
 	keyword: string = ""
-): Promise<PaginatedResponse<Category>> => {
+) => {
 	return apiClient.get(`${API_CONFIG.ENDPOINTS.CATEGORIES}`, {
 		params: {
 			keyword,
@@ -19,30 +16,10 @@ export const getAllCategories = async (
 	});
 };
 
-// Server-side cached version
-export const getAllCategoriesServer = cache(async (
-	page: number = 1,
-	limit: number = 1000,
-	keyword: string = ""
-): Promise<PaginatedResponse<Category>> => {
-	return serverFetch<PaginatedResponse<Category>>(API_CONFIG.ENDPOINTS.CATEGORIES, {
-		params: {
-			keyword,
-			page,
-			limit,
-		},
-		next: {
-			revalidate: 600,
-		},
-	});
-});
-
-// Hàm lấy danh mục theo ID
 export const getCategoryById = async (id: number): Promise<Category> => {
 	return apiClient.get(`${API_CONFIG.ENDPOINTS.CATEGORIES}/${id}`);
 };
 
-// Hàm tạo danh mục mới
 export const createCategory = async (
 	categoryName: any,
 	description: any,
@@ -60,7 +37,6 @@ export const createCategory = async (
 	});
 };
 
-// Hàm cập nhật danh mục theo ID
 export const updateCategory = async (
 	id: any,
 	categoryName: any,
@@ -81,7 +57,6 @@ export const updateCategory = async (
 	});
 };
 
-// Hàm xóa danh mục theo ID
 export const deleteCategory = async (id: any): Promise<any> => {
 	return apiClient.delete(`${API_CONFIG.ENDPOINTS.CATEGORIES}/${id}`);
 };

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
@@ -25,9 +25,9 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import NiceModal from '@ebay/nice-modal-react';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import OrderDetailsModal from './OrderDetailsModal';
-import { getOrdersForCurrentUser, updateOrderStatus } from '../../services/orderService';
-import { formatCurrency } from '../../utils/currencyFormatter';
-import { getOrderStatusVariant } from '../../utils/orderStatusHelper';
+import { getOrdersForCurrentUser, updateOrderStatus } from '@/services/client';
+import { formatCurrency } from '@/utils/currencyFormatter';
+import { getOrderStatusVariant } from '@/utils/orderStatusHelper';
 
 NiceModal.register('confirm-dialog', ConfirmDialog);
 
@@ -75,7 +75,10 @@ const HistorySection: React.FC<HistorySectionProps> = ({ initialOrders, initialP
     }
   };
   useEffect(() => {
-    if (pagination.page !== initialPagination.page || pagination.limit !== initialPagination.limit) {
+    if (
+      pagination.page !== initialPagination.page ||
+      pagination.limit !== initialPagination.limit
+    ) {
       fetchUserOrders(pagination.page, pagination.limit);
     }
   }, [pagination.page, pagination.limit, initialPagination.page, initialPagination.limit]);

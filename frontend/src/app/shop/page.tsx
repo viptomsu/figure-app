@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Shop from '@/components/Shop';
-import { getAllProductsServer } from '@/services/productService';
+import { getAllProductsServer } from '@/services/server';
 import { shopSearchParamsSchema } from '@/schema/searchParams';
 import { parseSearchParams } from '@/utils/searchParamsParser';
 

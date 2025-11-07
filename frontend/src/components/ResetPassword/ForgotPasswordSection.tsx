@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { toast } from 'sonner';
-import { forgotPassword } from "../../services/authService"; // Import hàm forgotPassword
-import { emailSchema } from "@/schema/validation";
+import { forgotPassword } from '@/services/client'; // Import hàm forgotPassword
+import { emailSchema } from '@/schema/validation';
 
 // Khởi tạo toast cho toàn bộ ứng dụng
 
@@ -34,18 +34,18 @@ const ForgotPasswordSection: React.FC = () => {
     try {
       // Gọi API forgotPassword
       const result = await forgotPassword(email);
-      if (result === "Email không tồn tại trong hệ thống") {
-        toast.error("Email không tồn tại trong hệ thống.");
+      if (result === 'Email không tồn tại trong hệ thống') {
+        toast.error('Email không tồn tại trong hệ thống.');
         return;
       }
       // Hiển thị thông báo thành công
-      toast.success("Liên kết đặt lại mật khẩu đã được gửi đến email của bạn.");
+      toast.success('Liên kết đặt lại mật khẩu đã được gửi đến email của bạn.');
 
       // Chuyển hướng về trang đăng nhập sau khi gửi yêu cầu thành công
-      router.push("/login");
+      router.push('/login');
     } catch (error) {
       // Hiển thị toast thông báo lỗi
-      toast.error("Yêu cầu quên mật khẩu không thành công. Vui lòng thử lại.");
+      toast.error('Yêu cầu quên mật khẩu không thành công. Vui lòng thử lại.');
     } finally {
       setLoading(false); // Tắt trạng thái loading sau khi hoàn tất
     }
@@ -63,15 +63,13 @@ const ForgotPasswordSection: React.FC = () => {
                   <input
                     type="email"
                     className={`w-full p-3 border rounded ${
-                      errors.email ? "border-red-500" : "border-gray-300"
+                      errors.email ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Email"
-                    {...register("email")}
+                    {...register('email')}
                   />
                   {errors.email && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.email.message as string}
-                    </p>
+                    <p className="text-red-500 text-sm mt-1">{errors.email.message as string}</p>
                   )}
                 </div>
 
@@ -79,7 +77,7 @@ const ForgotPasswordSection: React.FC = () => {
                   <input
                     type="submit"
                     className="w-full bg-primary text-white py-3 rounded font-semibold hover:bg-red-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                    value={loading ? "Đang xử lý..." : "Gửi yêu cầu"}
+                    value={loading ? 'Đang xử lý...' : 'Gửi yêu cầu'}
                     disabled={loading}
                   />
                 </div>

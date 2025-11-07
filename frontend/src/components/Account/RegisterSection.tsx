@@ -1,12 +1,17 @@
-import React, { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { toast } from 'sonner';
-import { signup } from "../../services/authService";
-import { emailSchema, passwordSchema, phoneSchema, requiredStringSchema } from "@/schema/validation";
+import { signup } from '@/services/client';
+import {
+  emailSchema,
+  passwordSchema,
+  phoneSchema,
+  requiredStringSchema,
+} from '@/schema/validation';
 
 const RegisterSection: React.FC = () => {
   const [signupLoading, setSignupLoading] = useState(false); // Trạng thái loading cho nút đăng ký
@@ -36,18 +41,17 @@ const RegisterSection: React.FC = () => {
       password,
       email,
       phoneNumber, // Số điện thoại
-      role: "CUSTOMER", // Đặt role là CUSTOMER
+      role: 'CUSTOMER', // Đặt role là CUSTOMER
       fullName, // Tên đầy đủ
     };
 
     setSignupLoading(true); // Bật trạng thái loading cho nút đăng ký
     try {
       const response = await signup(userInfo);
-      toast.success("Đăng ký thành công. Vui lòng đăng nhập để tiếp tục.");
-      router.push("/login");
+      toast.success('Đăng ký thành công. Vui lòng đăng nhập để tiếp tục.');
+      router.push('/login');
     } catch (error: any) {
       console.log(error);
-      
     } finally {
       setSignupLoading(false); // Tắt trạng thái loading sau khi hoàn tất
     }
@@ -73,60 +77,52 @@ const RegisterSection: React.FC = () => {
                   <input
                     type="text"
                     className={`w-full p-3 border rounded ${
-                      errors.fullName ? "border-red-500" : "border-gray-300"
+                      errors.fullName ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Tên đầy đủ"
-                    {...register("fullName")}
+                    {...register('fullName')}
                   />
                   {errors.fullName && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.fullName.message as string}
-                    </p>
+                    <p className="text-red-500 text-sm mt-1">{errors.fullName.message as string}</p>
                   )}
                 </div>
                 <div className="mb-4">
                   <input
                     type="text"
                     className={`w-full p-3 border rounded ${
-                      errors.username ? "border-red-500" : "border-gray-300"
+                      errors.username ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Tên đăng nhập"
-                    {...register("username")}
+                    {...register('username')}
                   />
                   {errors.username && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.username.message as string}
-                    </p>
+                    <p className="text-red-500 text-sm mt-1">{errors.username.message as string}</p>
                   )}
                 </div>
                 <div className="mb-4">
                   <input
                     type="password"
                     className={`w-full p-3 border rounded ${
-                      errors.password ? "border-red-500" : "border-gray-300"
+                      errors.password ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Mật khẩu"
-                    {...register("password")}
+                    {...register('password')}
                   />
                   {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.password.message as string}
-                    </p>
+                    <p className="text-red-500 text-sm mt-1">{errors.password.message as string}</p>
                   )}
                 </div>
                 <div className="mb-4">
                   <input
                     type="email"
                     className={`w-full p-3 border rounded ${
-                      errors.email ? "border-red-500" : "border-gray-300"
+                      errors.email ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Email"
-                    {...register("email")}
+                    {...register('email')}
                   />
                   {errors.email && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.email.message as string}
-                    </p>
+                    <p className="text-red-500 text-sm mt-1">{errors.email.message as string}</p>
                   )}
                 </div>
                 <div className="mb-4">
@@ -134,9 +130,9 @@ const RegisterSection: React.FC = () => {
                     type="text"
                     placeholder="Số điện thoại"
                     className={`w-full p-3 border rounded ${
-                      errors.phoneNumber ? "border-red-500" : "border-gray-300"
+                      errors.phoneNumber ? 'border-red-500' : 'border-gray-300'
                     }`}
-                    {...register("phoneNumber")}
+                    {...register('phoneNumber')}
                   />
                   {errors.phoneNumber && (
                     <p className="text-red-500 text-sm mt-1">
@@ -148,7 +144,7 @@ const RegisterSection: React.FC = () => {
                   <input
                     type="submit"
                     className="w-full bg-primary text-white py-3 rounded font-semibold hover:bg-red-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                    value={signupLoading ? "Đang xử lý..." : "Đăng ký"}
+                    value={signupLoading ? 'Đang xử lý...' : 'Đăng ký'}
                     disabled={signupLoading}
                   />
                 </div>

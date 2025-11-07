@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { getAllCategoriesServer } from '@/services/categoryService';
+import { getAllCategoriesServer } from '@/services/server';
 import CategoryTitleUpdater from '../CategoryTitleUpdater';
 
 interface CategoriesProps {

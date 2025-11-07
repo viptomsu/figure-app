@@ -3,7 +3,7 @@ import Countdown from "./Countdown";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard/ProductCard";
 import CustomCarousel from "@/components/Other/CustomCarousel";
-import { getFilteredProductsServer } from "@/services/productService";
+import { getFilteredProductsServer } from "@/services/server";
 
 async function DealOfTheDay() {
 	const productsData = await getFilteredProductsServer(false, false, true);

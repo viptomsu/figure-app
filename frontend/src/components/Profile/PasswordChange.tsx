@@ -9,7 +9,7 @@ import {
   requiredStringSchema,
   passwordConfirmationSchema,
 } from '@/schema/validation';
-import { changePassword } from '@/services';
+import { changePassword } from '@/services/client';
 
 const PasswordChange: React.FC<{ userId: number }> = ({ userId }) => {
   const [isLoading, setIsLoading] = useState(false);

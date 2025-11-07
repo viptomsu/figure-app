@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import {
   getAddressBooksByUserId,
   createAddressBook,
   updateAddressBook,
   deleteAddressBook,
-} from "../../services/addressBookService";
-import AddressBookModal from "./components/AddressBookModal";
-import NiceModal from "@ebay/nice-modal-react";
-import { Edit, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+} from '@/services/client';
+import AddressBookModal from './components/AddressBookModal';
+import NiceModal from '@ebay/nice-modal-react';
+import { Edit, Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
   const [addressBooks, setAddressBooks] = useState<any[]>([]);
@@ -24,7 +24,7 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
       const addresses = await getAddressBooksByUserId(userId);
       setAddressBooks(addresses);
     } catch (error) {
-      toast.error("Lỗi khi tải danh sách địa chỉ");
+      toast.error('Lỗi khi tải danh sách địa chỉ');
       console.error(error);
     }
   };
@@ -42,7 +42,7 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
           values.city,
           values.email
         );
-        toast.success("Cập nhật địa chỉ thành công!");
+        toast.success('Cập nhật địa chỉ thành công!');
       } else {
         await createAddressBook(
           userId,
@@ -54,11 +54,11 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
           values.city,
           values.email
         );
-        toast.success("Thêm địa chỉ mới thành công!");
+        toast.success('Thêm địa chỉ mới thành công!');
       }
       fetchAddressBooks();
     } catch (error) {
-      toast.error("Lỗi khi lưu địa chỉ");
+      toast.error('Lỗi khi lưu địa chỉ');
       console.error(error);
     }
   };
@@ -67,9 +67,9 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
     try {
       await deleteAddressBook(addressBookId);
       fetchAddressBooks();
-      toast.success("Xóa địa chỉ thành công!");
+      toast.success('Xóa địa chỉ thành công!');
     } catch (error) {
-      toast.error("Lỗi khi xóa địa chỉ");
+      toast.error('Lỗi khi xóa địa chỉ');
       console.error(error);
     }
   };
@@ -78,12 +78,12 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
     NiceModal.show(AddressBookModal, {
       isEditMode: true,
       onSave: handleSaveAddress,
-      initialValues: address
+      initialValues: address,
     });
   };
 
   const handleCheckoutNavigate = () => {
-    router.push("/checkout"); // Điều hướng sang trang checkout
+    router.push('/checkout'); // Điều hướng sang trang checkout
   };
 
   return (
@@ -96,7 +96,7 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
             NiceModal.show(AddressBookModal, {
               isEditMode: false,
               onSave: handleSaveAddress,
-              initialValues: null
+              initialValues: null,
             });
           }}
         >
@@ -114,7 +114,8 @@ const AddressBook: React.FC<{ userId: number }> = ({ userId }) => {
               <div>
                 <h6 className="font-semibold mb-1">{address.recipientName}</h6>
                 <p className="text-sm text-gray-600 m-0">
-                  {address.phoneNumber}, {address.email}, {address.address}, {address.ward}, {address.district}, {address.city}
+                  {address.phoneNumber}, {address.email}, {address.address}, {address.ward},{' '}
+                  {address.district}, {address.city}
                 </p>
               </div>
               <div className="flex gap-2">

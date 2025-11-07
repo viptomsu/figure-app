@@ -1,10 +1,11 @@
 import { cookies } from 'next/headers';
 import {
+  buildUrl,
   buildUrlWithParams,
   extractResponseData,
   handleResponseError,
   handleNetworkError,
-} from '../utils';
+} from '../../utils';
 
 interface ServerFetchOptions {
   params?: Record<string, any>;
@@ -27,7 +28,7 @@ export const serverFetch = async <T = any>(
   const { params, headers = {}, cache, next } = options;
 
   // Build URL with parameters
-  const url = buildUrlWithParams(buildUrl(endpoint), params);
+  const url = buildUrlWithParams(buildUrl(endpoint, true), params);
 
   // Get cookies from request
   const cookieStore = await cookies();
@@ -69,6 +70,3 @@ export const serverFetch = async <T = any>(
   }
 };
 
-function buildUrl(endpoint: string): string {
-  return `${process.env.API_BASE_URL}/${endpoint}`;
-}

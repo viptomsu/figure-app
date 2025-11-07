@@ -7,10 +7,13 @@ import { HiArrowNarrowLeft } from 'react-icons/hi';
 import { formatCurrency } from '@/utils/currencyFormatter';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { toast } from 'sonner';
-import { createOrder } from '../../../services/orderService';
-import { checkVoucher, markVoucherAsUsed } from '../../../services/voucherService'; // Import checkVoucher API
-import { useCartStore, useUserStore } from '../../../stores';
-import { createVNPayPayment } from '../../../services/vnpayService'; // Import service của VNPay
+import {
+  createOrder,
+  checkVoucher,
+  markVoucherAsUsed,
+  createVNPayPayment,
+} from '@/services/client';
+import { useCartStore, useUserStore } from '@/stores';
 
 interface IProps {
   cart: any;

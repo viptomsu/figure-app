@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from "react";
-import { getAllBrands } from "@/services/brandService";
+import { getAllBrands } from "@/services/client";
 
 const Brands: React.FC = () => {
   const [brands, setBrands] = useState<any[]>([]); // State to store brand data
