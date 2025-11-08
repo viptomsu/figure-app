@@ -17,13 +17,18 @@ import {
 } from '@/stores';
 import { logout as logoutService } from '@/services/client';
 import { IActionDataTypes } from '@/types/types';
+import { User } from '@/services/types';
 
-const Actions: React.FC = () => {
+interface ActionsProps {
+  user: User | null;
+}
+
+const Actions: React.FC<ActionsProps> = ({ user }) => {
   const { cart } = useCartStore();
   const { wishlist } = useWishlistStore();
   const { compare } = useCompareStore();
   const { showSearchArea, toggleDropdownCart, setShowSearchArea } = useUIStore();
-  const { user, logout } = useUserStore();
+  const { logout } = useUserStore(); // Keep only for mutations
   const router = useRouter();
 
   const showOrHideDropCart = (e: React.MouseEvent<HTMLAnchorElement>) => {

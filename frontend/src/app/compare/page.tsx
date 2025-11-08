@@ -1,7 +1,4 @@
-'use client'
-
 import Link from 'next/link'
-import React from 'react'
 import CompareSection from '@/components/Compare/CompareSection'
 
 export default function ComparePage() {

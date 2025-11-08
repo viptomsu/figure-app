@@ -1,6 +1,18 @@
+"use client";
+
+/**
+ * Client-side product UI state management.
+ * This store manages CLIENT-SIDE UI state for products (isInCart, isInWishlist, isInCompare flags) and basic filtering.
+ * It does NOT fetch data from the server. Products are initialized empty as they are managed via props in Server Components.
+ *
+ * Usage: Used by components for UI state updates:
+ * - makeIsInCartFalse (8 usages) - Updates cart flag when items are removed
+ * - makeIsInWishlistFalse (4 usages) - Updates wishlist flag when items are removed
+ * - makeIsInCompareFalse (3 usages) - Updates compare flag when items are removed
+ * - sortByBrand (1 usage) - Filters products by brand in Brands component
+ */
 import { create } from 'zustand';
 import { IProducts } from '../types/types';
-import { products } from '../data/products';
 
 interface ProductsState {
   products: IProducts[];
@@ -24,9 +36,9 @@ type ProductsStore = ProductsState & ProductsActions;
 
 export const useProductsStore = create<ProductsStore>((set, get) => ({
   // Initial state
-  products: [...products],
+  products: [],
   searchedProducts: [],
-  allProducts: [...products], // Keep original copy for filtering
+  allProducts: [], // Keep original copy for filtering
 
   // Actions
   sortByLatestAndPrice: (sortType) => {
@@ -114,7 +126,8 @@ export const useProductsStore = create<ProductsStore>((set, get) => ({
   },
 
   setProducts: (newProducts) => {
-    set({ 
+    // Note: Currently unused in production. Products are passed as props from Server Components instead of being stored in Zustand.
+    set({
       products: newProducts,
       allProducts: newProducts,
       searchedProducts: []

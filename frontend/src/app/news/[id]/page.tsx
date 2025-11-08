@@ -1,40 +1,21 @@
-'use client'
-
-import Link from 'next/link'
-import { useParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
-import { getNewsById } from '@/services/newService'
+import Link from 'next/link';
+import { getNewsByIdServer } from '@/services/server';
+import { notFound } from 'next/navigation';
 
 interface NewsItem {
-  _id: number
-  title: string
-  content: string
-  publishDate: string
-  image: string
+  _id: number;
+  title: string;
+  content: string;
+  publishDate: string;
+  image: string;
 }
 
-export default function NewsDetailPage() {
-  const params = useParams<{ id: string }>()
-  const [news, setNews] = useState<NewsItem | null>(null)
-
-  useEffect(() => {
-    const fetchNewsDetail = async () => {
-      try {
-        const data = await getNewsById(params.id)
-        setNews(data.payload)
-      } catch (error) {
-        console.error('Error fetching news detail:', error)
-      }
-    }
-
-    window.scrollTo(0, 0)
-    if (params.id) {
-      fetchNewsDetail()
-    }
-  }, [params.id])
+export default async function NewsDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const news = await getNewsByIdServer(resolvedParams.id);
 
   if (!news) {
-    return <p>Loading...</p>
+    notFound();
   }
 
   return (
@@ -59,13 +40,17 @@ export default function NewsDetailPage() {
               <div className="col-lg-8 col-md-12">
                 <h1>{news.title}</h1>
                 <p>
-                  <strong>Ngày đăng:</strong>{' '}
-                  {new Date(news.publishDate).toLocaleDateString()}
+                  <strong>Ngày đăng:</strong> {new Date(news.publishDate).toLocaleDateString()}
                 </p>
                 <img
                   src={news.image}
                   alt={news.title}
-                  style={{ width: '100%', height: 'auto', borderRadius: '5px', marginBottom: '20px' }}
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    borderRadius: '5px',
+                    marginBottom: '20px',
+                  }}
                 />
                 <div className="news-content" dangerouslySetInnerHTML={{ __html: news.content }} />
               </div>
@@ -74,5 +59,5 @@ export default function NewsDetailPage() {
         </section>
       </div>
     </div>
-  )
+  );
 }

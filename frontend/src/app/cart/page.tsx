@@ -1,7 +1,4 @@
-'use client'
-
 import Link from 'next/link'
-import React from 'react'
 import CartSection from '@/components/ShoppingCart/CartSection'
 
 export default function CartPage() {

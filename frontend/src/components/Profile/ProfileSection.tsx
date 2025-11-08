@@ -11,9 +11,10 @@ import PasswordChange from './PasswordChange';
 import AddressBook from './AddressBook';
 import { useUserStore } from '@/stores';
 import { emailSchema, phoneSchema, requiredStringSchema } from '@/schema/validation';
+import { User } from '@/services/types';
 
 interface ProfileSectionProps {
-  initialUser: any;
+  initialUser: User | null;
 }
 
 const ProfileSection: React.FC<ProfileSectionProps> = ({ initialUser }) => {
@@ -44,21 +45,20 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ initialUser }) => {
 
   // Reset form với thông tin từ server hoặc Redux khi component mount
   useEffect(() => {
-    const currentUser = localUserData || userData;
+    const currentUser = initialUser || userData;
     if (currentUser) {
-      setImagePreview(currentUser.avatar);
+      setImagePreview(currentUser.avatar || null);
       reset({
-        username: currentUser.username,
         fullName: currentUser.fullName,
         email: currentUser.email,
         phoneNumber: currentUser.phoneNumber,
         address: currentUser.address,
       });
     }
-  }, [localUserData, userData, reset]);
+  }, [initialUser, userData, reset]);
 
   const handleUpdateProfile = async (data: FormValues) => {
-    const currentUser = localUserData || userData;
+    const currentUser = initialUser || userData;
     if (!currentUser) return;
     setIsLoading(true);
 
@@ -103,7 +103,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ initialUser }) => {
     }
   };
 
-  const currentUser = localUserData || userData;
+  const currentUser = initialUser || localUserData || userData;
 
   const tabs = useMemo(
     () => [
@@ -191,12 +191,12 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ initialUser }) => {
       {
         key: '2',
         label: 'Đổi mật khẩu',
-        content: <PasswordChange userId={currentUser?.userId} />,
+        content: <PasswordChange userId={currentUser?.userId || 0} />,
       },
       {
         key: '3',
         label: 'Quản lý địa chỉ',
-        content: <AddressBook userId={currentUser?.userId} />,
+        content: <AddressBook userId={currentUser?.userId || 0} />,
       },
     ],
     [currentUser?.userId, imagePreview, isLoading]

@@ -1,7 +1,4 @@
-'use client'
-
 import Link from 'next/link'
-import React from 'react'
 import WishlistSection from '@/components/Wishlist/WishlistSection'
 
 export default function WishlistPage() {

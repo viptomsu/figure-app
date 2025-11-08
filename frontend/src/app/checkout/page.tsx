@@ -1,86 +1,86 @@
-'use client'
+'use client';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
-import { Steps } from '@/components/ui/steps'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Label } from '@/components/ui/label'
-import ShippingInfo from '@/components/Checkout/ShippingInfo/ShippingInfo'
-import Payment from '@/components/Checkout/Payment/Payment'
-import { useCartStore, useUserStore } from '@/stores'
-import { getAddressBooksForCurrentUser } from '@/services/addressBookService'
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Steps } from '@/components/ui/steps';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import ShippingInfo from '@/components/Checkout/ShippingInfo/ShippingInfo';
+import Payment from '@/components/Checkout/Payment/Payment';
+import { useCartStore, useUserStore } from '@/stores';
+import { getAddressBooksForCurrentUser } from '@/services/client';
 
 interface AddressBook {
-  _id: string
-  recipientName: string
-  email: string
-  phoneNumber: string
-  address: string
-  ward: string
-  district: string
-  city: string
+  _id: string;
+  recipientName: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  ward: string;
+  district: string;
+  city: string;
 }
 
-const TOTAL_STEPS = 3
+const TOTAL_STEPS = 3;
 
 export default function CheckoutPage() {
-  const router = useRouter()
-  const cart = useCartStore((state) => state.cart)
-  const user = useUserStore((state) => state.user)
+  const router = useRouter();
+  const cart = useCartStore((state) => state.cart);
+  const user = useUserStore((state) => state.user);
 
-  const [currentStep, setCurrentStep] = useState(0)
-  const [addressList, setAddressList] = useState<AddressBook[]>([])
-  const [selectedAddress, setSelectedAddress] = useState<AddressBook | null>(null)
-  const [, setOrderCode] = useState<string | null>(null)
+  const [currentStep, setCurrentStep] = useState(0);
+  const [addressList, setAddressList] = useState<AddressBook[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<AddressBook | null>(null);
+  const [, setOrderCode] = useState<string | null>(null);
 
   useEffect(() => {
     if (cart.length === 0) {
-      router.push('/cart')
+      router.push('/cart');
     }
-  }, [cart, router])
+  }, [cart, router]);
 
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
-        const addressData = await getAddressBooksForCurrentUser()
+        const addressData = await getAddressBooksForCurrentUser();
         if (addressData && addressData.length > 0) {
-          setAddressList(addressData)
-          setSelectedAddress(addressData[0])
-          localStorage.setItem('selectedAddressBookId', addressData[0]._id)
+          setAddressList(addressData);
+          setSelectedAddress(addressData[0]);
+          localStorage.setItem('selectedAddressBookId', addressData[0]._id);
         }
       } catch (error) {
-        console.error('Error fetching address:', error)
+        console.error('Error fetching address:', error);
       }
-    }
+    };
 
-    fetchAddresses()
-  }, [])
+    fetchAddresses();
+  }, []);
 
   const handleAddressChange = useCallback(
     (value: string) => {
-      const address = addressList.find((item) => item._id === value)
+      const address = addressList.find((item) => item._id === value);
       if (address) {
-        setSelectedAddress(address)
-        localStorage.setItem('selectedAddressBookId', address._id)
+        setSelectedAddress(address);
+        localStorage.setItem('selectedAddressBookId', address._id);
       }
     },
     [addressList]
-  )
+  );
 
   const handleNext = useCallback(() => {
-    setCurrentStep((prev) => Math.min(prev + 1, TOTAL_STEPS - 1))
-  }, [])
+    setCurrentStep((prev) => Math.min(prev + 1, TOTAL_STEPS - 1));
+  }, []);
 
   const handlePrev = useCallback(() => {
-    setCurrentStep((prev) => Math.max(prev - 1, 0))
-  }, [])
+    setCurrentStep((prev) => Math.max(prev - 1, 0));
+  }, []);
 
   const handlePaymentComplete = useCallback(() => {
-    setCurrentStep(TOTAL_STEPS - 1)
-  }, [])
+    setCurrentStep(TOTAL_STEPS - 1);
+  }, []);
 
   const steps = useMemo(
     () => [
@@ -115,7 +115,8 @@ export default function CheckoutPage() {
                               <span>{address.phoneNumber}</span>
                               <Separator orientation="vertical" className="h-4" />
                               <span>
-                                {address.address}, {address.ward}, {address.district}, {address.city}
+                                {address.address}, {address.ward}, {address.district},{' '}
+                                {address.city}
                               </span>
                             </div>
                           </Label>
@@ -149,23 +150,30 @@ export default function CheckoutPage() {
       },
       {
         title: 'Thanh toán',
-        content: (
-          selectedAddress ? (
-            <Payment
-              back={handlePrev}
-              cart={cart}
-              selectedAddress={selectedAddress}
-              handlePaymentSubmit={handlePaymentComplete}
-              setOrderCode={setOrderCode}
-            />
-          ) : (
-            <p>Vui lòng chọn địa chỉ giao hàng trước khi thanh toán.</p>
-          )
+        content: selectedAddress ? (
+          <Payment
+            back={handlePrev}
+            cart={cart}
+            selectedAddress={selectedAddress}
+            handlePaymentSubmit={handlePaymentComplete}
+            setOrderCode={setOrderCode}
+          />
+        ) : (
+          <p>Vui lòng chọn địa chỉ giao hàng trước khi thanh toán.</p>
         ),
       },
     ],
-    [addressList, cart, handleAddressChange, handleNext, handlePaymentComplete, handlePrev, router, selectedAddress]
-  )
+    [
+      addressList,
+      cart,
+      handleAddressChange,
+      handleNext,
+      handlePaymentComplete,
+      handlePrev,
+      router,
+      selectedAddress,
+    ]
+  );
 
   return (
     <div className="checkout-content">
@@ -190,5 +198,5 @@ export default function CheckoutPage() {
         </section>
       </div>
     </div>
-  )
+  );
 }

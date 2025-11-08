@@ -5,6 +5,10 @@ import ProductCard from '../../ProductCard/ProductCard';
 async function RelatedProducts({ product }: { product: any }) {
   const categoryId = product?.category?._id;
 
+  if (!categoryId) {
+    return <p>Không có sản phẩm liên quan.</p>;
+  }
+
   const response = await getAllProductsServer('', categoryId, null, 1, 10, 'productName', 'asc');
   const relatedProducts = response.content.filter(
     (relatedProduct: any) => relatedProduct._id !== product._id
@@ -19,8 +23,8 @@ async function RelatedProducts({ product }: { product: any }) {
               <h3 className="text-2xl font-semibold">Sản phẩm liên quan</h3>
             </div>
             <CustomCarousel>
-              {relatedProducts.map((relatedProduct: any, index: number) => (
-                <ProductCard key={index} product={relatedProduct} />
+              {relatedProducts.map((relatedProduct: any) => (
+                <ProductCard key={relatedProduct._id} product={relatedProduct} />
               ))}
             </CustomCarousel>
           </div>

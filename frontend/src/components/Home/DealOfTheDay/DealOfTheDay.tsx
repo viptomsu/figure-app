@@ -29,8 +29,8 @@ async function DealOfTheDay() {
 					</Link>
 				</div>
 				<CustomCarousel>
-					{products.map((product: any, index: number) => (
-						<ProductCard key={index} product={product} />
+					{products.map((product: any) => (
+						<ProductCard key={product._id} product={product} />
 					))}
 				</CustomCarousel>
 			</div>

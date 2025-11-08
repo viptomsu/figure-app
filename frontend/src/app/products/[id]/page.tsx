@@ -3,6 +3,21 @@ import ProductDetailsContent from "@/components/ProductDetails/ProductDetailsCon
 import RelatedProducts from "@/components/ProductDetails/RelatedProducts/RelatedProducts"
 import { getProductByIdServer } from "@/services/server"
 import { notFound } from "next/navigation"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import { Suspense } from "react"
+
+const RelatedProductsFallback = () => (
+  <section className="pb-15">
+    <div className="container">
+      <div className="text-center mb-4">
+        <h3 className="text-2xl font-semibold">Sản phẩm liên quan</h3>
+      </div>
+      <div className="flex justify-center py-8">
+        <LoadingSpinner size="lg" />
+      </div>
+    </div>
+  </section>
+);
 
 interface ProductDetailsPageProps {
   params: {
@@ -46,7 +61,9 @@ export default async function ProductDetailsPage({ params }: ProductDetailsPageP
           </section>
 
           <ProductDetailsContent theProduct={product} loading={false} />
-          <RelatedProducts product={product} />
+          <Suspense fallback={<RelatedProductsFallback />}>
+            <RelatedProducts product={product} />
+          </Suspense>
         </div>
       </div>
     )

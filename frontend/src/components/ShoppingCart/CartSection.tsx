@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import CartTable from "./CartTable";
 import CartTotals from "./CartTotals";

@@ -9,8 +9,13 @@ import LangAndMonetaryUnit from "./HeaderBottom/LangAndMonetaryUnit";
 import { NavLinksData } from "./HeaderBottom/HeaderBottomData";
 import { useUIStore } from "../../stores";
 import { useIsClient } from "../../hooks/useIsClient";
+import { User } from '@/services/types';
 
-const HeaderInteractive: React.FC = () => {
+interface HeaderInteractiveProps {
+  user: User | null;
+}
+
+const HeaderInteractive: React.FC<HeaderInteractiveProps> = ({ user }) => {
   const [showDepartments, setShowDepartments] = useState<boolean>(false);
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false);
   const isClient = useIsClient();
@@ -99,7 +104,7 @@ const HeaderInteractive: React.FC = () => {
                 </div>
               )}
               <div className="flex">
-                <Actions />
+                <Actions user={user} />
               </div>
             </div>
           </div>

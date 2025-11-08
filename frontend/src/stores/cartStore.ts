@@ -18,9 +18,9 @@ interface CartState {
 
 interface CartActions {
   addToCart: (product: CartItem) => void;
-  removeFromCart: (productId: string | number) => void;
-  increaseProductCount: (productId: string | number) => void;
-  decreaseProductCount: (productId: string | number) => void;
+  removeFromCart: (productId: string | number, selectedAttribute?: string) => void;
+  increaseProductCount: (productId: string | number, selectedAttribute?: string) => void;
+  decreaseProductCount: (productId: string | number, selectedAttribute?: string) => void;
   makeIsInCartTrue: (productId: string | number) => void;
   clearCart: () => void;
   getCartTotal: () => number;
@@ -57,24 +57,31 @@ export const useCartStore = create<CartStore>()(
         }
       },
 
-      removeFromCart: (productId) => {
+      removeFromCart: (productId, selectedAttribute) => {
         set((state) => ({
-          cart: state.cart.filter((item) => item._id !== productId),
-        }));
-      },
-
-      increaseProductCount: (productId) => {
-        set((state) => ({
-          cart: state.cart.map((item) =>
-            item._id === productId ? { ...item, count: item.count + 1 } : item
+          cart: state.cart.filter((item) =>
+            item._id !== productId ||
+            (item.selectedAttribute ?? null) !== (selectedAttribute ?? null)
           ),
         }));
       },
 
-      decreaseProductCount: (productId) => {
+      increaseProductCount: (productId, selectedAttribute) => {
         set((state) => ({
           cart: state.cart.map((item) =>
-            item._id === productId ? { ...item, count: Math.max(1, item.count - 1) } : item
+            item._id === productId && (item.selectedAttribute ?? null) === (selectedAttribute ?? null)
+              ? { ...item, count: item.count + 1 }
+              : item
+          ),
+        }));
+      },
+
+      decreaseProductCount: (productId, selectedAttribute) => {
+        set((state) => ({
+          cart: state.cart.map((item) =>
+            item._id === productId && (item.selectedAttribute ?? null) === (selectedAttribute ?? null)
+              ? { ...item, count: Math.max(1, item.count - 1) }
+              : item
           ),
         }));
       },

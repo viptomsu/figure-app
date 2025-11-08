@@ -2,17 +2,13 @@ import React from 'react';
 import ProductCard from '../../../ProductCard/ProductCard';
 import SectionHeader from '../../Other/SectionHeader';
 import CustomCarousel from '../../../Other/CustomCarousel';
-import { getAllProductsServer } from '@/services/server';
 
 interface ConsumerElectronicsProps {
-  categoryId: number;
   title: string;
+  products: any[];
 }
 
-async function ConsumerElectronics({ categoryId, title }: ConsumerElectronicsProps) {
-  const productsData = await getAllProductsServer('', categoryId, null, 1, 10);
-  const products = productsData.content || (productsData as any)?.payload?.content || [];
-
+function ConsumerElectronics({ title, products }: ConsumerElectronicsProps) {
   return (
     <div className="mb-12">
       <div className="mb-6">
@@ -21,8 +17,8 @@ async function ConsumerElectronics({ categoryId, title }: ConsumerElectronicsPro
       <div>
         <CustomCarousel>
           {products.length > 0 ? (
-            products.map((product: any, index: number) => (
-              <ProductCard key={index} product={product} />
+            products.map((product: any) => (
+              <ProductCard key={product._id} product={product} />
             ))
           ) : (
             <div>Không có sản phẩm nào</div>

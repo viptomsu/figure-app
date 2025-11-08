@@ -1,7 +1,4 @@
-'use client'
-
 import Link from 'next/link'
-import React from 'react'
 import Map from '@/components/Contact/Map/Map'
 import ContactItems from '@/components/Contact/ContactItems/ContactItems'
 

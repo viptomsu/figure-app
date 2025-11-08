@@ -1,14 +1,20 @@
+/**
+ * Client-side user state management for mutations only (login, logout, profile updates).
+ * Components should call getCurrentUserServer() directly for reading user data (server-side with cache()).
+ * This store is used only for client-side mutations that update user state after user actions.
+ */
 import { create } from 'zustand';
+import { User } from '@/services/types';
 
 interface UserState {
-  user: any;
+  user: User | null;
 }
 
 interface UserActions {
-  loginSuccess: (user: any) => void;
+  loginSuccess: (user: User) => void;
   logout: () => void;
-  updateUserProfile: (updatedData: any) => void;
-  setUser: (user: any) => void;
+  updateUserProfile: (updatedData: Partial<User>) => void;
+  setUser: (user: User | null) => void;
 }
 
 type UserStore = UserState & UserActions;

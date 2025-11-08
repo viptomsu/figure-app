@@ -5,7 +5,7 @@ import Brands from "./Brands/Brands";
 
 interface ShopProps {
   initialProducts: any[];
-  initialCategory: number | null;
+  initialCategory: number | null | undefined;
   initialPage: number;
   initialSort: string;
   initialDirection: string;
