@@ -1,9 +1,10 @@
 // brand.controller.ts
-import Brand, { BrandDocument } from "../models/brand.model.js";
+import { Brand, PrismaClientKnownRequestError } from "@prisma/client";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadFileToFirebase } from "../services/firebase.service.js";
 import { Request, Response } from "express";
 import { PaginationQuery, CreateBrandBody, UpdateBrandBody, IdParam } from "../types/request.types.js";
+import { prisma } from "../db/prisma.client.js";
 
 // Lấy tất cả các thương hiệu
 export const getAllBrands = async (req: Request<{}, {}, {}, PaginationQuery>, res: Response): Promise<void> => {
@@ -15,11 +16,11 @@ export const getAllBrands = async (req: Request<{}, {}, {}, PaginationQuery>, re
 
     const query: any = { isDelete: false };
     if (keyword) {
-      query.brandName = { $regex: keyword, $options: "i" };
+      query.brandName = { contains: keyword, mode: 'insensitive' };
     }
 
-    const brands: BrandDocument[] = await Brand.find(query).skip(skip).limit(limit);
-    const totalElements: number = await Brand.countDocuments(query);
+    const brands: Brand[] = await prisma.brand.findMany({ where: query, skip, take: limit });
+    const totalElements: number = await prisma.brand.count({ where: query });
     const totalPages: number = Math.ceil(totalElements / limit);
 
     const paginationResponse = {
@@ -51,7 +52,9 @@ export const getAllBrands = async (req: Request<{}, {}, {}, PaginationQuery>, re
 export const getBrandById = async (req: Request<IdParam>, res: Response): Promise<void | Response> => {
   try {
     const { id } = req.params;
-    const brand: BrandDocument | null = await Brand.findById(id).where("isDelete").equals(false);
+    const brand: Brand | null = await prisma.brand.findFirst({
+      where: { id, isDelete: false }
+    });
 
     if (!brand) {
       return res
@@ -76,11 +79,11 @@ export const createBrand = async (req: Request<{}, {}, CreateBrandBody>, res: Re
     const { brandName, description } = req.body;
     const imageFile: Express.Multer.File | undefined = req.file;
 
-    const brand: BrandDocument = new Brand({
+    let brandData: any = {
       brandName,
       description,
       isDelete: false,
-    });
+    };
 
     if (imageFile) {
       const imageUrl: string = await uploadFileToFirebase(
@@ -88,16 +91,20 @@ export const createBrand = async (req: Request<{}, {}, CreateBrandBody>, res: Re
         imageFile.originalname,
         imageFile.mimetype
       );
-      brand.image = imageUrl;
+      brandData.image = imageUrl;
     }
 
-    const savedBrand: BrandDocument = await brand.save();
+    const savedBrand: Brand = await prisma.brand.create({ data: brandData });
     res
       .status(201)
       .json(new ApiResponse(201, savedBrand, "Tạo thương hiệu thành công"));
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    res.status(500).json(new ApiResponse(500, null, "Lỗi khi tạo thương hiệu"));
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+      res.status(409).json(new ApiResponse(409, null, "Dữ liệu đã tồn tại, vui lòng kiểm tra các trường duy nhất"));
+    } else {
+      res.status(500).json(new ApiResponse(500, null, "Lỗi khi tạo thương hiệu"));
+    }
   }
 };
 
@@ -108,15 +115,16 @@ export const updateBrand = async (req: Request<IdParam, {}, UpdateBrandBody>, re
     const { brandName, description } = req.body;
     const imageFile: Express.Multer.File | undefined = req.file;
 
-    const brand: BrandDocument | null = await Brand.findById(id);
+    const brand: Brand | null = await prisma.brand.findUnique({ where: { id } });
     if (!brand || brand.isDelete) {
       return res
         .status(404)
         .json(new ApiResponse(404, null, "Không tìm thấy thương hiệu"));
     }
 
-    brand.brandName = brandName || brand.brandName;
-    brand.description = description !== undefined ? description : brand.description;
+    const updateData: any = {};
+    if (brandName !== undefined) updateData.brandName = brandName;
+    if (description !== undefined) updateData.description = description;
 
     if (imageFile) {
       const imageUrl: string = await uploadFileToFirebase(
@@ -124,20 +132,27 @@ export const updateBrand = async (req: Request<IdParam, {}, UpdateBrandBody>, re
         imageFile.originalname,
         imageFile.mimetype
       );
-      brand.image = imageUrl;
+      updateData.image = imageUrl;
     }
 
-    const updatedBrand: BrandDocument = await brand.save();
+    const updatedBrand: Brand = await prisma.brand.update({
+      where: { id },
+      data: updateData
+    });
     res
       .status(200)
       .json(
         new ApiResponse(200, updatedBrand, "Cập nhật thương hiệu thành công")
       );
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    res
-      .status(500)
-      .json(new ApiResponse(500, null, "Lỗi khi cập nhật thương hiệu"));
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+      res.status(409).json(new ApiResponse(409, null, "Dữ liệu đã tồn tại, vui lòng kiểm tra các trường duy nhất"));
+    } else {
+      res
+        .status(500)
+        .json(new ApiResponse(500, null, "Lỗi khi cập nhật thương hiệu"));
+    }
   }
 };
 
@@ -146,15 +161,14 @@ export const deleteBrand = async (req: Request<IdParam>, res: Response): Promise
   try {
     const { id } = req.params;
 
-    const brand: BrandDocument | null = await Brand.findById(id);
+    const brand: Brand | null = await prisma.brand.findUnique({ where: { id } });
     if (!brand || brand.isDelete) {
       return res
         .status(404)
         .json(new ApiResponse(404, null, "Không tìm thấy thương hiệu"));
     }
 
-    brand.isDelete = true;
-    await brand.save();
+    await prisma.brand.update({ where: { id }, data: { isDelete: true } });
 
     res
       .status(200)

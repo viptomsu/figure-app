@@ -6,7 +6,7 @@ Node.js/Express REST API server for the Figure e-commerce platform.
 
 - **Runtime**: Node.js
 - **Framework**: Express.js with ES modules
-- **Database**: MongoDB with Mongoose ODM
+- **Database**: PostgreSQL with Prisma ORM (migrated from MongoDB)
 - **Authentication**: JWT with refresh tokens
 - **File Upload**: Multer with Sharp for image processing
 - **Payment**: VNPay integration for Vietnamese payments
@@ -15,8 +15,8 @@ Node.js/Express REST API server for the Figure e-commerce platform.
 
 ## Prerequisites
 
-- Node.js 14+ installed
-- MongoDB database (local or MongoDB Atlas)
+- Node.js 20+ installed
+- PostgreSQL database (local or cloud)
 
 ## Installation
 
@@ -31,7 +31,7 @@ npm install
 2. Update the following variables:
    ```env
    PORT=5001
-   MONGODB_URL=mongodb://localhost:27017/figure-db
+   DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public
    ACCESS_TOKEN_SECRET=your_access_token_secret
    REFRESH_TOKEN_SECRET=your_refresh_token_secret
    ```
@@ -45,6 +45,51 @@ npm run dev
 # Start production server
 npm start
 ```
+
+## Database Migration to Prisma + PostgreSQL
+
+**Prerequisites:**
+- PostgreSQL database instance (local or cloud)
+- DATABASE_URL environment variable configured in `.env` file
+
+**Running the Initial Migration:**
+1. Ensure PostgreSQL is running and DATABASE_URL is set in `.env`
+2. Run `npm run migrate:dev` to create and apply the initial migration
+3. Verify the migration was successful by checking the `/prisma/migrations/` directory
+4. Run `npm run prisma:studio` to open Prisma Studio and inspect the database schema
+
+**Schema Overview:**
+The database consists of 15 models with their relationships:
+
+- **User**: User accounts with roles (ADMIN, STAFF, CUSTOMER)
+- **Category**: Product categories with one-to-many relationship to Products
+- **Brand**: Product brands with one-to-many relationship to Products
+- **Product**: Products with relationships to Category, Brand, Images, Variations, Reviews, and OrderDetails
+- **ProductImage**: Product images with default image flag
+- **ProductVariation**: Product variations (size, color, etc.) with pricing and quantity
+- **Review**: Product reviews with ratings and user relationships
+- **Voucher**: Discount vouchers with unique codes and expiration dates
+- **AddressBook**: User shipping addresses with recipient information
+- **Order**: Customer orders with status tracking and payment information
+- **OrderDetail**: Individual order items linking Orders to Products and Variations
+- **New**: News/announcements with publish dates
+- **ChatRoom**: Chat rooms for customer support with optional customer assignment, related to participants via chatRoomParticipants field
+- **ChatRoomParticipant**: Join table for many-to-many relationship between ChatRooms and Users
+- **Message**: Chat messages with sender information and timestamps
+
+**Key Differences from MongoDB:**
+- Primary keys are UUIDs (String) instead of ObjectId
+- Monetary values use Decimal type for precision (price, discount, totalPrice)
+- Explicit join table (ChatRoomParticipant) for many-to-many relationships
+- Timestamps are managed by Prisma (@default(now()), @updatedAt)
+- Soft delete pattern preserved with isDelete/isDeleted flags
+- All models include proper indexes for performance optimization
+
+**Troubleshooting:**
+- If migration fails, check DATABASE_URL format: `postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public`
+- Ensure PostgreSQL version is 12 or higher
+- Check that the database exists and user has proper permissions
+- Run `npm run prisma:generate` after successful migration to update Prisma Client
 
 ## API Endpoints
 

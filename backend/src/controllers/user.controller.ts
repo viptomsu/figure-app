@@ -1,10 +1,11 @@
 // user.controller.ts
-import User, { UserDocument } from "../models/user.model.js";
+import { User, PrismaClientKnownRequestError } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadFileToFirebase } from "../services/firebase.service.js";
 import { Request, Response } from "express";
 import { PaginationQuery, CreateUserBody, UpdateUserBody, ChangePasswordBody, IdParam } from "../types/request.types.js";
+import { prisma } from "../db/prisma.client.js";
 
 // Lấy tất cả người dùng với phân trang và tìm kiếm
 export const getAllUsers = async (req: Request<{}, {}, {}, PaginationQuery>, res: Response): Promise<void> => {
@@ -14,13 +15,32 @@ export const getAllUsers = async (req: Request<{}, {}, {}, PaginationQuery>, res
     const limit: number = parseInt(req.query.limit || '10') || 10;
     const skip: number = (page - 1) * limit;
 
-    const query: any = {};
+    const query: any = { isDelete: false };
     if (searchText) {
-      query.username = { $regex: searchText, $options: "i" };
+      query.username = { contains: searchText, mode: 'insensitive' };
     }
 
-    const users: UserDocument[] = await User.find(query).skip(skip).limit(limit);
-    const totalElements: number = await User.countDocuments(query);
+    const users = await prisma.user.findMany({
+      where: query,
+      skip,
+      take: limit,
+      select: {
+        password: false,
+        id: true,
+        username: true,
+        email: true,
+        phoneNumber: true,
+        fullName: true,
+        avatar: true,
+        role: true,
+        address: true,
+        isDelete: true,
+        active: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    });
+    const totalElements: number = await prisma.user.count({ where: query });
     const totalPages: number = Math.ceil(totalElements / limit);
 
     const paginationResponse = {
@@ -52,7 +72,24 @@ export const getAllUsers = async (req: Request<{}, {}, {}, PaginationQuery>, res
 export const getUserById = async (req: Request<IdParam>, res: Response): Promise<void | Response> => {
   try {
     const { id } = req.params;
-    const user: UserDocument | null = await User.findById(id);
+    const user = await prisma.user.findFirst({
+      where: { id, isDelete: false },
+      select: {
+        password: false,
+        id: true,
+        username: true,
+        email: true,
+        phoneNumber: true,
+        fullName: true,
+        avatar: true,
+        role: true,
+        address: true,
+        isDelete: true,
+        active: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    });
     if (!user) {
       return res
         .status(404)
@@ -73,8 +110,25 @@ export const getUserById = async (req: Request<IdParam>, res: Response): Promise
 // Lấy thông tin người dùng hiện tại
 export const getCurrentUser = async (req: Request, res: Response): Promise<void | Response> => {
   try {
-    const { userId } = req.user;
-    const user: UserDocument | null = await User.findById(userId).select('-password');
+    const { id } = req.user;
+    const user: User | null = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        password: false,
+        id: true,
+        username: true,
+        email: true,
+        phoneNumber: true,
+        fullName: true,
+        avatar: true,
+        role: true,
+        address: true,
+        isDelete: true,
+        active: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    });
     if (!user) {
       return res
         .status(404)
@@ -100,7 +154,8 @@ export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Resp
     const imageFile: Express.Multer.File | undefined = req.file;
 
     const hashedPassword: string = await bcrypt.hash(password, 10);
-    const user: UserDocument = new User({
+
+    let userData: any = {
       username,
       password: hashedPassword,
       email,
@@ -109,7 +164,7 @@ export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Resp
       role,
       address,
       isDelete: false,
-    });
+    };
 
     if (imageFile) {
       const imageUrl: string = await uploadFileToFirebase(
@@ -117,16 +172,20 @@ export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Resp
         imageFile.originalname,
         imageFile.mimetype
       );
-      user.avatar = imageUrl;
+      userData.avatar = imageUrl;
     }
 
-    const savedUser: UserDocument = await user.save();
+    const savedUser: User = await prisma.user.create({ data: userData });
     res
       .status(201)
       .json(new ApiResponse(201, savedUser, "Tạo người dùng thành công"));
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    res.status(500).json(new ApiResponse(500, null, "Lỗi khi tạo người dùng"));
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+      res.status(409).json(new ApiResponse(409, null, "Dữ liệu đã tồn tại, vui lòng kiểm tra các trường duy nhất"));
+    } else {
+      res.status(500).json(new ApiResponse(500, null, "Lỗi khi tạo người dùng"));
+    }
   }
 };
 
@@ -137,19 +196,20 @@ export const updateUser = async (req: Request<IdParam, {}, UpdateUserBody>, res:
     const { username, email, phoneNumber, fullName, role, address } = req.body;
     const imageFile: Express.Multer.File | undefined = req.file;
 
-    const user: UserDocument | null = await User.findById(id);
+    const user: User | null = await prisma.user.findUnique({ where: { id } });
     if (!user) {
       return res
         .status(404)
         .json(new ApiResponse(404, null, "Không tìm thấy người dùng"));
     }
 
-    user.username = username || user.username;
-    user.email = email || user.email;
-    user.phoneNumber = phoneNumber || user.phoneNumber;
-    user.fullName = fullName || user.fullName;
-    user.role = role || user.role;
-    user.address = address || user.address;
+    const updateData: any = {};
+    if (username !== undefined) updateData.username = username;
+    if (email !== undefined) updateData.email = email;
+    if (phoneNumber !== undefined) updateData.phoneNumber = phoneNumber;
+    if (fullName !== undefined) updateData.fullName = fullName;
+    if (role !== undefined) updateData.role = role;
+    if (address !== undefined) updateData.address = address;
 
     if (imageFile) {
       const imageUrl: string = await uploadFileToFirebase(
@@ -157,20 +217,27 @@ export const updateUser = async (req: Request<IdParam, {}, UpdateUserBody>, res:
         imageFile.originalname,
         imageFile.mimetype
       );
-      user.avatar = imageUrl;
+      updateData.avatar = imageUrl;
     }
 
-    const updatedUser: UserDocument = await user.save();
+    const updatedUser: User = await prisma.user.update({
+      where: { id },
+      data: updateData
+    });
     res
       .status(200)
       .json(
         new ApiResponse(200, updatedUser, "Cập nhật người dùng thành công")
       );
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    res
-      .status(500)
-      .json(new ApiResponse(500, null, "Lỗi khi cập nhật người dùng"));
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+      res.status(409).json(new ApiResponse(409, null, "Dữ liệu đã tồn tại, vui lòng kiểm tra các trường duy nhất"));
+    } else {
+      res
+        .status(500)
+        .json(new ApiResponse(500, null, "Lỗi khi cập nhật người dùng"));
+    }
   }
 };
 
@@ -178,15 +245,14 @@ export const updateUser = async (req: Request<IdParam, {}, UpdateUserBody>, res:
 export const deleteUser = async (req: Request<IdParam>, res: Response): Promise<void | Response> => {
   try {
     const { id } = req.params;
-    const user: UserDocument | null = await User.findById(id);
+    const user: User | null = await prisma.user.findUnique({ where: { id } });
     if (!user) {
       return res
         .status(404)
         .json(new ApiResponse(404, null, "Không tìm thấy người dùng"));
     }
 
-    user.isDelete = true;
-    await user.save();
+    await prisma.user.update({ where: { id }, data: { isDelete: true } });
 
     res
       .status(200)
@@ -212,7 +278,7 @@ export const changePassword = async (req: Request<IdParam, {}, ChangePasswordBod
     }
 
     // Tìm người dùng theo `id`
-    const user: UserDocument | null = await User.findById(id);
+    const user: User | null = await prisma.user.findUnique({ where: { id } });
     if (!user) {
       return res
         .status(404)
@@ -232,8 +298,11 @@ export const changePassword = async (req: Request<IdParam, {}, ChangePasswordBod
     }
 
     // Băm và lưu mật khẩu mới
-    user.password = await bcrypt.hash(newPassword, 10);
-    await user.save();
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: { id },
+      data: { password: hashedPassword }
+    });
 
     res.status(200).json(new ApiResponse(200, null, "Đổi mật khẩu thành công"));
   } catch (error) {

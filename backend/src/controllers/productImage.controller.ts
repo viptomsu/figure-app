@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import ProductImage, { ProductImageDocument } from "../models/productImage.model.js";
-import Product, { ProductDocument } from "../models/product.model.js";
+import { prisma } from "../db/prisma.client.js";
+import { ProductImage, Product } from "@prisma/client";
 import { uploadFileToFirebase } from "../services/firebase.service.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ProductIdParam, ImageIdParam } from "../types/request.types.js";
@@ -9,10 +9,10 @@ import { ProductIdParam, ImageIdParam } from "../types/request.types.js";
 export const getProductImages = async (req: Request<ProductIdParam>, res: Response): Promise<void> => {
   try {
     const { productId } = req.params;
-    const images: ProductImageDocument[] = await ProductImage.find({ product: productId });
+    const images: ProductImage[] = await prisma.productImage.findMany({ where: { productId } });
 
-    const imageDTOs = images.map((image: ProductImageDocument) => ({
-      imageId: image._id,
+    const imageDTOs = images.map((image: ProductImage) => ({
+      imageId: image.id,
       imageUrl: image.imageUrl,
       isDefault: image.isDefault,
     }));
@@ -36,7 +36,7 @@ export const createProductImage = async (req: Request<ProductIdParam>, res: Resp
     const { productId } = req.params;
     const imageFile = req.file;
 
-    const product: ProductDocument | null = await Product.findById(productId);
+    const product = await prisma.product.findUnique({ where: { id: productId } });
     if (!product) {
       return res
         .status(404)
@@ -50,24 +50,31 @@ export const createProductImage = async (req: Request<ProductIdParam>, res: Resp
       return;
     }
 
+    // Check if product has any existing images
+    const existingImages = await prisma.productImage.findMany({
+      where: { productId },
+      take: 1
+    });
+
+    // Set isDefault to true if this is the first image, otherwise false
+    const isDefault = existingImages.length === 0;
+
     const imageUrl: string = await uploadFileToFirebase(
       imageFile.buffer,
       imageFile.originalname,
       imageFile.mimetype
     );
 
-    const productImage = new ProductImage({
-      product: productId,
-      imageUrl,
-      isDefault: false,
+    const createdImage = await prisma.productImage.create({
+      data: {
+        productId,
+        imageUrl,
+        isDefault,
+      },
     });
 
-    const createdImage: ProductImageDocument = await productImage.save();
-    product.images.push(createdImage._id); // Thêm hình ảnh vào danh sách images của sản phẩm
-    await product.save();
-
     const imageDTO = {
-      imageId: createdImage._id,
+      imageId: createdImage.id,
       imageUrl: createdImage.imageUrl,
       isDefault: createdImage.isDefault,
     };
@@ -89,7 +96,7 @@ export const updateProductImage = async (req: Request<ImageIdParam>, res: Respon
     const { imageId } = req.params;
     const imageFile = req.file;
 
-    const productImage: ProductImageDocument | null = await ProductImage.findById(imageId);
+    const productImage = await prisma.productImage.findUnique({ where: { id: imageId } });
     if (!productImage) {
       return res
         .status(404)
@@ -108,11 +115,14 @@ export const updateProductImage = async (req: Request<ImageIdParam>, res: Respon
       imageFile.originalname,
       imageFile.mimetype
     );
-    productImage.imageUrl = imageUrl;
-    const updatedImage: ProductImageDocument = await productImage.save();
+
+    const updatedImage = await prisma.productImage.update({
+      where: { id: imageId },
+      data: { imageUrl },
+    });
 
     const imageDTO = {
-      imageId: updatedImage._id,
+      imageId: updatedImage.id,
       imageUrl: updatedImage.imageUrl,
       isDefault: updatedImage.isDefault,
     };
@@ -130,22 +140,19 @@ export const updateProductImage = async (req: Request<ImageIdParam>, res: Respon
   }
 };
 
-// Xóa hình ảnh sản phẩm và cập nhật Product
+// Xóa hình ảnh sản phẩm
 export const deleteProductImage = async (req: Request<ProductIdParam & ImageIdParam>, res: Response): Promise<void> => {
   try {
-    const { productId, imageId } = req.params;
+    const { imageId } = req.params;
 
-    const productImage: ProductImageDocument | null = await ProductImage.findById(imageId);
+    const productImage = await prisma.productImage.findUnique({ where: { id: imageId } });
     if (!productImage) {
       return res
         .status(404)
         .json(new ApiResponse(404, null, "Hình ảnh không tồn tại"));
     }
 
-    await ProductImage.deleteOne({ _id: imageId });
-
-    // Cập nhật lại danh sách images trong Product
-    await Product.findByIdAndUpdate(productId, { $pull: { images: imageId } });
+    await prisma.productImage.delete({ where: { id: imageId } });
 
     res
       .status(200)
@@ -164,7 +171,7 @@ export const changeDefaultImage = async (req: Request<ImageIdParam>, res: Respon
     const { imageId } = req.params;
     const isDefault: boolean = req.query.isDefault === "true";
 
-    const selectedImage: ProductImageDocument | null = await ProductImage.findById(imageId);
+    const selectedImage = await prisma.productImage.findUnique({ where: { id: imageId } });
     if (!selectedImage) {
       return res
         .status(404)
@@ -173,15 +180,17 @@ export const changeDefaultImage = async (req: Request<ImageIdParam>, res: Respon
 
     // Nếu isDefault được đặt thành true, đặt tất cả các hình ảnh khác của sản phẩm này thành không mặc định
     if (isDefault) {
-      await ProductImage.updateMany(
-        { product: selectedImage.product, _id: { $ne: imageId } },
-        { isDefault: false }
-      );
+      await prisma.productImage.updateMany({
+        where: { productId: selectedImage.productId, id: { not: imageId } },
+        data: { isDefault: false },
+      });
     }
 
     // Cập nhật trạng thái mặc định cho hình ảnh được chọn
-    selectedImage.isDefault = isDefault;
-    await selectedImage.save();
+    await prisma.productImage.update({
+      where: { id: imageId },
+      data: { isDefault },
+    });
 
     res
       .status(200)

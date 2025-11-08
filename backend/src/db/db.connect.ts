@@ -1,25 +1,21 @@
-import mongoose from "mongoose";
 import "dotenv/config";
 
+/*
+ * DEPRECATED: This file is deprecated and will be removed in a future phase.
+ * Use ./prisma.client.ts instead for database connections.
+ * This file will be removed after all controllers are migrated to Prisma.
+ * Reference: Migration from MongoDB/Mongoose to PostgreSQL/Prisma
+ */
+
+/**
+ * @deprecated Use connectPrisma from prisma.client.ts instead.
+ * This MongoDB connection has been removed. Please use connectPrisma for database connections.
+ */
 const connectDB = async (): Promise<void> => {
-  const MONGO_URL = process.env.MONGO_URL;
-
-  if (!MONGO_URL) {
-    console.warn("MONGO_URL environment variable is not defined");
-    console.warn("Server will continue running without database connection for testing");
-    return;
-  }
-
-  try {
-    await mongoose.connect(MONGO_URL);
-
-    console.log("Connected to DB successfully");
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-    console.warn("Database connection failed:", errorMessage);
-    console.warn("Server will continue running without database connection for testing");
-    // Don't exit the process for testing purposes
-  }
+  console.warn("DEPRECATED: connectDB from db.connect.ts is no longer functional.");
+  console.warn("Please use connectPrisma from src/db/prisma.client.ts instead.");
+  console.warn("This function will be removed in a future release.");
+  return;
 };
 
 export { connectDB };

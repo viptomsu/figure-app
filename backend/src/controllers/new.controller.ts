@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
-import New, { NewDocument } from "../models/new.model.js";
+import { New } from "@prisma/client";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadFileToFirebase } from "../services/firebase.service.js";
 import { PaginationQuery, IdParam, CreateNewBody, UpdateNewBody } from "../types/request.types.js";
+import { prisma } from "../db/prisma.client.js";
 
 interface PaginationResponse {
-  content: NewDocument[];
+  content: New[];
   page: number;
   limit: number;
   totalElements: number;
@@ -22,11 +23,11 @@ export const getAllNews = async (req: Request<{}, any, any, PaginationQuery>, re
 
     const query: any = { isDeleted: false };
     if (keyword) {
-      query.title = { $regex: keyword, $options: "i" };
+      query.title = { contains: keyword, mode: 'insensitive' };
     }
 
-    const news: NewDocument[] = await New.find(query).skip(skip).limit(limit);
-    const totalElements: number = await New.countDocuments(query);
+    const news: New[] = await prisma.new.findMany({ where: query, skip, take: limit });
+    const totalElements: number = await prisma.new.count({ where: query });
     const totalPages: number = Math.ceil(totalElements / limit);
 
     const paginationResponse: PaginationResponse = {
@@ -58,7 +59,9 @@ export const getAllNews = async (req: Request<{}, any, any, PaginationQuery>, re
 export const getNewById = async (req: Request<IdParam>, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const newsItem: NewDocument | null = await New.findById(id).where("isDeleted").equals(false);
+    const newsItem: New | null = await prisma.new.findFirst({
+      where: { id, isDeleted: false }
+    });
 
     if (!newsItem) {
       res
@@ -84,11 +87,11 @@ export const createNew = async (req: Request<{}, any, CreateNewBody>, res: Respo
     const { title, content } = req.body;
     const imageFile = req.file;
 
-    const newsItem = new New({
+    let newsData: any = {
       title,
       content,
       isDeleted: false,
-    });
+    };
 
     if (imageFile) {
       const imageUrl: string = await uploadFileToFirebase(
@@ -96,10 +99,10 @@ export const createNew = async (req: Request<{}, any, CreateNewBody>, res: Respo
         imageFile.originalname,
         imageFile.mimetype
       );
-      newsItem.image = imageUrl;
+      newsData.image = imageUrl;
     }
 
-    const savedNew: NewDocument = await newsItem.save();
+    const savedNew: New = await prisma.new.create({ data: newsData });
     res
       .status(201)
       .json(new ApiResponse(201, savedNew, "Tạo bản tin thành công"));
@@ -116,7 +119,7 @@ export const updateNew = async (req: Request<IdParam, any, UpdateNewBody>, res: 
     const { title, content } = req.body;
     const imageFile = req.file;
 
-    const newsItem: NewDocument | null = await New.findById(id);
+    const newsItem: New | null = await prisma.new.findUnique({ where: { id } });
     if (!newsItem || newsItem.isDeleted) {
       res
         .status(404)
@@ -124,8 +127,9 @@ export const updateNew = async (req: Request<IdParam, any, UpdateNewBody>, res: 
       return;
     }
 
-    newsItem.title = title || newsItem.title;
-    newsItem.content = content || newsItem.content;
+    const updateData: any = {};
+    if (title !== undefined) updateData.title = title;
+    if (content !== undefined) updateData.content = content;
 
     if (imageFile) {
       const imageUrl: string = await uploadFileToFirebase(
@@ -133,10 +137,13 @@ export const updateNew = async (req: Request<IdParam, any, UpdateNewBody>, res: 
         imageFile.originalname,
         imageFile.mimetype
       );
-      newsItem.image = imageUrl;
+      updateData.image = imageUrl;
     }
 
-    const updatedNew: NewDocument = await newsItem.save();
+    const updatedNew: New = await prisma.new.update({
+      where: { id },
+      data: updateData
+    });
     res
       .status(200)
       .json(new ApiResponse(200, updatedNew, "Cập nhật bản tin thành công"));
@@ -153,7 +160,7 @@ export const deleteNew = async (req: Request<IdParam>, res: Response): Promise<v
   try {
     const { id } = req.params;
 
-    const newsItem: NewDocument | null = await New.findById(id);
+    const newsItem: New | null = await prisma.new.findUnique({ where: { id } });
     if (!newsItem || newsItem.isDeleted) {
       res
         .status(404)
@@ -161,8 +168,7 @@ export const deleteNew = async (req: Request<IdParam>, res: Response): Promise<v
       return;
     }
 
-    newsItem.isDeleted = true;
-    await newsItem.save();
+    await prisma.new.update({ where: { id }, data: { isDeleted: true } });
 
     res.status(200).json(new ApiResponse(200, null, "Xóa bản tin thành công"));
   } catch (error) {

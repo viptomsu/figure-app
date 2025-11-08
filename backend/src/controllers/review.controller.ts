@@ -1,9 +1,10 @@
 // review.controller.ts
-import Review, { ReviewDocument } from "../models/review.model.js";
+import { prisma } from "../db/prisma.client.js";
+import { Review } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Request, Response } from "express";
 import { PaginationQuery, CreateReviewBody, ProductIdParam } from "../types/request.types.js";
-import mongoose from "mongoose";
 
 // Lấy tất cả các đánh giá với phân trang và tìm kiếm
 export const getAllReviews = async (req: Request<{}, {}, {}, PaginationQuery>, res: Response): Promise<void> => {
@@ -16,15 +17,16 @@ export const getAllReviews = async (req: Request<{}, {}, {}, PaginationQuery>, r
     // Tìm kiếm theo từ khóa nếu có
     const query: any = {};
     if (searchText) {
-      query.reviewText = { $regex: searchText, $options: "i" };
+      query.reviewText = { contains: searchText, mode: 'insensitive' };
     }
 
-    const reviews: ReviewDocument[] = await Review.find(query)
-      .skip(skip)
-      .limit(limit)
-      .populate("user") // Lấy đầy đủ thông tin user
-      .populate("product"); // Lấy đầy đủ thông tin product
-    const totalElements: number = await Review.countDocuments(query);
+    const reviews: Review[] = await prisma.review.findMany({
+      where: query,
+      skip,
+      take: limit,
+      include: { user: true, product: true }
+    });
+    const totalElements: number = await prisma.review.count({ where: query });
     const totalPages: number = Math.ceil(totalElements / limit);
 
     const paginationResponse = {
@@ -57,17 +59,18 @@ export const getReviewsByProduct = async (req: Request<ProductIdParam, {}, {}, P
     const limit: number = parseInt(req.query.limit || '10') || 10;
     const skip: number = (page - 1) * limit;
 
-    const query: any = { product: productId };
+    const query: any = { productId };
     if (searchText) {
-      query.reviewText = { $regex: searchText, $options: "i" };
+      query.reviewText = { contains: searchText, mode: 'insensitive' };
     }
 
-    const reviews: ReviewDocument[] = await Review.find(query)
-      .skip(skip)
-      .limit(limit)
-      .populate("user") // Lấy đầy đủ thông tin user
-      .populate("product"); // Lấy đầy đủ thông tin product
-    const totalElements: number = await Review.countDocuments(query);
+    const reviews: Review[] = await prisma.review.findMany({
+      where: query,
+      skip,
+      take: limit,
+      include: { user: true, product: true }
+    });
+    const totalElements: number = await prisma.review.count({ where: query });
     const totalPages: number = Math.ceil(totalElements / limit);
 
     const paginationResponse = {
@@ -100,36 +103,28 @@ export const createReview = async (req: Request<{}, {}, CreateReviewBody>, res: 
   try {
     const { productId, userId, reviewText, rating } = req.body;
 
-    if (
-      !mongoose.Types.ObjectId.isValid(productId) ||
-      !mongoose.Types.ObjectId.isValid(userId)
-    ) {
-      return res
-        .status(400)
-        .json(new ApiResponse(400, null, "ID không hợp lệ"));
-    }
-
-    // Tạo mới review
-    const review: ReviewDocument = new Review({
-      product: new mongoose.Types.ObjectId(productId),
-      user: new mongoose.Types.ObjectId(userId),
-      reviewText,
-      rating,
-      reviewDate: new Date(),
+    // Tạo mới review với include để lấy dữ liệu user và product
+    const review = await prisma.review.create({
+      data: {
+        productId,
+        userId,
+        reviewText,
+        rating,
+        reviewDate: new Date(),
+      },
+      include: { user: true, product: true }
     });
-
-    // Lưu review và populate dữ liệu user và product
-    const savedReview: ReviewDocument = await review.save();
-    const populatedReview: ReviewDocument | null = await Review.findById(savedReview._id)
-      .populate("user") // Lấy đầy đủ thông tin user
-      .populate("product") // Lấy đầy đủ thông tin product
-      .exec();
 
     res
       .status(201)
-      .json(new ApiResponse(201, populatedReview, "Tạo đánh giá thành công"));
+      .json(new ApiResponse(201, review, "Tạo đánh giá thành công"));
   } catch (error) {
     console.error(error);
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2003') {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, null, "Invalid product ID or user ID"));
+    }
     res.status(500).json(new ApiResponse(500, null, "Lỗi khi tạo đánh giá"));
   }
 };

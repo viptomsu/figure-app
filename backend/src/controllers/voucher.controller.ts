@@ -1,8 +1,10 @@
 // voucher.controller.ts
-import Voucher, { VoucherDocument } from "../models/voucher.model.js";
+import { Voucher, Prisma, PrismaClientKnownRequestError } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime/library";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Request, Response } from "express";
 import { PaginationQuery, CreateVoucherBody, UpdateVoucherBody, IdParam, VoucherCodeParam } from "../types/request.types.js";
+import { prisma } from "../db/prisma.client.js";
 
 // Lấy tất cả các voucher
 export const getAllVouchers = async (req: Request<{}, {}, {}, PaginationQuery>, res: Response): Promise<void> => {
@@ -12,14 +14,14 @@ export const getAllVouchers = async (req: Request<{}, {}, {}, PaginationQuery>, 
     const limit: number = parseInt(req.query.limit || '10') || 10;
     const skip: number = (page - 1) * limit;
 
-    // Tìm kiếm theo từ khóa và lọc kết quả chưa bị xóa
+    // Tìm kiếm theo từ khóa
     const query: any = {};
     if (keyword) {
-      query.code = { $regex: keyword, $options: "i" };
+      query.code = { contains: keyword, mode: 'insensitive' };
     }
 
-    const vouchers: VoucherDocument[] = await Voucher.find(query).skip(skip).limit(limit);
-    const totalElements: number = await Voucher.countDocuments(query);
+    const vouchers: Voucher[] = await prisma.voucher.findMany({ where: query, skip, take: limit });
+    const totalElements: number = await prisma.voucher.count({ where: query });
     const totalPages: number = Math.ceil(totalElements / limit);
 
     const paginationResponse = {
@@ -52,20 +54,24 @@ export const createVoucher = async (req: Request<{}, {}, CreateVoucherBody>, res
   try {
     const { code, discount, expirationDate } = req.body;
 
-    const newVoucher: VoucherDocument = new Voucher({
-      code,
-      discount,
-      expirationDate: new Date(expirationDate),
-      isUsed: false,
+    const savedVoucher: Voucher = await prisma.voucher.create({
+      data: {
+        code,
+        discount,
+        expirationDate: new Date(expirationDate),
+        isUsed: false,
+      },
     });
-
-    const savedVoucher: VoucherDocument = await newVoucher.save();
     res
       .status(201)
       .json(new ApiResponse(201, savedVoucher, "Tạo voucher thành công"));
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    res.status(500).json(new ApiResponse(500, null, "Lỗi khi tạo voucher"));
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+      res.status(409).json(new ApiResponse(409, null, "Dữ liệu đã tồn tại, vui lòng kiểm tra các trường duy nhất"));
+    } else {
+      res.status(500).json(new ApiResponse(500, null, "Lỗi khi tạo voucher"));
+    }
   }
 };
 
@@ -75,28 +81,36 @@ export const updateVoucher = async (req: Request<IdParam, {}, UpdateVoucherBody>
     const { id } = req.params;
     const { code, discount, expirationDate } = req.body;
 
-    const voucher: VoucherDocument | null = await Voucher.findById(id);
+    const voucher: Voucher | null = await prisma.voucher.findUnique({ where: { id } });
     if (!voucher) {
       return res
         .status(404)
         .json(new ApiResponse(404, null, "Không tìm thấy voucher"));
     }
 
-    voucher.code = code || voucher.code;
-    voucher.discount = discount !== undefined ? discount : voucher.discount;
-    voucher.expirationDate = expirationDate ? new Date(expirationDate) : voucher.expirationDate;
+    const updateData: any = {};
+    if (code !== undefined) updateData.code = code;
+    if (discount !== undefined) updateData.discount = discount;
+    if (expirationDate !== undefined) updateData.expirationDate = new Date(expirationDate);
 
-    const updatedVoucher: VoucherDocument = await voucher.save();
+    const updatedVoucher: Voucher = await prisma.voucher.update({
+      where: { id },
+      data: updateData
+    });
     res
       .status(200)
       .json(
         new ApiResponse(200, updatedVoucher, "Cập nhật voucher thành công")
       );
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    res
-      .status(500)
-      .json(new ApiResponse(500, null, "Lỗi khi cập nhật voucher"));
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+      res.status(409).json(new ApiResponse(409, null, "Dữ liệu đã tồn tại, vui lòng kiểm tra các trường duy nhất"));
+    } else {
+      res
+        .status(500)
+        .json(new ApiResponse(500, null, "Lỗi khi cập nhật voucher"));
+    }
   }
 };
 
@@ -105,12 +119,16 @@ export const deleteVoucher = async (req: Request<IdParam>, res: Response): Promi
   try {
     const { id } = req.params;
 
-    const voucher: VoucherDocument | null = await Voucher.findByIdAndDelete(id);
-    if (!voucher) {
+    try {
+    await prisma.voucher.delete({ where: { id } });
+  } catch (error: any) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
       return res
         .status(404)
         .json(new ApiResponse(404, null, "Không tìm thấy voucher"));
     }
+    throw error;
+  }
 
     res.status(200).json(new ApiResponse(200, null, "Xóa voucher thành công"));
   } catch (error) {
@@ -124,20 +142,22 @@ export const markVoucherAsUsed = async (req: Request<IdParam>, res: Response): P
   try {
     const { id } = req.params;
 
-    const voucher: VoucherDocument | null = await Voucher.findById(id);
+    const voucher: Voucher | null = await prisma.voucher.findUnique({ where: { id } });
     if (!voucher) {
       return res
         .status(404)
         .json(new ApiResponse(404, null, "Không tìm thấy voucher"));
     }
 
-    voucher.isUsed = true;
-    await voucher.save();
+    const updatedVoucher: Voucher = await prisma.voucher.update({
+      where: { id },
+      data: { isUsed: true }
+    });
 
     res
       .status(200)
       .json(
-        new ApiResponse(200, voucher, "Voucher đã được đánh dấu là đã sử dụng")
+        new ApiResponse(200, updatedVoucher, "Voucher đã được đánh dấu là đã sử dụng")
       );
   } catch (error) {
     console.error(error);
@@ -154,10 +174,12 @@ export const checkVoucherCode = async (req: Request<VoucherCodeParam>, res: Resp
   try {
     const { code } = req.params;
 
-    const voucher: VoucherDocument | null = await Voucher.findOne({
-      code,
-      isUsed: false,
-      expirationDate: { $gt: new Date() },
+    const voucher: Voucher | null = await prisma.voucher.findFirst({
+      where: {
+        code,
+        isUsed: false,
+        expirationDate: { gt: new Date() },
+      },
     });
     if (!voucher) {
       return res
@@ -181,20 +203,22 @@ export const changeVoucherStatus = async (req: Request<IdParam>, res: Response):
   try {
     const { id } = req.params;
 
-    const voucher: VoucherDocument | null = await Voucher.findById(id);
+    const voucher: Voucher | null = await prisma.voucher.findUnique({ where: { id } });
     if (!voucher) {
       return res
         .status(404)
         .json(new ApiResponse(404, null, "Không tìm thấy voucher"));
     }
 
-    voucher.isUsed = !voucher.isUsed; // Thay đổi trạng thái
-    await voucher.save();
+    const updatedVoucher: Voucher = await prisma.voucher.update({
+      where: { id },
+      data: { isUsed: !voucher.isUsed }
+    });
 
     res
       .status(200)
       .json(
-        new ApiResponse(200, voucher, "Thay đổi trạng thái voucher thành công")
+        new ApiResponse(200, updatedVoucher, "Thay đổi trạng thái voucher thành công")
       );
   } catch (error) {
     console.error(error);

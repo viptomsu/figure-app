@@ -1,20 +1,33 @@
 // product.controller.ts
-import Product, { ProductDocument } from "../models/product.model.js";
-import Review from "../models/review.model.js";
-import Category, { CategoryDocument } from "../models/category.model.js";
-import Brand, { BrandDocument } from "../models/brand.model.js";
-import ProductVariation, { ProductVariationDocument } from "../models/productVariation.model.js";
-import ProductImage, { ProductImageDocument } from "../models/productImage.model.js";
+import { prisma } from "../db/prisma.client.js";
+import { Decimal } from "@prisma/client/runtime/library";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadFileToFirebase } from "../services/firebase.service.js";
-import mongoose from "mongoose";
 import { Request, Response } from "express";
 import { ProductFilterQuery, CreateProductBody, UpdateProductBody, IdParam, ProductVariationInput } from "../types/request.types.js";
+
+// Define proper types for products with includes
+type ProductWithIncludes = any;
+type ProductWithIncludesArray = any[];
 
 interface ReviewStats {
   avgRating: number;
   reviewCount: number;
 }
+
+// Helper function to convert Decimal fields to numbers
+const convertDecimalFields = (product: any) => {
+  return {
+    ...product,
+    price: product.price instanceof Decimal ? product.price.toNumber() : product.price,
+    discount: product.discount instanceof Decimal ? product.discount.toNumber() : product.discount,
+    variations: product.variations?.map((variation: any) => ({
+      ...variation,
+      price: variation.price instanceof Decimal ? variation.price.toNumber() : variation.price,
+    })) || [],
+  };
+};
 
 // Lấy danh sách sản phẩm với phân trang và lọc
 export const getAllProducts = async (req: Request<{}, {}, {}, ProductFilterQuery>, res: Response): Promise<void> => {
@@ -29,23 +42,32 @@ export const getAllProducts = async (req: Request<{}, {}, {}, ProductFilterQuery
       sortDirection = "asc",
     } = req.query;
     const skip: number = (parseInt(page) - 1) * parseInt(limit);
-    const sort = { [sortField]: sortDirection === "asc" ? 1 : -1 };
+
+    // Validate sort field and direction
+    const allowedSortFields = ['productName', 'price', 'stock', 'createdAt', 'updatedAt'];
+    const validatedSortField = allowedSortFields.includes(sortField as string) ? sortField : 'productName';
+    const validatedSortDirection = sortDirection === 'desc' ? 'desc' : 'asc';
 
     const query: any = { isDelete: false };
-    if (search) query.productName = { $regex: search, $options: "i" };
-    if (categoryId) query.category = new mongoose.Types.ObjectId(categoryId);
-    if (brandId) query.brand = new mongoose.Types.ObjectId(brandId);
+    if (search) query.productName = { contains: search, mode: 'insensitive' };
+    if (categoryId) query.categoryId = categoryId;
+    if (brandId) query.brandId = brandId;
 
-    const products: ProductDocument[] = await Product.find(query)
-      .sort(sort)
-      .skip(skip)
-      .limit(Number(limit))
-      .populate("category brand images variations");
-    const totalElements: number = await Product.countDocuments(query);
+    const products: ProductWithIncludesArray = await prisma.product.findMany({
+      where: query,
+      skip,
+      take: Number(limit),
+      orderBy: { [validatedSortField]: validatedSortDirection },
+      include: { category: true, brand: true, images: true, variations: true }
+    });
+    const totalElements: number = await prisma.product.count({ where: query });
     const totalPages: number = Math.ceil(totalElements / Number(limit));
 
+    // Convert Decimal fields to numbers
+    const productsWithNumbers = products.map(convertDecimalFields);
+
     const response = {
-      content: products,
+      content: productsWithNumbers,
       page: Number(page),
       limit: Number(limit),
       totalElements,
@@ -70,10 +92,11 @@ export const getProductById = async (req: Request<IdParam>, res: Response): Prom
   try {
     const { id } = req.params;
 
-    // Tìm sản phẩm và populate các trường liên quan
-    const product: ProductDocument | null = await Product.findById(id).populate(
-      "category brand images variations"
-    );
+    // Tìm sản phẩm và include các trường liên quan
+    const product: ProductWithIncludes | null = await prisma.product.findUnique({
+      where: { id },
+      include: { category: true, brand: true, images: true, variations: true }
+    });
 
     if (!product || product.isDelete) {
       return res
@@ -82,29 +105,21 @@ export const getProductById = async (req: Request<IdParam>, res: Response): Prom
     }
 
     // Tính toán reviewCount và avgRating
-    const reviews = await Review.aggregate([
-      { $match: { product: product._id } },
-      {
-        $group: {
-          _id: "$product",
-          avgRating: { $avg: "$rating" },
-          reviewCount: { $sum: 1 },
-        },
-      },
-    ]);
+    const reviewStats = await prisma.review.aggregate({
+      where: { productId: id },
+      _avg: { rating: true },
+      _count: true
+    });
 
-    let reviewStats: ReviewStats = { avgRating: 0, reviewCount: 0 };
-    if (reviews.length > 0) {
-      reviewStats = {
-        avgRating: reviews[0].avgRating,
-        reviewCount: reviews[0].reviewCount,
-      };
-    }
+    const stats: ReviewStats = {
+      avgRating: reviewStats._avg.rating || 0,
+      reviewCount: reviewStats._count || 0,
+    };
 
-    // Kết hợp sản phẩm với thông tin đánh giá
+    // Convert Decimal fields to numbers and combine with review stats
     const productWithReviews = {
-      ...product.toObject(),
-      ...reviewStats,
+      ...convertDecimalFields(product),
+      ...stats,
     };
 
     res
@@ -148,8 +163,8 @@ export const createProduct = async (req: Request<{}, {}, CreateProductBody>, res
       }
     }
 
-    const category: CategoryDocument | null = await Category.findById(categoryId);
-    const brand: BrandDocument | null = await Brand.findById(brandId);
+    const category = await prisma.category.findUnique({ where: { id: categoryId } });
+    const brand = await prisma.brand.findUnique({ where: { id: brandId } });
     if (!category || !brand) {
       return res
         .status(400)
@@ -158,57 +173,71 @@ export const createProduct = async (req: Request<{}, {}, CreateProductBody>, res
         );
     }
 
-    const product: ProductDocument = new Product({
-      productName,
-      price,
-      description,
-      discount,
-      badge,
-      stock,
-      isNewProduct,
-      isSale,
-      isSpecial,
-      category: category._id,
-      brand: brand._id,
-    });
-
-    await product.save();
-
-    // Lưu hình ảnh
+    // Upload images first
+    const uploadedImages: string[] = [];
     if (images) {
-      for (const [index, imageFile] of images.entries()) {
+      for (const imageFile of images) {
         const imageUrl: string = await uploadFileToFirebase(
           imageFile.buffer,
           imageFile.originalname,
           imageFile.mimetype
         );
-        const productImage: ProductImageDocument = new ProductImage({
-          product: product._id,
-          imageUrl,
-          isDefault: index === 0,
-        });
-        await productImage.save();
-        product.images.push(productImage._id);
+        uploadedImages.push(imageUrl);
       }
     }
 
-    // Lưu biến thể
-    for (const variationData of variations) {
-      const variation: ProductVariationDocument = new ProductVariation({
-        ...variationData,
-        product: product._id,
+    // Use transaction for all database operations
+    const result = await prisma.$transaction(async (tx) => {
+      const product = await tx.product.create({
+        data: {
+          productName,
+          price,
+          description,
+          discount,
+          badge,
+          stock,
+          isNewProduct,
+          isSale,
+          isSpecial,
+          categoryId,
+          brandId,
+        },
       });
-      await variation.save();
-      product.variations.push(variation._id);
-    }
 
-    await product.save();
+      // Create product images
+      if (uploadedImages.length > 0) {
+        for (let i = 0; i < uploadedImages.length; i++) {
+          const imageUrl = uploadedImages[i];
+          await tx.productImage.create({
+            data: {
+              productId: product.id,
+              imageUrl,
+              isDefault: i === 0,
+            },
+          });
+        }
+      }
+
+      // Create product variations
+      for (const variationData of variations) {
+        await tx.productVariation.create({
+          data: variationData as any,
+        });
+      }
+
+      return product;
+    });
 
     res
       .status(201)
-      .json(new ApiResponse(201, product, "Tạo sản phẩm thành công"));
+      .json(new ApiResponse(201, result, "Tạo sản phẩm thành công"));
   } catch (error) {
     console.error(error);
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2003') {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, null, "Invalid categoryId or brandId"));
+    }
     res.status(500).json(new ApiResponse(500, null, "Lỗi khi tạo sản phẩm"));
   }
 };
@@ -230,89 +259,102 @@ export const updateProduct = async (req: Request<IdParam, {}, UpdateProductBody>
       brandId,
     } = req.body;
     const images: Express.Multer.File[] | undefined = req.files as Express.Multer.File[];
-    let variations: ProductVariationInput[] = [];
-    if (req.body.variations) {
-      try {
-        variations = JSON.parse(req.body.variations);
-      } catch (error) {
-        return res
-          .status(400)
-          .json(new ApiResponse(400, null, "Invalid variations JSON format"));
-      }
-    }
 
-    const product: ProductDocument | null = await Product.findById(id);
+    const product = await prisma.product.findUnique({ where: { id } });
     if (!product || product.isDelete) {
       return res
         .status(404)
         .json(new ApiResponse(404, null, "Không tìm thấy sản phẩm"));
     }
 
-    // Cập nhật các trường thông tin của sản phẩm
-    product.productName = productName || product.productName;
-    product.price = price || product.price;
-    product.description = description || product.description;
-    product.discount = discount !== undefined ? discount : product.discount;
-    product.badge = badge || product.badge;
-    product.stock = stock !== undefined ? stock : product.stock;
-    product.isNewProduct = isNewProduct !== undefined ? isNewProduct : product.isNewProduct;
-    product.isSale = isSale !== undefined ? isSale : product.isSale;
-    product.isSpecial = isSpecial !== undefined ? isSpecial : product.isSpecial;
-    product.category = categoryId
-      ? new mongoose.Types.ObjectId(categoryId)
-      : product.category;
-    product.brand = brandId
-      ? new mongoose.Types.ObjectId(brandId)
-      : product.brand;
+    // Xây dựng đối tượng dữ liệu cập nhật
+    const updateData: any = {};
+    if (productName !== undefined) updateData.productName = productName;
+    if (price !== undefined) updateData.price = price;
+    if (description !== undefined) updateData.description = description;
+    if (discount !== undefined) updateData.discount = discount;
+    if (badge !== undefined) updateData.badge = badge;
+    if (stock !== undefined) updateData.stock = stock;
+    if (isNewProduct !== undefined) updateData.isNewProduct = isNewProduct;
+    if (isSale !== undefined) updateData.isSale = isSale;
+    if (isSpecial !== undefined) updateData.isSpecial = isSpecial;
+    if (categoryId !== undefined) updateData.categoryId = categoryId;
+    if (brandId !== undefined) updateData.brandId = brandId;
 
-    await product.save();
-
-    // Xóa các hình ảnh cũ và thêm hình ảnh mới (nếu có hình ảnh mới)
+    // Upload new images if provided
+    const uploadedImages: string[] = [];
     if (images && images.length > 0) {
-      await ProductImage.deleteMany({ product: product._id });
-      product.images = []; // Xóa danh sách ID ảnh cũ
-
-      for (const [index, imageFile] of images.entries()) {
+      for (const imageFile of images) {
         const imageUrl: string = await uploadFileToFirebase(
           imageFile.buffer,
           imageFile.originalname,
           imageFile.mimetype
         );
-
-        const productImage: ProductImageDocument = new ProductImage({
-          product: product._id,
-          imageUrl,
-          isDefault: index === 0, // Đặt ảnh đầu tiên là ảnh mặc định
-        });
-
-        await productImage.save();
-        product.images.push(productImage._id); // Cập nhật danh sách ID ảnh mới
+        uploadedImages.push(imageUrl);
       }
     }
 
-    // Xóa các biến thể cũ và thêm biến thể mới
-    if (variations) {
-      await ProductVariation.deleteMany({ product: product._id });
-      product.variations = []; // Xóa danh sách ID biến thể cũ
+    // Use transaction for all database operations
+    const result = await prisma.$transaction(async (tx) => {
+      // Update product
+      const updatedProduct = await tx.product.update({
+        where: { id },
+        data: updateData,
+      });
 
-      for (const variationData of variations) {
-        const variation: ProductVariationDocument = new ProductVariation({
-          ...variationData,
-          product: product._id,
-        });
+      // Update images if new images provided
+      if (uploadedImages.length > 0) {
+        await tx.productImage.deleteMany({ where: { productId: id } });
 
-        await variation.save();
-        product.variations.push(variation._id); // Cập nhật danh sách ID biến thể mới
+        for (let i = 0; i < uploadedImages.length; i++) {
+          const imageUrl = uploadedImages[i];
+          await tx.productImage.create({
+            data: {
+              productId: id,
+              imageUrl,
+              isDefault: i === 0,
+            },
+          });
+        }
       }
-    }
 
-    await product.save(); // Lưu lại tất cả thay đổi vào sản phẩm
+      // Only handle variations if explicitly provided in request
+      if (req.body.variations !== undefined) {
+        let variations: ProductVariationInput[] = [];
+        try {
+          variations = JSON.parse(req.body.variations);
+        } catch (error) {
+          throw new Error("Invalid variations JSON format");
+        }
+
+        // Delete old variations and create new ones
+        await tx.productVariation.deleteMany({ where: { productId: id } });
+
+        for (const variationData of variations) {
+          await tx.productVariation.create({
+            data: variationData as any,
+          });
+        }
+      }
+
+      return updatedProduct;
+    });
 
     res
       .status(200)
-      .json(new ApiResponse(200, product, "Cập nhật sản phẩm thành công"));
+      .json(new ApiResponse(200, result, "Cập nhật sản phẩm thành công"));
   } catch (error) {
     console.error(error);
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2003') {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, null, "Invalid categoryId or brandId"));
+    }
+    if (error instanceof Error && error.message === "Invalid variations JSON format") {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, null, "Invalid variations JSON format"));
+    }
     res
       .status(500)
       .json(new ApiResponse(500, null, "Lỗi khi cập nhật sản phẩm"));
@@ -323,15 +365,17 @@ export const updateProduct = async (req: Request<IdParam, {}, UpdateProductBody>
 export const deleteProduct = async (req: Request<IdParam>, res: Response): Promise<void | Response> => {
   try {
     const { id } = req.params;
-    const product: ProductDocument | null = await Product.findById(id);
+    const product = await prisma.product.findUnique({ where: { id } });
     if (!product || product.isDelete) {
       return res
         .status(404)
         .json(new ApiResponse(404, null, "Không tìm thấy sản phẩm"));
     }
 
-    product.isDelete = true;
-    await product.save();
+    await prisma.product.update({
+      where: { id },
+      data: { isDelete: true },
+    });
 
     res.status(200).json(new ApiResponse(200, null, "Xóa sản phẩm thành công"));
   } catch (error) {
@@ -352,56 +396,61 @@ export const getFilteredProducts = async (req: Request<{}, {}, {}, ProductFilter
     if (isSale !== undefined) query.isSale = isSale === "true";
     if (isSpecial !== undefined) query.isSpecial = isSpecial === "true";
 
-    const products: ProductDocument[] = await Product.find(query)
-      .skip(skip)
-      .limit(Number(limit))
-      .populate("category brand images variations");
+    const products: ProductWithIncludesArray = await prisma.product.findMany({
+      where: query,
+      skip,
+      take: Number(limit),
+      include: { category: true, brand: true, images: true, variations: true }
+    });
 
-    const totalElements: number = await Product.countDocuments(query);
+    const totalElements: number = await prisma.product.count({ where: query });
     const totalPages: number = Math.ceil(totalElements / Number(limit));
 
-    // Chuyển đổi Product sang DTO cho từng sản phẩm
-    const productDTOs = products.map((product) => ({
-      _id: product._id,
-      productName: product.productName,
-      price: product.price,
-      description: product.description,
-      discount: product.discount,
-      badge: product.badge,
-      stock: product.stock,
-      isNewProduct: product.isNewProduct,
-      isSale: product.isSale,
-      isSpecial: product.isSpecial,
-      category: product.category
-        ? {
-            _id: product.category._id,
-            categoryName: product.category.categoryName,
-            image: product.category.image,
-          }
-        : null,
-      brand: product.brand
-        ? {
-            _id: product.brand._id,
-            brandName: product.brand.brandName,
-            image: product.brand.image,
-          }
-        : null,
-      variations: product.variations.map((variation: any) => ({
-        _id: variation._id,
-        attributeName: variation.attributeName,
-        attributeValue: variation.attributeValue,
-        price: variation.price,
-        quantity: variation.quantity,
-      })),
-      images: product.images.map((image: any) => ({
-        _id: image._id,
-        imageUrl: image.imageUrl,
-        isDefault: image.isDefault,
-      })),
-      avgRating: 0, // Placeholder for average rating
-      reviewCount: 0, // Placeholder for review count
-      isDelete: product.isDelete,
-    }));
+    // Convert Decimal fields to numbers and create DTOs
+    const productDTOs = products.map((product) => {
+      const convertedProduct = convertDecimalFields(product);
+      return {
+        id: convertedProduct.id,
+        productName: convertedProduct.productName,
+        price: convertedProduct.price,
+        description: convertedProduct.description,
+        discount: convertedProduct.discount,
+        badge: convertedProduct.badge,
+        stock: convertedProduct.stock,
+        isNewProduct: convertedProduct.isNewProduct,
+        isSale: convertedProduct.isSale,
+        isSpecial: convertedProduct.isSpecial,
+        category: product.category
+          ? {
+              id: product.category.id,
+              categoryName: product.category.categoryName,
+              image: product.category.image,
+            }
+          : null,
+        brand: product.brand
+          ? {
+              id: product.brand.id,
+              brandName: product.brand.brandName,
+              image: product.brand.image,
+            }
+          : null,
+        variations: convertedProduct.variations.map((variation: any) => ({
+          id: variation.id,
+          attributeName: variation.attributeName,
+          attributeValue: variation.attributeValue,
+          price: variation.price,
+          quantity: variation.quantity,
+        })),
+        images: product.images.map((image: any) => ({
+          id: image.id,
+          imageUrl: image.imageUrl,
+          isDefault: image.isDefault,
+        })),
+        avgRating: 0, // Placeholder for average rating
+        reviewCount: 0, // Placeholder for review count
+        isDelete: product.isDelete,
+      };
+    });
 
     const response = {
       content: productDTOs,

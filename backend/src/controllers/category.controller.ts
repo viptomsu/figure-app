@@ -1,9 +1,10 @@
 // category.controller.ts
-import Category, { CategoryDocument } from "../models/category.model.js";
+import { Category, PrismaClientKnownRequestError } from "@prisma/client";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadFileToFirebase } from "../services/firebase.service.js";
 import { Request, Response } from "express";
 import { PaginationQuery, CreateCategoryBody, UpdateCategoryBody, IdParam } from "../types/request.types.js";
+import { prisma } from "../db/prisma.client.js";
 
 export const getAllCategories = async (req: Request<{}, {}, {}, PaginationQuery>, res: Response): Promise<void> => {
   try {
@@ -15,11 +16,11 @@ export const getAllCategories = async (req: Request<{}, {}, {}, PaginationQuery>
     // Lọc danh mục chưa bị xóa và tìm kiếm theo từ khóa
     const query: any = { isDelete: false };
     if (keyword) {
-      query.categoryName = { $regex: keyword, $options: "i" };
+      query.categoryName = { contains: keyword, mode: 'insensitive' };
     }
 
-    const categories: CategoryDocument[] = await Category.find(query).skip(skip).limit(limit);
-    const totalElements: number = await Category.countDocuments(query);
+    const categories: Category[] = await prisma.category.findMany({ where: query, skip, take: limit });
+    const totalElements: number = await prisma.category.count({ where: query });
     const totalPages: number = Math.ceil(totalElements / limit);
 
     const paginationResponse = {
@@ -44,9 +45,9 @@ export const getAllCategories = async (req: Request<{}, {}, {}, PaginationQuery>
 export const getCategoryById = async (req: Request<IdParam>, res: Response): Promise<void | Response> => {
   try {
     const { id } = req.params;
-    const category: CategoryDocument | null = await Category.findById(id)
-      .where("isDelete")
-      .equals(false);
+    const category: Category | null = await prisma.category.findFirst({
+      where: { id, isDelete: false }
+    });
 
     if (!category) {
       return res
@@ -70,11 +71,11 @@ export const createCategory = async (req: Request<{}, {}, CreateCategoryBody>, r
     const { categoryName, description } = req.body;
     const imageFile: Express.Multer.File | undefined = req.file;
 
-    const category: CategoryDocument = new Category({
+    let categoryData: any = {
       categoryName,
       description,
       isDelete: false,
-    });
+    };
 
     // Kiểm tra nếu có tệp ảnh
     if (imageFile) {
@@ -83,16 +84,20 @@ export const createCategory = async (req: Request<{}, {}, CreateCategoryBody>, r
         imageFile.originalname,
         imageFile.mimetype
       );
-      category.image = imageUrl;
+      categoryData.image = imageUrl;
     }
 
-    const savedCategory: CategoryDocument = await category.save();
+    const savedCategory: Category = await prisma.category.create({ data: categoryData });
     res
       .status(201)
       .json(new ApiResponse(201, savedCategory, "Tạo danh mục thành công"));
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    res.status(500).json(new ApiResponse(500, null, "Lỗi khi tạo danh mục"));
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+      res.status(409).json(new ApiResponse(409, null, "Dữ liệu đã tồn tại, vui lòng kiểm tra các trường duy nhất"));
+    } else {
+      res.status(500).json(new ApiResponse(500, null, "Lỗi khi tạo danh mục"));
+    }
   }
 };
 
@@ -102,16 +107,16 @@ export const updateCategory = async (req: Request<IdParam, {}, UpdateCategoryBod
     const { categoryName, description } = req.body;
     const imageFile: Express.Multer.File | undefined = req.file;
 
-    const category: CategoryDocument | null = await Category.findById(id);
+    const category: Category | null = await prisma.category.findUnique({ where: { id } });
     if (!category || category.isDelete) {
       return res
         .status(404)
         .json(new ApiResponse(404, null, "Không tìm thấy danh mục"));
     }
 
-    // Cập nhật thông tin danh mục
-    category.categoryName = categoryName || category.categoryName;
-    category.description = description || category.description;
+    const updateData: any = {};
+    if (categoryName !== undefined) updateData.categoryName = categoryName;
+    if (description !== undefined) updateData.description = description;
 
     // Tải ảnh mới lên Firebase nếu có
     if (imageFile) {
@@ -120,20 +125,27 @@ export const updateCategory = async (req: Request<IdParam, {}, UpdateCategoryBod
         imageFile.originalname,
         imageFile.mimetype
       );
-      category.image = imageUrl;
+      updateData.image = imageUrl;
     }
 
-    const updatedCategory: CategoryDocument = await category.save();
+    const updatedCategory: Category = await prisma.category.update({
+      where: { id },
+      data: updateData
+    });
     res
       .status(200)
       .json(
         new ApiResponse(200, updatedCategory, "Cập nhật danh mục thành công")
       );
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    res
-      .status(500)
-      .json(new ApiResponse(500, null, "Lỗi khi cập nhật danh mục"));
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+      res.status(409).json(new ApiResponse(409, null, "Dữ liệu đã tồn tại, vui lòng kiểm tra các trường duy nhất"));
+    } else {
+      res
+        .status(500)
+        .json(new ApiResponse(500, null, "Lỗi khi cập nhật danh mục"));
+    }
   }
 };
 
@@ -141,7 +153,7 @@ export const deleteCategory = async (req: Request<IdParam>, res: Response): Prom
   try {
     const { id } = req.params;
 
-    const category: CategoryDocument | null = await Category.findById(id);
+    const category: Category | null = await prisma.category.findUnique({ where: { id } });
     if (!category || category.isDelete) {
       return res
         .status(404)
@@ -149,8 +161,7 @@ export const deleteCategory = async (req: Request<IdParam>, res: Response): Prom
     }
 
     // Đánh dấu danh mục là đã xóa
-    category.isDelete = true;
-    await category.save();
+    await prisma.category.update({ where: { id }, data: { isDelete: true } });
 
     res.status(200).json(new ApiResponse(200, null, "Xóa danh mục thành công"));
   } catch (error) {
