@@ -1,0 +1,43 @@
+import express, { Router, Request, Response } from "express";
+import { categoryRouter } from "./category.route.js";
+import { authRouter } from "./auth.route.js";
+import { userRouter } from "./user.route.js";
+import { brandRouter } from "./brand.route.js";
+import { newRouter } from "./new.route.js";
+import { voucherRouter } from "./voucher.route.js";
+import { reviewRouter } from "./review.route.js";
+import { productRouter } from "./product.route.js";
+import { productImageRouter } from "./productImage.route.js";
+import { orderRouter } from "./order.route.js";
+import { addressBookRouter } from "./addressBook.route.js";
+import { emailRouter } from "./email.router.js";
+import { vnpayRouter } from "./vnpay.route.js";
+import { revenueRouter } from "./revenue.route.js";
+
+const indexRouter: Router = express.Router();
+
+// Health check route
+indexRouter.get("/", (req: Request, res: Response) => {
+  res.json({
+    message: "Figure Backend API is running!",
+    timestamp: new Date().toISOString(),
+    status: "OK"
+  });
+});
+
+indexRouter.use("/api/categories", categoryRouter);
+indexRouter.use("/api/auth", authRouter);
+indexRouter.use("/api/users", userRouter);
+indexRouter.use("/api/brands", brandRouter);
+indexRouter.use("/api/news", newRouter);
+indexRouter.use("/api/vouchers", voucherRouter);
+indexRouter.use("/api/reviews", reviewRouter);
+indexRouter.use("/api/products", productRouter);
+indexRouter.use("/api/products/:productId/images", productImageRouter);
+indexRouter.use("/api/orders", orderRouter);
+indexRouter.use("/api/addressbook", addressBookRouter);
+indexRouter.use("/api/email", emailRouter);
+indexRouter.use("/api/vnpay", vnpayRouter);
+indexRouter.use("/api/revenue", revenueRouter);
+
+export { indexRouter };
