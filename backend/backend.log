@@ -1,0 +1,19 @@
+
+> Figure-backend@1.0.0 dev
+> nodemon src/index.js
+
+[33m[nodemon] 3.1.10[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Firebase not properly configured: Failed to parse private key: Error: Invalid PEM formatted message.
+Using mock Firebase storage
+Database connection failed: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017
+Server will continue running without database connection for testing
+Server listening on PORT : 5001
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Firebase not properly configured: Failed to parse private key: Error: Invalid PEM formatted message.
+Using mock Firebase storage
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
